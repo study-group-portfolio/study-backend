@@ -3,11 +3,11 @@ package kr.co.studit.entity;
 import javax.persistence.*;
 
 @Entity
-public class StudyZone {
+public class StudySkill {
 
     @Id
     @GeneratedValue
-    @Column(name = "study_zone_id")
+    @Column(name = "study_skill_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -15,6 +15,6 @@ public class StudyZone {
     Study study;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "zone_id")
-    Tool zone;
+    @JoinColumn(name = "skill_id")
+    Skill skill;
 }

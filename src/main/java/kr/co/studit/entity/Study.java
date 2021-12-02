@@ -43,6 +43,12 @@ public class Study {
     @OneToMany(mappedBy = "study")
     private List<StudyZone> zones = new ArrayList<>();
 
+    @OneToMany(mappedBy = "study")
+    private List<StudyTool> tools = new ArrayList<>();
+
+    @OneToMany(mappedBy = "study")
+    private List<StudySkill> skills = new ArrayList<>();
+
     // 예상 진행 기간
     private String duration;
 
@@ -55,8 +61,7 @@ public class Study {
     private String receptionEnd;
 
 
-    @OneToMany(mappedBy = "study")
-    private List<StudyTool> tools = new ArrayList<>();
+
 
 
 
