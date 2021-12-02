@@ -1,24 +1,22 @@
 package kr.co.studit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
-@Setter
-@Getter
-public class Member {
+public class Position {
+    // 분야 ID
     @Id
     @GeneratedValue
-    @Column(name = "member_id")
+    @Column(name = "position_id")
     private Long id;
-    // 읽기 전용
+
+    private String position;
+
     @JsonIgnore
-    @OneToMany(mappedBy = "member")
-    private List<Study> studys = new ArrayList<>();
+    @OneToMany(mappedBy = "position")
+    private List<Skill> skills = new ArrayList<>();
 }

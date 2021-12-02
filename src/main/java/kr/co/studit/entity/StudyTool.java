@@ -11,6 +11,7 @@ public class StudyTool {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="study_id")
     Study study;
 
     @ManyToOne(fetch = FetchType.LAZY)
