@@ -24,5 +24,5 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Study> studys = new ArrayList<>();
 
-    //TODO 비밀번호 인코딩(o), JWT, react 연동, 외부로그인, responseDto error와 data 나눠서 줄 것(50%)
+
 }
