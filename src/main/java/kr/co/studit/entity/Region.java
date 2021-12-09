@@ -8,33 +8,30 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
-@Setter
 @Getter
+@Setter
 @Table(
         uniqueConstraints={
                 @UniqueConstraint(
-                        columnNames={"email"}
+                        columnNames={"area"}
                 )
         }
 )
-public class Member {
+public class Region {
     @Id
     @GeneratedValue
-    @Column(name = "member_id")
+    @Column(name = "region_id")
     private Long id;
+    private String area;
 
-    private String email;
-
-    // 읽기 전용
     @JsonIgnore
-    @OneToMany(mappedBy = "member")
-    private List<Study> studys = new ArrayList<>();
+    @OneToMany(mappedBy = "region")
+    List<Study> studies = new ArrayList<>();
 
-    public static Member createMember(String email) {
-        Member member = new Member();
-        member.setEmail(email);
-        return member;
+    public static Region createRegion(String area) {
+        Region region = new Region();
+        region.area = area;
+        return region;
     }
 }

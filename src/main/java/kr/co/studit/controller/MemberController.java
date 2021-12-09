@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
-    @GetMapping("/")
+    @GetMapping("")
     public String index(){
         return "member";
     }
