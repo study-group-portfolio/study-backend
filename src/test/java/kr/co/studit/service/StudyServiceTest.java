@@ -23,16 +23,10 @@ class StudyServiceTest {
 
     @Autowired
     MemberDataRepository memberDataRepository;
-    @Autowired
-    RegionDataRepository regionDataRepository;
-    @Autowired
-    ToolDataRepository toolDataRepository;
+
     @Autowired
     StudyDataRepository studyDataRepository;
-    @Autowired
-    PositionDataRepository positionDataRepository;
-    @Autowired
-    SkillDataRepository skillDataRepository;
+
     @Autowired
     StudyRepository studyRepository;
 
@@ -63,13 +57,13 @@ class StudyServiceTest {
 
         Study findStudy = studyDataRepository.findStudyByMember(findMember).get(1);
         for (StudySkill studySkill : findStudy.getStudySkill()) {
-            System.out.println(studySkill.getSkill().getSkill());
+            System.out.println(studySkill.getSkill().getSkillName());
         }
         for (StudyPosition studyPosition : findStudy.getStudyPosition()) {
             System.out.println("studyPosition = " + studyPosition.getPosition().getPositionName());
         }
         for (StudyTool tool : findStudy.getStudytool()) {
-            System.out.println("tool = " + tool.getTool().getTool());
+            System.out.println("tool = " + tool.getTool().getToolName());
         }
         System.out.println(study);
 
@@ -79,7 +73,7 @@ class StudyServiceTest {
     private void createPositionSkill(Study study, ArrayList<PositionDto> positions) {
         for (PositionDto positionDto : positions) {
 
-            Position position = positionDataRepository.findPositionByPositionName(positionDto.getPosition());
+            Position position = studyRepository.findPositionByPositionName(positionDto.getPosition());
 
             StudyPosition studyPosition = new StudyPosition();
             studyPosition.setPosition(position);
@@ -90,7 +84,7 @@ class StudyServiceTest {
 
             for (String skl : positionDto.getSkills()) {
                 StudySkill studySkill = new StudySkill();
-                Skill skill = skillDataRepository.findSkillBySkill(skl);
+                Skill skill = studyRepository.findSkillBySkill(skl);
                 studySkill.setSkill(skill);
                 studySkill.setStudy(study);
                 study.getStudySkill().add(studySkill);
@@ -115,7 +109,7 @@ class StudyServiceTest {
     }
 
     private void createRegion(Study study, String area) {
-        Region region = regionDataRepository.findRegionByArea(area);
+        Region region = studyRepository.findRegionByArea(area);
         study.setRegion(region);
     }
 
@@ -124,7 +118,7 @@ class StudyServiceTest {
 
         for (String t : tools) {
 
-            Tool tool = toolDataRepository.findToolByTool(t);
+            Tool tool = studyRepository.findToolByToolName(t);
 
             StudyTool studyTool = new StudyTool();
             studyTool.setStudy(study);

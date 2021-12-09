@@ -17,11 +17,11 @@ public class Tool {
     @Column(name = "tool_id")
     private Long id;
 
-    private String tool;
+    private String toolName;
 
     public static Tool createTool(String toolName) {
         Tool tool = new Tool();
-        tool.setTool(toolName);
+        tool.setToolName(toolName);
         return tool;
     }
 }

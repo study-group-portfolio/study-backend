@@ -21,14 +21,7 @@ public class StudyService {
     StudyRepository studyRepository;
     @Autowired
     MemberDataRepository memberDataRepository;
-    @Autowired
-    RegionDataRepository regionDataRepository;
-    @Autowired
-    ToolDataRepository toolDataRepository;
-    @Autowired
-    PositionDataRepository positionDataRepository;
-    @Autowired
-    SkillDataRepository skillDataRepository;
+
 
 
     @Transactional
@@ -69,7 +62,7 @@ public class StudyService {
     private void createPositionSkill(Study study, ArrayList<PositionDto> positions) {
         for (PositionDto positionDto : positions) {
 
-            Position position = positionDataRepository.findPositionByPositionName(positionDto.getPosition());
+            Position position = studyRepository.findPositionByPositionName(positionDto.getPosition());
 
             StudyPosition studyPosition = new StudyPosition();
             studyPosition.setPosition(position);
@@ -80,7 +73,7 @@ public class StudyService {
 
             for (String skl : positionDto.getSkills()) {
                 StudySkill studySkill = new StudySkill();
-                Skill skill = skillDataRepository.findSkillBySkill(skl);
+                Skill skill = studyRepository.findSkillBySkill(skl);
                 studySkill.setSkill(skill);
                 studySkill.setStudy(study);
                 study.getStudySkill().add(studySkill);
@@ -91,7 +84,7 @@ public class StudyService {
 
         for (String t : tools) {
 
-            Tool tool = toolDataRepository.findToolByTool(t);
+            Tool tool = studyRepository.findToolByToolName(t);
 
             StudyTool studyTool = new StudyTool();
             studyTool.setStudy(study);
@@ -103,7 +96,7 @@ public class StudyService {
     }
 
     private void createRegion(Study study, String area) {
-        Region region = regionDataRepository.findRegionByArea(area);
+        Region region = studyRepository.findRegionByArea(area);
         study.setRegion(region);
     }
 
