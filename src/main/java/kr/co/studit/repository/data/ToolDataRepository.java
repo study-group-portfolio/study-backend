@@ -1,7 +1,5 @@
-package kr.co.studit.respository.data;
+package kr.co.studit.repository.data;
 
-import kr.co.studit.entity.Member;
-import kr.co.studit.entity.Region;
 import kr.co.studit.entity.Tool;
 import org.springframework.data.jpa.repository.JpaRepository;
 

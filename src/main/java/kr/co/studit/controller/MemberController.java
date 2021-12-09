@@ -1,9 +1,7 @@
 package kr.co.studit.controller;
 
 import kr.co.studit.dto.MemberDto;
-import kr.co.studit.dto.ResponseDto;
 import kr.co.studit.entity.Member;
-import kr.co.studit.repository.MemberRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.validator.SignupValidator;
 import lombok.RequiredArgsConstructor;

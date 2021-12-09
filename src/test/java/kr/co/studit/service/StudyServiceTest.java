@@ -5,8 +5,8 @@ import kr.co.studit.dto.StudyDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
-import kr.co.studit.respository.StudyRepository;
-import kr.co.studit.respository.data.*;
+import kr.co.studit.repository.StudyRepository;
+import kr.co.studit.repository.data.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootTest
 @Transactional(readOnly = true)
