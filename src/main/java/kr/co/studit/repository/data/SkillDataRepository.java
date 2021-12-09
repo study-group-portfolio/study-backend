@@ -1,6 +1,5 @@
-package kr.co.studit.respository.data;
+package kr.co.studit.repository.data;
 
-import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Skill;
 import org.springframework.data.jpa.repository.JpaRepository;
 

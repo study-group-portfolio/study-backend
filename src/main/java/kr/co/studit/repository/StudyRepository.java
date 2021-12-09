@@ -1,5 +1,6 @@
-package kr.co.studit.respository;
+package kr.co.studit.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.entity.Study;
 import kr.co.studit.entity.StudyTool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,14 @@ import javax.persistence.EntityManager;
 
 @Repository
 public class StudyRepository {
-    @Autowired
-    EntityManager em;
+    private final EntityManager em;
+    private final JPAQueryFactory queryFactory;
 
+
+    public StudyRepository(EntityManager em, JPAQueryFactory queryFactory) {
+        this.em = em;
+        this.queryFactory = queryFactory;
+    }
 
     public void createStudy(Study study) {
         em.persist(study);
