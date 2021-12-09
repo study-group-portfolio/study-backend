@@ -19,6 +19,8 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MemberController {
 
+
+
     private final SignupValidator signupValidator;
     private final MemberService memberService;
 

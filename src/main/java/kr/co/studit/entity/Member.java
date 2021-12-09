@@ -11,6 +11,14 @@ import java.util.List;
 @Entity
 @Setter
 @Getter
+
+@Table(
+        uniqueConstraints={
+                @UniqueConstraint(
+                        columnNames={"email"}
+                )
+        }
+)
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class Member {
     @Id
@@ -19,10 +27,19 @@ public class Member {
     private Long id;
     private String email;
     private String pwd;
+
     // 읽기 전용
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Study> studys = new ArrayList<>();
+
+
+    public static Member createMember(String email) {
+        Member member = new Member();
+        member.setEmail(email);
+        return member;
+    }
+
 
 
 }
