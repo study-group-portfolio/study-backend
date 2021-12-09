@@ -17,7 +17,7 @@ public class Skill {
     private Long id;
 
 
-    private String skill;
+    private String skillName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position_id")
@@ -25,7 +25,7 @@ public class Skill {
 
     public static Skill createSkill(String skillName) {
         Skill skill = new Skill();
-        skill.setSkill(skillName);
+        skill.setSkillName(skillName);
         return skill;
     }
 

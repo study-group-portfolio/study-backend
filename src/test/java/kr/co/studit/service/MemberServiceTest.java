@@ -2,6 +2,7 @@ package kr.co.studit.service;
 
 import kr.co.studit.dto.MemberDto;
 import kr.co.studit.entity.Member;
+import kr.co.studit.repository.data.MemberDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ class MemberServiceTest {
     @Autowired
     MemberService memberService;
     @Autowired
-    MemberRepository memberRepository;
+    MemberDataRepository memberDataRepository;
 
     @BeforeEach
     void beforeEach() {
@@ -35,7 +36,7 @@ class MemberServiceTest {
         memberDto.setEmail("1234567");
         //when
         memberService.createMember(memberDto);
-        Member newMember = memberRepository.findByEmail(memberDto.getEmail());
+        Member newMember = memberDataRepository.findMemberByEmail(memberDto.getEmail());
         //then
         assertThat(newMember.getEmail()).isEqualTo(memberDto.getEmail());
         assertThat(newMember.getPwd()).isNotEqualTo(memberDto.getPwd());
