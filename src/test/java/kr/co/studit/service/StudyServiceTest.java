@@ -39,7 +39,7 @@ class StudyServiceTest {
 
     public void 스터디생성() throws Exception {
         //given
-        String user = "test";
+        String user = "test@test.com";
         Member findMember = memberDataRepository.findMemberByEmail(user);
         Assertions.assertThat(findMember.getEmail()).isEqualTo(user);
         StudyDto studyDto = createStudyDto(user);

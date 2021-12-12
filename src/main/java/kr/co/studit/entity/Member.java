@@ -30,7 +30,7 @@ public class Member {
     // 읽기 전용
     @JsonIgnore
     @OneToMany(mappedBy = "member")
-    private List<Study> studys = new ArrayList<>();
+    private final List<Study> studys = new ArrayList<>();
 
 
     public static Member createMember(String email) {

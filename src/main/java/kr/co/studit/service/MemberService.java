@@ -54,7 +54,7 @@ public class MemberService {
             return ResponseEntity.ok().body(responseMemberDto);
         } else {
             ResponseDto responseDto = ResponseDto.builder()
-                    .error("Login failed.")
+                    .status("Login failed.")
                     .build();
             return ResponseEntity
                     .badRequest()
