@@ -2,6 +2,7 @@ package kr.co.studit.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.Errors;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -33,7 +34,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .version("1.01")
                 .build();
 
-        return new Docket(DocumentationType.SWAGGER_2)        // Swagger 2.0 기반의 문서 작성
+        return new Docket(DocumentationType.SWAGGER_2)
+                .ignoredParameterTypes(Errors.class)// Swagger 2.0 기반의 문서 작성
                 .apiInfo(apiInfo)                             // 문서에 대한 정보를 설정한다.
                 .select()                                    // ApiSelectorBuilder를 반환하며 상세한 설정 처리
                 .apis(RequestHandlerSelectors.basePackage("kr.co.studit.controller"))// 대상으로하는 api 설정

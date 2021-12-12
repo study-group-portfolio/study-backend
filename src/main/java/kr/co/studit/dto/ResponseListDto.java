@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberDto {
-    private String token;
-    private String email;
+public class ResponseListDto<T> {
+    private String status;
+    private List<T> data;
 }
