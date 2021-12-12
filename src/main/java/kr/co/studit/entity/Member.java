@@ -26,8 +26,7 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
     private String email;
-    private String pwd;
-
+    private String password;
     // 읽기 전용
     @JsonIgnore
     @OneToMany(mappedBy = "member")
