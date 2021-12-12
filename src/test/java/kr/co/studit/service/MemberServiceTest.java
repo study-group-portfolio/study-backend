@@ -25,6 +25,7 @@ class MemberServiceTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+
     @BeforeEach
     void beforeEach() {
         SignupDto signupDto = new SignupDto();
@@ -57,7 +58,6 @@ class MemberServiceTest {
         signinDto.setEmail("jinu@gmail.com");
         signinDto.setPassword("1234567");
         //when
-
 
         Member findMember = memberService.signin(signinDto);
         //then

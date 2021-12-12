@@ -1,7 +1,11 @@
 package kr.co.studit;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import javax.persistence.EntityManager;
 
 @SpringBootApplication
 public class StuditApplication {
@@ -10,4 +14,8 @@ public class StuditApplication {
 		SpringApplication.run(StuditApplication.class, args);
 	}
 
+	@Bean
+	JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
+		return new JPAQueryFactory(entityManager);
+	}
 }

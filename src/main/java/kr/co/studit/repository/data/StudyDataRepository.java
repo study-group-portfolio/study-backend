@@ -1,11 +1,14 @@
 package kr.co.studit.repository.data;
 
 import kr.co.studit.entity.Member;
+import kr.co.studit.entity.Study;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.util.List;
+
 @EnableJpaRepositories
-public interface MemberDataRepository extends JpaRepository<Member, Long> {
-    public Member findMemberByEmail(String email);
-    public Boolean existsByEmail(String email);
+public interface StudyDataRepository extends JpaRepository<Study, Long> {
+    public List<Study> findStudyByMember(Member member);
+
 }
