@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResponseDto<T> {
+public class ResponseListDto<T> {
     private String status;
-    private T data;
+    private List<T> data;
 }

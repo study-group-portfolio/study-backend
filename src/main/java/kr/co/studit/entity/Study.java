@@ -45,7 +45,7 @@ public class Study {
     @ManyToOne(fetch = FetchType.LAZY)
     private Region region;
 
-    @OneToMany(mappedBy = "study")
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<StudyTool> studytool = new ArrayList<>();
 
     @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)

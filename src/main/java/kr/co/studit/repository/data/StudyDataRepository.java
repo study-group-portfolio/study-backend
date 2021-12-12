@@ -11,5 +11,4 @@ import java.util.List;
 public interface StudyDataRepository extends JpaRepository<Study, Long> {
     public List<Study> findStudyByMember(Member member);
 
-
 }

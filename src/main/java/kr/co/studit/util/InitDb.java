@@ -28,7 +28,7 @@ public class InitDb {
         private final EntityManager em;
 
         public void dbInit1() {
-            Member member = Member.createMember("test");
+            Member member = Member.createMember("test@test.com");
             em.persist(member);
 
 
@@ -48,12 +48,16 @@ public class InitDb {
             Skill skillBack2 = Skill.createSkill("장고");
             skillBack2.setPosition(position1);
 
+            Skill skillBack3 = Skill.createSkill("노드");
+            skillBack3.setPosition(position1);
+
             em.persist(skillBack1);
             em.persist(skillBack2);
-
+            em.persist(skillBack3);
 
             position1.getSkills().add(skillBack1);
             position1.getSkills().add(skillBack2);
+            position1.getSkills().add(skillBack3);
 
 
             Position position2 = Position.createPostion("프론트");
@@ -65,15 +69,21 @@ public class InitDb {
             Skill skillFront2 = Skill.createSkill("뷰");
             skillFront2.setPosition(position2);
 
+            Skill skillFront3 = Skill.createSkill("앵귤러");
+            skillFront3.setPosition(position2);
+
             em.persist(skillFront1);
             em.persist(skillFront2);
+            em.persist(skillFront3);
 
             Tool tool1 = Tool.createTool("Git");
             Tool tool2 = Tool.createTool("Jira");
+
             em.persist(tool1);
             em.persist(tool2);
 
             Study study = Study.createStudy(member,zone1);
+            study.setTitle("타이틀이요");
             em.persist(study);
 
 

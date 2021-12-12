@@ -7,14 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
-public class StudyDto extends StudyForm{
+public class StudyUpdateDto extends StudyForm{
 
-
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty
     private Long id;
 
 
