@@ -20,6 +20,7 @@ public class StudyTool {
     Study study;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="tool_id")
     Tool tool;
 
     public static StudyTool createStudyTool(Study study, Tool tool) {
@@ -27,6 +28,11 @@ public class StudyTool {
         studyTool.setStudy(study);
         studyTool.setTool(tool);
         return studyTool;
+    }
+
+    public void setTool(Tool tool) {
+        this.tool = tool;
+        tool.getStudyTool().add(this);
     }
 
     public void setStudy(Study study) {

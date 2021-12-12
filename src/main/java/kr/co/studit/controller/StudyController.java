@@ -1,14 +1,16 @@
 package kr.co.studit.controller;
 
 
-import kr.co.studit.dto.StudyDto;
-import kr.co.studit.entity.Study;
+import kr.co.studit.dto.*;
+import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.service.StudyService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/study")
@@ -19,22 +21,34 @@ public class StudyController {
     @Autowired
     ModelMapper modelMapper;
 
-    @GetMapping("")
-    public String index() {
+    @GetMapping("/")
+    public ResponseEntity<ResponseListDto<StudyDto>> studyList() {
 
-        return "study";
+        List<StudyDto> studies = studyService.findStudies();
+        ResponseListDto<StudyDto> response = new ResponseListDto<>();
+        response.setStatus("success");
+        response.setData(studies);
+
+        return new ResponseEntity<ResponseListDto<StudyDto>>(response, HttpStatus.OK);
     }
 
-    @PostMapping("create")
-    public ResponseEntity<StudyDto> AjaxCreate(@RequestBody StudyDto studyDto){
+    @PostMapping()
+    public ResponseEntity<ResponseDto> AjaxCreate(@RequestBody StudyDto studyDto){
 
-        StudyDto createStudy = studyService.createStudy(studyDto);
+        ResponseDto<StudyDto> response = new ResponseDto<>();
 
-        if(createStudy==null){
-            return new ResponseEntity<StudyDto>(createStudy, HttpStatus.NOT_ACCEPTABLE);
+        try {
+            StudyDto createStudy = studyService.createStudy(studyDto);
+            response.setData(createStudy);
+            response.setStatus("success");
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            response.setStatus("false");
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<StudyDto>(studyDto, HttpStatus.CREATED);
+
     }
     @PostMapping("formCreate")
     public ResponseEntity<StudyDto> formCreate(StudyDto studyDto){
@@ -46,5 +60,65 @@ public class StudyController {
         }
 
         return new ResponseEntity<StudyDto>(studyDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDto> findStudy(@PathVariable Long id) {
+        ResponseDto<StudyDto> response = new ResponseDto<StudyDto>();
+        try {
+            StudyDto studyDto = studyService.findStudy(id);
+
+            response.setStatus("success");
+            response.setData(studyDto);
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.setStatus("false");
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        }
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseDto> editStudy(@PathVariable Long id,@RequestBody StudyUpdateDto studyUpdateDto) {
+        ResponseDto<String> response = new ResponseDto<String>();
+        try {
+            studyService.updateStudy(id, studyUpdateDto);
+            response.setStatus("success");
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.setStatus("false");
+            response.setData(e.getMessage());
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.BAD_REQUEST);
+        }
+
+
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDto> deleteStudy(@PathVariable Long id) {
+        ResponseDto<String> response = new ResponseDto<String>();
+        try {
+            studyService.deleteStudy(id);
+            response.setStatus("success");
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.setStatus("false");
+            response.setData(e.getMessage());
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/search")
+    public ResponseEntity<ResponseListDto> searchStudy(@RequestBody StudySearchDto searchDto) {
+
+        ResponseListDto<StudyDto> response = new ResponseListDto<StudyDto>();
+        try {
+            List<StudyDto> studyDtoList = studyService.searchStudy(searchDto);
+            response.setStatus("success");
+            response.setData(studyDtoList);
+            return new ResponseEntity<ResponseListDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+//            response.setStatus("false");
+            response.setStatus(e.getMessage());
+            return new ResponseEntity<ResponseListDto>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 }

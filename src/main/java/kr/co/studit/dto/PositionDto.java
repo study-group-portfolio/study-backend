@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class PositionDto {
     String position;
     Integer count;
+    Integer totalCount;
     ArrayList<String> skills = new ArrayList<>();
 
 }
