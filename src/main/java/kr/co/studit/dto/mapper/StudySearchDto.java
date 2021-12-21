@@ -21,7 +21,7 @@ public class StudySearchDto {
     private String region;
 
     @ApiModelProperty(example = "[\"백엔드\"]")
-    private ArrayList<String> postions = new ArrayList<>();
+    private ArrayList<String> positions = new ArrayList<>();
 
     @ApiModelProperty(example = "[\"스프링\"]")
     private ArrayList<String> skills = new ArrayList<>();

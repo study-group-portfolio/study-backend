@@ -107,13 +107,42 @@ public class StudyController {
         }
     }
     @PostMapping("/search")
-    public ResponseEntity<ResponseListDto> searchStudy(@RequestBody StudySearchDto searchDto) {
+    public ResponseEntity<ResponseListDto> studySearch(@RequestBody StudySearchDto searchDto) {
 
         ResponseListDto<StudyDto> response = new ResponseListDto<StudyDto>();
         try {
             List<StudyDto> studyDtoList = studyService.searchStudy(searchDto);
             response.setStatus("success");
             response.setData(studyDtoList);
+            return new ResponseEntity<ResponseListDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+//            response.setStatus("false");
+            response.setStatus(e.getMessage());
+            return new ResponseEntity<ResponseListDto>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/position")
+    public ResponseEntity<ResponseDto> positionApply(@RequestBody PositionApplyDto positionApplyDto) {
+        ResponseDto<StudyDto> response = new ResponseDto<StudyDto>();
+        try {
+            studyService.positionApply(positionApplyDto);
+            response.setStatus("success");
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+//            response.setStatus("false");
+            response.setStatus(e.getMessage());
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/alarm")
+    public ResponseEntity<ResponseListDto> studyApplication(@RequestBody String email) {
+        ResponseListDto<StudyAlarmDto> response = new ResponseListDto<StudyAlarmDto>();
+        try {
+            List<StudyAlarmDto> studyAlarmDtoList = studyService.studyAlarm(email);
+            response.setStatus("success");
+            response.setData(studyAlarmDtoList);
             return new ResponseEntity<ResponseListDto>(response, HttpStatus.OK);
         } catch (Exception e) {
 //            response.setStatus("false");

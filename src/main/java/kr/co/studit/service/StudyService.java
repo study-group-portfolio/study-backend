@@ -198,6 +198,7 @@ public class StudyService {
 
     }
 
+    @Transactional
     public void updateStudy(Long id, StudyUpdateDto studyUpdateDto) throws Exception {
         Optional<Study> optionalStudy = studyDataRepository.findById(id);
         if(optionalStudy.isEmpty()){
@@ -218,14 +219,31 @@ public class StudyService {
         List<StudyDto> studyDtoList = new ArrayList<>();
         HashMap<String, String> filterMap = new HashMap<>();
 
-//        List<Study> studyList = studyRepository.findStudyByFilter(searchDto);
-//        for (Study study : studyList) {
-//            StudyDto studyDto = studyDtoMapper(study);
-//            studyDtoList.add(studyDto);
-//        }
-        List<StudyMapperDto> studyMapperDtos = sqlSession.getMapper(StudyMapper.class).studyFilterSearch(searchDto);
+        List<Study> studyList = studyRepository.findStudyByFilter(searchDto);
+//        String skillName = studyList.get(0).getStudySkill().get(0).getSkill().getSkillName();
+
+
+        for (Study study : studyList) {
+            StudyDto studyDto = studyDtoMapper(study);
+            studyDtoList.add(studyDto);
+        }
+//        List<StudyMapperDto> studyMapperDtos = sqlSession.getMapper(StudyMapper.class).studyFilterSearch(searchDto);
 
         return studyDtoList;
     }
 
+    public void positionApply(PositionApplyDto positionApplyDto) {
+
+    }
+
+    public List<StudyAlarmDto> studyAlarm(String email) {
+
+        List<StudyApplication> studyApplicationList = studyRepository.findStudyApplication(email);
+        List<StudyAlarmDto> studyAlarmDtoList = alarmSetData(studyApplicationList);
+        return studyAlarmDtoList;
+    }
+
+    private List<StudyAlarmDto> alarmSetData(List<StudyApplication> studyApplicationList) {
+        return null;
+    }
 }

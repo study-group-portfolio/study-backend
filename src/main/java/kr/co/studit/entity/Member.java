@@ -38,7 +38,4 @@ public class Member {
         member.setEmail(email);
         return member;
     }
-
-
-
 }

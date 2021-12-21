@@ -54,6 +54,7 @@ public class Study {
     @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)
     private List<StudySkill> studySkill = new ArrayList<>();
 
+
     // 예상 진행 기간
     private String duration;
 
@@ -65,11 +66,17 @@ public class Study {
     // 모집 종료 기간
     private String receptionEnd;
 
+
+
+    @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)
+    private List<StudyApplication> studyApplication = new ArrayList<>();
+
     // 연관관계 메소드
     public void setMember(Member member) {
         this.member = member;
         member.getStudys().add(this);
     }
+
 
     // 생성 메소드
     public static Study createStudy(Member member, Region region) {

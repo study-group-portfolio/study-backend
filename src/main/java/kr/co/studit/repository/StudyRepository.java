@@ -1,14 +1,19 @@
 package kr.co.studit.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.entity.*;
+import kr.co.studit.repository.data.MemberDataRepository;
+import kr.co.studit.repository.data.StudyDataRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static kr.co.studit.entity.QPosition.position;
@@ -21,15 +26,13 @@ import static kr.co.studit.entity.QStudyTool.studyTool;
 import static kr.co.studit.entity.QTool.tool;
 
 @Repository
+@RequiredArgsConstructor
 public class StudyRepository {
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
+    private final MemberDataRepository memberDataRepository;
 
 
-    public StudyRepository(EntityManager em, JPAQueryFactory queryFactory) {
-        this.em = em;
-        this.queryFactory = queryFactory;
-    }
 
     public List<Skill> findSkill(Study study, Position position) {
         return queryFactory
@@ -109,18 +112,39 @@ public class StudyRepository {
     }
 
     public List<Study> findStudyByFilter(StudySearchDto searchDto) {
-        JPAQuery<Study> query = queryFactory
-                .selectFrom(study)
+        List<Study> studyList = queryFactory
+                .selectFrom(study).distinct()
+                .leftJoin(study.studyPosition, studyPosition)
+                .leftJoin(studyPosition.position, position)
+                .leftJoin(study.studySkill, studySkill)
+                .leftJoin(studySkill.skill, skill)
                 .where(
                         study.type.eq(searchDto.getType())
                         , study.onOffStatus.eq(searchDto.getStatus())
                         , study.region.area.eq(searchDto.getRegion())
-                );
-//                .leftJoin(study.studySkill, studySkill);
+                                .and(positionEmpty(searchDto.getPositions()))
+                                .and(skillEmpty(searchDto.getSkills()))
 
-        for (String nowStudySkill : searchDto.getSkills()) {
-            query.where(studySkill.skill.skillName.eq(nowStudySkill)).leftJoin(study.studySkill, studySkill);
-        }
-        return query.fetch();
+                ).fetch();
+
+        return studyList;
     }
+
+    public List<StudyApplication> findStudyApplication(String email) {
+        Member memberByEmail = memberDataRepository.findMemberByEmail(email);
+        return null;
+    }
+
+    private BooleanExpression positionEmpty(ArrayList<String> positionNames) {
+        if (positionNames == null || positionNames.isEmpty()) return null;
+        return position.positionName.in(positionNames);
+    }
+    private BooleanExpression skillEmpty(ArrayList<String> skillNames) {
+        if (skillNames == null || skillNames.isEmpty()) return null;
+        return skill.skillName.in(skillNames);
+    }
+
+
+
+
 }
