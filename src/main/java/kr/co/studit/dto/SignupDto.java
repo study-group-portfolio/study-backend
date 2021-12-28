@@ -15,6 +15,9 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class SignupDto {
 
+    @NotBlank
+    @ApiModelProperty(example = "nickname123")
+    private String nickname;
     @Email
     @NotBlank
     @ApiModelProperty(example = "example@studit.com")

@@ -5,7 +5,6 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
-
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -20,3 +19,12 @@ mybatis:
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
+
+---
+
+spring:
+  config:
+    import: application-email.yml
+
+
+
