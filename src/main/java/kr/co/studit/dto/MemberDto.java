@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MemberDto {
     private String token;
+    private String nickname;
     private String email;
 }

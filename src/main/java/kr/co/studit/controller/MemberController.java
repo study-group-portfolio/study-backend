@@ -1,9 +1,11 @@
 package kr.co.studit.controller;
 
+import kr.co.studit.dto.ResponseDto;
 import kr.co.studit.dto.SigninDto;
 import kr.co.studit.dto.MemberDto;
 import kr.co.studit.dto.SignupDto;
 import kr.co.studit.entity.Member;
+import kr.co.studit.provider.TokenProvider;
 import kr.co.studit.repository.data.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.validator.SignupValidator;
@@ -21,10 +23,10 @@ import javax.validation.Valid;
 public class MemberController {
 
 
-
     private final SignupValidator signupValidator;
     private final MemberService memberService;
     private final MemberDataRepository memberDataRepository;
+    private final TokenProvider tokenProvider;
 
 
     @InitBinder("signupDto")
@@ -42,10 +44,11 @@ public class MemberController {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body("error");
         }
-        Member newMember = memberService.createMember(signupDto);
-        //TODO 회원 가입 완료시 응답 처리 , jwt 테스트,  프로필 등록
+        Member newMember = memberService.processCreateMember(signupDto);
         MemberDto responseMemberDto = MemberDto.builder()
-                .email(newMember.getEmail()).build();
+                .email(newMember.getEmail())
+                .nickname(newMember.getNickname())
+                .build();
 
         return ResponseEntity.ok(responseMemberDto);
 
@@ -65,5 +68,28 @@ public class MemberController {
         } else {
             return ResponseEntity.ok(true);
         }
+    }
+
+    @GetMapping("/checkEmailToken/{token}/{email}")
+    public ResponseEntity<?> checkEmailToken(@PathVariable String token, @PathVariable String email) {
+        Member member = memberDataRepository.findMemberByEmail(email);
+        if (member == null) {
+            return ResponseEntity.badRequest().body("유효하지 않은 이메일입니다.");
+        }
+
+        if (!member.isVaildToken(token)) {
+            return ResponseEntity.badRequest().body("유효하지 않은 토큰 입니다.");
+        }
+
+        memberService.compleateSignup(member);
+
+
+        return ResponseEntity.ok().body("이메일 인증이 완료 되었습니다.");
+    }
+
+    @GetMapping("/sendEmailVerifyToken/{email}")
+    public ResponseEntity<?> sendEmailVerifyToken(@PathVariable String email) {
+
+        return ResponseEntity.ok("인증 코드가 발송 되었습니다.");
     }
 }

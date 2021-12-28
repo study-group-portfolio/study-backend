@@ -28,6 +28,7 @@ public class TokenProvider {
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 //payload에 들어갈 내용
                 .setSubject(member.getEmail()) // sub
+                .setSubject(member.getNickname())
                 .setIssuer("studit app") // iss
                 .setIssuedAt(new Date()) // iat
                 .setExpiration(expiryDate) // exp
