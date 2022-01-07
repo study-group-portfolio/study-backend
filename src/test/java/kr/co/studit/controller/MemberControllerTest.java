@@ -1,9 +1,9 @@
 package kr.co.studit.controller;
 
 import com.google.gson.Gson;
-import kr.co.studit.dto.MemberDto;
 import kr.co.studit.dto.SigninDto;
 import kr.co.studit.dto.SignupDto;
+import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +35,9 @@ class MemberControllerTest {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private MemberDataRepository memberDataRepository;
 
     @BeforeEach
     void beforeEach() {

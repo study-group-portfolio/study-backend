@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 public class Tool {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tool_id")
     private Long id;
 

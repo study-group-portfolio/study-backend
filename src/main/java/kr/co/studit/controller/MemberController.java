@@ -1,16 +1,17 @@
 package kr.co.studit.controller;
 
-import kr.co.studit.dto.ResponseDto;
+import kr.co.studit.dto.ProfileForm;
 import kr.co.studit.dto.SigninDto;
 import kr.co.studit.dto.MemberDto;
 import kr.co.studit.dto.SignupDto;
-import kr.co.studit.entity.Member;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.provider.TokenProvider;
-import kr.co.studit.repository.data.MemberDataRepository;
+import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.validator.SignupValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -91,5 +92,22 @@ public class MemberController {
     public ResponseEntity<?> sendEmailVerifyToken(@PathVariable String email) {
 
         return ResponseEntity.ok("인증 코드가 발송 되었습니다.");
+    }
+
+    @PutMapping("/profile/update")
+    public ResponseEntity<?> editProfile(@AuthenticationPrincipal String nickname, @RequestBody ProfileForm profileForm) {
+        memberService.editProfile(profileForm, nickname);
+
+
+        return ResponseEntity.ok().body("업데이트");
+    }
+
+    @GetMapping("/profile/myProfile")
+    public ResponseEntity<?> getProfile(@AuthenticationPrincipal String nickname) {
+        // 접근 권한 설정 해야함 시큐리티 설정 할 것
+       ProfileForm profileDto = memberService.getProfile(nickname);
+
+
+        return ResponseEntity.ok().body("내 프로필 조회");
     }
 }

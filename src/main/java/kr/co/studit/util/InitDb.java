@@ -1,6 +1,7 @@
 package kr.co.studit.util;
 
 import kr.co.studit.entity.*;
+import kr.co.studit.entity.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,19 +27,26 @@ public class InitDb {
     @RequiredArgsConstructor
     static class InitService {
         private final EntityManager em;
-
-        public void dbInit1() {
+// 메소드 분리
+        private Member initMember() {
             Member member = Member.createMember("test@test.com");
             em.persist(member);
+            return member;
+        }
 
-
-
+        private Region initRegion() {
             Region zone1 = Region.createRegion("서울");
             Region zone2 = Region.createRegion("부산");
+            Region zone3 = Region.createRegion("대전");
+            Region zone4 = Region.createRegion("대구");
             em.persist(zone1);
             em.persist(zone2);
+            em.persist(zone3);
+            em.persist(zone4);
+            return zone1;
+        }
 
-
+        private void initPositionAndSkill() {
             Position position1 = Position.createPostion("백엔드");
             em.persist(position1);
 
@@ -75,26 +83,32 @@ public class InitDb {
             em.persist(skillFront1);
             em.persist(skillFront2);
             em.persist(skillFront3);
+        }
 
+        private void initToll() {
             Tool tool1 = Tool.createTool("Git");
             Tool tool2 = Tool.createTool("Jira");
 
             em.persist(tool1);
             em.persist(tool2);
+        }
 
-            Study study = Study.createStudy(member,zone1);
+        private void initStudy(Member member, Region zone) {
+            Study study = Study.createStudy(member,zone);
             study.setTitle("타이틀이요");
             em.persist(study);
+        }
 
-
-
+        public void dbInit1() {
+            Member member = initMember();
+            Region zone = initRegion();
+            initPositionAndSkill();
+            initToll();
+            initStudy(member, zone);
 
             em.flush();
 //            em.clear();
 //            List<Study> list = member.getStudys();
-
-
-
 
         }
 
