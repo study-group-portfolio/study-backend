@@ -1,6 +1,7 @@
 package kr.co.studit.util;
 
 import kr.co.studit.entity.*;
+import kr.co.studit.entity.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

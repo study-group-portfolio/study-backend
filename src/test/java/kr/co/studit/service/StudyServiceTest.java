@@ -5,6 +5,7 @@ import kr.co.studit.dto.StudyDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.repository.StudyRepository;
 import kr.co.studit.repository.data.*;
 import org.assertj.core.api.Assertions;

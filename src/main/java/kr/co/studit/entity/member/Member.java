@@ -1,6 +1,7 @@
-package kr.co.studit.entity;
+package kr.co.studit.entity.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import kr.co.studit.entity.Study;
 import lombok.*;
 
 import javax.persistence.*;

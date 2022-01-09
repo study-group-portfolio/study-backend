@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.entity.*;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.repository.data.MemberDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

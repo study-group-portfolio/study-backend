@@ -1,5 +1,6 @@
 package kr.co.studit.entity;
 
+import kr.co.studit.entity.member.Member;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +29,7 @@ public class StudyApplication {
 
     String message;
 
-    public static StudyApplication createStudyApplication(Study study, Member member, Position position,String message) {
+    public static StudyApplication createStudyApplication(Study study, Member member, Position position, String message) {
 
         StudyApplication studyApplication = new StudyApplication();
         studyApplication.setStudy(study);

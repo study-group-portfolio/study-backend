@@ -3,7 +3,7 @@ package kr.co.studit.controller;
 import kr.co.studit.dto.SigninDto;
 import kr.co.studit.dto.MemberDto;
 import kr.co.studit.dto.SignupDto;
-import kr.co.studit.entity.Member;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.repository.data.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.validator.SignupValidator;

@@ -4,7 +4,7 @@ import kr.co.studit.dto.MemberDto;
 import kr.co.studit.dto.ResponseDto;
 import kr.co.studit.dto.SigninDto;
 import kr.co.studit.dto.SignupDto;
-import kr.co.studit.entity.Member;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.provider.TokenProvider;
 import kr.co.studit.repository.data.MemberDataRepository;
 import lombok.RequiredArgsConstructor;

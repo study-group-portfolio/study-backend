@@ -3,6 +3,7 @@ package kr.co.studit.entity;
 
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
+import kr.co.studit.entity.member.Member;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;

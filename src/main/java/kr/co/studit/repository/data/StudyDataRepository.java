@@ -1,6 +1,6 @@
 package kr.co.studit.repository.data;
 
-import kr.co.studit.entity.Member;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.Study;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;

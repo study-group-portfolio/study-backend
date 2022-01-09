@@ -4,6 +4,7 @@ import kr.co.studit.dto.*;
 import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.repository.StudyRepository;
 import kr.co.studit.repository.data.*;
 import org.apache.ibatis.session.SqlSession;

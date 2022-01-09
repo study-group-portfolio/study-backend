@@ -1,5 +1,6 @@
 package kr.co.studit.entity;
 
+import kr.co.studit.entity.member.Member;
 import lombok.Data;
 
 import javax.persistence.*;

@@ -2,7 +2,7 @@ package kr.co.studit.service;
 
 import kr.co.studit.dto.SigninDto;
 import kr.co.studit.dto.SignupDto;
-import kr.co.studit.entity.Member;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.repository.data.MemberDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

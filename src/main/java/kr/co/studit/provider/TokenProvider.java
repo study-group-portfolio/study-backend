@@ -3,7 +3,7 @@ package kr.co.studit.provider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import kr.co.studit.entity.Member;
+import kr.co.studit.entity.member.Member;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
