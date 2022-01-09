@@ -1,6 +1,7 @@
 package kr.co.studit.service;
 
 import kr.co.studit.dto.*;
+import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Region;
@@ -91,7 +92,7 @@ public class MemberService {
             return ResponseEntity.ok().body(responseMemberDto);
         } else {
             ResponseDto responseDto = ResponseDto.builder()
-                    .status("Login failed.")
+                    .status(Status.FALSE)
                     .build();
             return ResponseEntity
                     .badRequest()
