@@ -28,8 +28,11 @@ public class InitDb {
         private final EntityManager em;
 
         public void dbInit1() {
-            Member member = Member.createMember("test@test.com");
-            em.persist(member);
+            Member member1 = Member.createMember("test@test.com");
+            member1.setEmail("test@test.com");
+            Member member2 = Member.createMember("test2@test.com");
+            em.persist(member1);
+            em.persist(member2);
 
 
 
@@ -82,7 +85,7 @@ public class InitDb {
             em.persist(tool1);
             em.persist(tool2);
 
-            Study study = Study.createStudy(member,zone1);
+            Study study = Study.createStudy(member1,zone1);
             study.setTitle("타이틀이요");
             em.persist(study);
 

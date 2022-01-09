@@ -1,12 +1,10 @@
 package kr.co.studit.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.repository.data.MemberDataRepository;
-import kr.co.studit.repository.data.StudyDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +14,12 @@ import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kr.co.studit.entity.QMember.member;
 import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QRegion.region;
 import static kr.co.studit.entity.QSkill.skill;
 import static kr.co.studit.entity.QStudy.study;
+import static kr.co.studit.entity.QStudyApplication.studyApplication;
 import static kr.co.studit.entity.QStudyPosition.studyPosition;
 import static kr.co.studit.entity.QStudySkill.studySkill;
 import static kr.co.studit.entity.QStudyTool.studyTool;
@@ -44,13 +44,8 @@ public class StudyRepository {
                 .fetch();
     }
 
-    public void createStudy(Study study) {
-        em.persist(study);
-    }
-
     public void createStudyTool(StudyTool studyTool) {
         em.persist(studyTool);
-
     }
 
     public Tool findToolByToolName(String toolName) {
@@ -130,9 +125,15 @@ public class StudyRepository {
         return studyList;
     }
 
-    public List<StudyApplication> findStudyApplication(String email) {
-        Member memberByEmail = memberDataRepository.findMemberByEmail(email);
-        return null;
+    public List<StudyApplication> findStudyApplicationByEmail(String email) {
+        Member findMember = memberDataRepository.findMemberByEmail(email);
+        List<StudyApplication> result = queryFactory
+                .selectFrom(studyApplication)
+                .leftJoin(studyApplication.study.member, member)
+                .where(studyApplication.study.member.eq(findMember))
+                .fetch();
+        return result;
+
     }
 
     private BooleanExpression positionEmpty(ArrayList<String> positionNames) {
@@ -144,7 +145,43 @@ public class StudyRepository {
         return skill.skillName.in(skillNames);
     }
 
+    public void flush() {
+        em.flush();
+    }
 
+    public StudyPosition findStudyPositionByName(Long studyId, String position) {
+        return queryFactory
+                .selectFrom(studyPosition)
+                .where(studyPosition.study.id.eq(studyId), studyPosition.position.positionName.eq(position))
+                .fetchOne();
+    }
+
+    public List<Study> findCreatedStudyByEmail(String email) {
+        return queryFactory
+                .selectFrom(study)
+                .where(study.member.email.eq(email))
+                .fetch();
+    }
+
+    public List<Study> findParticipatedStudyByEmail(String email) {
+        return null;
+    }
+
+    public void deleteStudyApplicationById(Long id) {
+        queryFactory
+                .delete(studyApplication)
+                .where(studyApplication.id.eq(id));
+
+    }
+    public StudyApplication findStudyApplicationById(Long id) {
+
+        return queryFactory
+                .selectFrom(studyApplication)
+                .where(studyApplication.id.eq(id))
+                .fetchOne();
+    }
+
+//    public StudyApplication saveStudyApplication()
 
 
 }

@@ -48,7 +48,6 @@ public class MemberController {
                 .email(newMember.getEmail()).build();
 
         return ResponseEntity.ok(responseMemberDto);
-
     }
 
     @PostMapping("/signin")

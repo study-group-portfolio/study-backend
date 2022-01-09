@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 @Setter
 @Getter
-
 @Table(
         uniqueConstraints={
                 @UniqueConstraint(

@@ -18,13 +18,28 @@ public class StudyApplication {
     @JoinColumn(name = "study_id")
     Study study;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position_id")
     Position position;
 
     String message;
+
+    public static StudyApplication createStudyApplication(Study study, Member member, Position position,String message) {
+
+        StudyApplication studyApplication = new StudyApplication();
+        studyApplication.setStudy(study);
+        studyApplication.setMember(member);
+        studyApplication.setPosition(position);
+        studyApplication.setMessage(message);
+        return studyApplication;
+    }
+
+    public void setStudy(Study study) {
+        this.study = study;
+        study.getStudyApplication().add(this);
+    }
 }
