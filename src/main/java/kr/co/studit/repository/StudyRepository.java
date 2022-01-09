@@ -5,7 +5,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.member.Member;
-import kr.co.studit.repository.data.MemberDataRepository;
+import kr.co.studit.entity.member.QMember;
+import kr.co.studit.repository.member.MemberDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,6 @@ import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kr.co.studit.entity.QMember.member;
 import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QRegion.region;
 import static kr.co.studit.entity.QSkill.skill;
@@ -25,6 +25,7 @@ import static kr.co.studit.entity.QStudyPosition.studyPosition;
 import static kr.co.studit.entity.QStudySkill.studySkill;
 import static kr.co.studit.entity.QStudyTool.studyTool;
 import static kr.co.studit.entity.QTool.tool;
+import static kr.co.studit.entity.member.QMember.member;
 
 @Repository
 @RequiredArgsConstructor

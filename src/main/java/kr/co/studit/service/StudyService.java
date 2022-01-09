@@ -1,17 +1,18 @@
 package kr.co.studit.service;
 
 import kr.co.studit.dto.*;
-import kr.co.studit.dto.mapper.StudyMapperDto;
+import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.member.Member;
-import kr.co.studit.mapper.StudyMapper;
 import kr.co.studit.repository.StudyRepository;
 import kr.co.studit.repository.data.*;
 import kr.co.studit.repository.member.MemberDataRepository;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +21,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StudyService {
 
     @Autowired
@@ -36,14 +39,14 @@ public class StudyService {
 
 
 
-    @Transactional
+
     public StudyDto createStudy(StudyDto studyDto) {
 
         Study study = studyMapper(studyDto);
         Study saveStudy = studyDataRepository.save(study);
-        StudyDto saveStudyDto = studyDtoMapper(study);
+        StudyDto saveStudyDto = studyDtoMapper(saveStudy);
 
-        return studyDto;
+        return saveStudyDto;
     }
 
     private void createPositionSkill(Study study, ArrayList<PositionDto> positions) {
@@ -188,7 +191,6 @@ public class StudyService {
         Optional<Study> optionalStudy = studyDataRepository.findById(id);
         if(optionalStudy.isEmpty()){
             throw new Exception();
-
         }
         Study study = optionalStudy.get();
         StudyDto studyDto = studyDtoMapper(study);
@@ -200,6 +202,7 @@ public class StudyService {
 
     }
 
+    @Transactional
     public void updateStudy(Long id, StudyUpdateDto studyUpdateDto) throws Exception {
         Optional<Study> optionalStudy = studyDataRepository.findById(id);
         if(optionalStudy.isEmpty()){
@@ -212,22 +215,142 @@ public class StudyService {
 
     }
 
-    public void modifyStudy(Study study, StudyUpdateDto studyUpdateDto) {
-
-    }
 
     public List<StudyDto> searchStudy(StudySearchDto searchDto) throws SQLException {
         List<StudyDto> studyDtoList = new ArrayList<>();
         HashMap<String, String> filterMap = new HashMap<>();
 
-//        List<Study> studyList = studyRepository.findStudyByFilter(searchDto);
-//        for (Study study : studyList) {
-//            StudyDto studyDto = studyDtoMapper(study);
-//            studyDtoList.add(studyDto);
-//        }
-        List<StudyMapperDto> studyMapperDtos = sqlSession.getMapper(StudyMapper.class).studyFilterSearch(searchDto);
+        List<Study> studyList = studyRepository.findStudyByFilter(searchDto);
+//        String skillName = studyList.get(0).getStudySkill().get(0).getSkill().getSkillName();
+
+
+        for (Study study : studyList) {
+            StudyDto studyDto = studyDtoMapper(study);
+            studyDtoList.add(studyDto);
+        }
+//        List<StudyMapperDto> studyMapperDtos = sqlSession.getMapper(StudyMapper.class).studyFilterSearch(searchDto);
 
         return studyDtoList;
     }
+
+
+    public StudyApplication positionApply(PositionApplyDto positionApplyDto) {
+
+        StudyPosition studyPosition = studyRepository.findStudyPositionByName(positionApplyDto.getStudyId(), positionApplyDto.getPosition());
+        if (studyPosition.getTotalCount() <= studyPosition.getCount()) {
+            throw new IllegalArgumentException();
+        }
+//        studyPosition.setCount(studyPosition.getCount()+1);
+
+        Study study = studyDataRepository.findById(positionApplyDto.getStudyId()).get();
+        Member member = memberDataRepository.findMemberByEmail(positionApplyDto.getEmail());
+        Position position = studyRepository.findPositionByPositionName(positionApplyDto.getPosition());
+
+        StudyApplication studyApplication = StudyApplication.createStudyApplication(study, member, position, positionApplyDto.getMessage());
+        if (study==null || member ==null || position ==null || studyApplication == null) {
+            throw new IllegalArgumentException();
+        }
+
+
+
+//        studyRepository.flush();
+        return studyApplication;
+
+    }
+
+    public List<AlarmDto> studyAlarm(String email) {
+
+        List<StudyApplication> studyApplicationList = studyRepository.findStudyApplicationByEmail(email);
+        List<AlarmDto> studyAlarmDtoList = alarmSetData(studyApplicationList);
+//        System.out.println("email = " + studyApplicationList.get(0).getMember().getEmail());
+        return studyAlarmDtoList;
+    }
+
+    private List<AlarmDto> alarmSetData(List<StudyApplication> studyApplicationList) {
+
+        List<AlarmDto> result = studyApplicationList.stream().map(sa -> {
+            AlarmDto alarmDto = new AlarmDto();
+            alarmDto.setId(sa.getStudy().getId());
+            alarmDto.setEmail(sa.getStudy().getMember().getEmail());
+            alarmDto.setEmail(sa.getMember().getEmail());
+            alarmDto.setTitle(sa.getStudy().getTitle());
+            alarmDto.setPosition(sa.getPosition().getPositionName());
+            alarmDto.setMessage(sa.getMessage());
+            return alarmDto;
+        }).collect(Collectors.toList());
+        return result;
+    }
+
+    public ResponseEntity<?> findCreatedStudy(String email) {
+        try {
+            List<Study> studyByEmail = studyRepository.findCreatedStudyByEmail(email);
+            List<StudyDto> studyDtoList = studyByEmail
+                    .stream()
+                    .map(this::studyDtoMapper)
+                    .collect(Collectors.toList());
+
+            ResponseListDto<StudyDto> response = new ResponseListDto<>();
+            response.setStatus(Status.SUCCESS);
+            response.setData(studyDtoList);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return getErrorResponseEntity(e);
+        }
+
+    }
+
+
+    public ResponseEntity<?> findParticipatedStudy(String email) {
+        try {
+            List<Study> studyByEmail = studyRepository.findParticipatedStudyByEmail(email);
+            List<StudyDto> studyDtoList = studyByEmail
+                    .stream()
+                    .map(this::studyDtoMapper)
+                    .collect(Collectors.toList());
+
+            ResponseListDto<StudyDto> response = new ResponseListDto<>();
+            response.setStatus(Status.SUCCESS);
+            response.setData(studyDtoList);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return getErrorResponseEntity(e);
+        }
+    }
+
+    public ResponseEntity<?> joinStudy(StudyAllowDto studyAllowDto) {
+        try {
+            ResponseDto<String> response = new ResponseDto<>();
+            if(!studyAllowDto.isAllow()){
+                studyRepository.deleteStudyApplicationById(studyAllowDto.getId());
+                response.setStatus(Status.SUCCESS);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            StudyApplication studyApplication = studyRepository.findStudyApplicationById(studyAllowDto.getId());
+
+            Study study = studyDataRepository.findById(studyAllowDto.getStudyId()).get();
+            List<StudyPosition> studyPosition = study.getStudyPosition();
+
+            studyPosition.stream()
+                    .filter(sp -> sp.getPosition().getPositionName().equals(studyApplication.getPosition()) && sp.getCount()<sp.getTotalCount())
+                    .limit(1)
+                    .forEach(sa->sa.setCount(sa.getCount()+1));
+            response.setStatus(Status.SUCCESS);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return getErrorResponseEntity(e);
+        }
+    }
+
+    private ResponseEntity<?> getErrorResponseEntity(Exception e) {
+        ResponseDto<String> errorResponse = new ResponseDto<String>();
+        errorResponse.setStatus(Status.FALSE);
+        errorResponse.setData(e.getMessage());
+        return new ResponseEntity<ResponseDto>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

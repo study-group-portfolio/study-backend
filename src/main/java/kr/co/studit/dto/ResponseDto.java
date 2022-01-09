@@ -1,5 +1,6 @@
 package kr.co.studit.dto;
 
+import kr.co.studit.dto.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ResponseDto<T> {
-    private String status;
+    private Status status;
     private T data;
 }

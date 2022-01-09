@@ -56,7 +56,7 @@ public class InitDb {
 
         private void initMembers() {
             int i = 0;
-            for (i = 0; i < 30; i++){
+            for (i = 0; i < 5; i++){
                 //온라인 지역 서울 백엔드 스프링 공유
                 Member member = Member.builder()
                         .bio("user"+i+"입니다")
@@ -84,7 +84,7 @@ public class InitDb {
                 memberService.updateMemberSkill(skills, member);
             }
 
-            for (i = 30; i < 60; i++){
+            for (i = 5; i < 10; i++){
                 //오프라인 지역 대전 프론트 리액트 프로젝트
                 Member member = Member.builder()
                         .bio("user"+i+"입니다")
@@ -115,7 +115,7 @@ public class InitDb {
                 memberService.updateMemberSkill(skills, member);
             }
 
-            for (i = 60; i < 100; i++){
+            for (i = 10; i < 15; i++){
                 //오프라인 온오프 지역x 백엔드  프로젝트
                 Member member = Member.builder()
                         .bio("user"+i+"입니다")

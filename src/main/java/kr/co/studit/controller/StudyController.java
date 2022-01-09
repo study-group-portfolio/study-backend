@@ -2,6 +2,7 @@ package kr.co.studit.controller;
 
 
 import kr.co.studit.dto.*;
+import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.service.StudyService;
 import org.modelmapper.ModelMapper;
@@ -14,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/study")
-
 public class StudyController {
     @Autowired
     StudyService studyService;
@@ -26,7 +26,7 @@ public class StudyController {
         try {
             ResponseListDto<StudyDto> response = new ResponseListDto<>();
             List<StudyDto> studies = studyService.findStudies();
-            response.setStatus("success");
+            response.setStatus(Status.SUCCESS);
             response.setData(studies);
 
             return new ResponseEntity<ResponseListDto<StudyDto>>(response, HttpStatus.OK);
@@ -43,7 +43,7 @@ public class StudyController {
             ResponseDto<StudyDto> response = new ResponseDto<>();
             StudyDto createStudy = studyService.createStudy(studyDto);
             response.setData(createStudy);
-            response.setStatus("success");
+            response.setStatus(Status.SUCCESS);
             return new ResponseEntity<ResponseDto>(response, HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -70,7 +70,7 @@ public class StudyController {
         try {
             ResponseDto<StudyDto> response = new ResponseDto<StudyDto>();
             StudyDto studyDto = studyService.findStudy(id);
-            response.setStatus("success");
+            response.setStatus(Status.SUCCESS);
             response.setData(studyDto);
             return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class StudyController {
         try {
             ResponseDto<String> response = new ResponseDto<String>();
             studyService.updateStudy(id, studyUpdateDto);
-            response.setStatus("success");
+            response.setStatus(Status.SUCCESS);
             return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
         } catch (Exception e) {
             return getErrorResponseEntity(e);
@@ -97,7 +97,7 @@ public class StudyController {
         try {
             ResponseDto<String> response = new ResponseDto<String>();
             studyService.deleteStudy(id);
-            response.setStatus("success");
+            response.setStatus(Status.SUCCESS);
             return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
         } catch (Exception e) {
             return getErrorResponseEntity(e);
@@ -109,7 +109,7 @@ public class StudyController {
         ResponseListDto<StudyDto> response = new ResponseListDto<StudyDto>();
         try {
             List<StudyDto> studyDtoList = studyService.searchStudy(searchDto);
-            response.setStatus("success");
+            response.setStatus(Status.SUCCESS);
             response.setData(studyDtoList);
             return new ResponseEntity<ResponseListDto>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -125,7 +125,7 @@ public class StudyController {
         try {
             ResponseDto<StudyDto> response = new ResponseDto<StudyDto>();
             studyService.positionApply(positionApplyDto);
-            response.setStatus("success");
+            response.setStatus(Status.SUCCESS);
             return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
         } catch (Exception e) {
             return getErrorResponseEntity(e);
@@ -137,7 +137,7 @@ public class StudyController {
         try {
             ResponseListDto<AlarmDto> response = new ResponseListDto<>();
             List<AlarmDto> studyAlarmDtoList = studyService.studyAlarm(emailDto.getEmail());
-            response.setStatus("success");
+            response.setStatus(Status.SUCCESS);
             response.setData(studyAlarmDtoList);
             return new ResponseEntity<ResponseListDto>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -163,7 +163,7 @@ public class StudyController {
     }
     private ResponseEntity<?> getErrorResponseEntity(Exception e) {
         ResponseDto<String> errorResponse = new ResponseDto<String>();
-        errorResponse.setStatus("false");
+        errorResponse.setStatus(Status.FALSE);
         errorResponse.setData(e.getMessage());
         return new ResponseEntity<ResponseDto>(errorResponse, HttpStatus.BAD_REQUEST);
     }
