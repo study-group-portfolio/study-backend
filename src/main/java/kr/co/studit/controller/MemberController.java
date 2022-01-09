@@ -1,21 +1,23 @@
 package kr.co.studit.controller;
 
-import kr.co.studit.dto.ResponseDto;
-import kr.co.studit.dto.SigninDto;
-import kr.co.studit.dto.MemberDto;
-import kr.co.studit.dto.SignupDto;
-import kr.co.studit.entity.Member;
+import kr.co.studit.dto.*;
+import kr.co.studit.dto.search.MemberSearchCondition;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.provider.TokenProvider;
-import kr.co.studit.repository.data.MemberDataRepository;
+import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.validator.SignupValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/member")
@@ -92,4 +94,36 @@ public class MemberController {
 
         return ResponseEntity.ok("인증 코드가 발송 되었습니다.");
     }
+
+    @PutMapping("/profile/update")
+    public ResponseEntity<?> editProfile(@AuthenticationPrincipal String nickname, @RequestBody ProfileForm profileForm) {
+        memberService.editProfile(profileForm, nickname);
+
+
+        return ResponseEntity.ok().body("업데이트");
+    }
+
+    @GetMapping("/profile/myProfile")
+    public ResponseEntity<?> getProfile(@AuthenticationPrincipal String nickname) {
+        // 접근 권한 설정 해야함 시큐리티 설정 할 것
+        ProfileForm profileDto = memberService.getProfile(nickname);
+        ResponseDto<Object> responseDto = ResponseDto.builder()
+                .data(profileDto)
+                .build();
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> searchMembers(@RequestBody(required = false) MemberSearchCondition condition, Pageable pageable) {
+        Page<SearchMemberDto> searchMemberDtos = null;
+        if (condition != null) {
+            searchMemberDtos = memberService.searchMemberDto(condition, pageable);
+        }else if( condition == null) {
+            searchMemberDtos = memberService.searchMemberDto(pageable);
+        }
+        ResponseDto<Object> responseListDto = ResponseDto.builder().data(searchMemberDtos)
+                .build();
+        return ResponseEntity.ok().body(responseListDto);
+    }
+
 }

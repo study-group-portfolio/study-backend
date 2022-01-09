@@ -12,7 +12,7 @@ public class Skill {
 
     // 스킬 ID
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "skill_id")
     private Long id;
 

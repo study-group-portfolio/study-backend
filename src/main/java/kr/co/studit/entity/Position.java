@@ -15,7 +15,7 @@ import java.util.List;
 public class Position {
     // 분야 ID
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "position_id")
     private Long id;
 
