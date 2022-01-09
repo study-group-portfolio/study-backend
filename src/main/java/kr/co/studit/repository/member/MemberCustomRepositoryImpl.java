@@ -1,28 +1,37 @@
 package kr.co.studit.repository.member;
 
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.ProfileForm;
-import kr.co.studit.dto.QProfileForm;
+import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Skill;
-import kr.co.studit.entity.member.*;
+import kr.co.studit.entity.enums.OnOffStatus;
+import kr.co.studit.entity.enums.StudyType;
+import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.member.MemberPosition;
+import kr.co.studit.entity.member.MemberRegion;
+import kr.co.studit.entity.member.MemberSkill;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.thymeleaf.util.ListUtils;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.querydsl.core.types.dsl.Expressions.list;
-import static kr.co.studit.entity.member.QMember.member;
-import static kr.co.studit.entity.member.QMemberRegion.memberRegion;
 import static kr.co.studit.entity.QPosition.position;
-import static kr.co.studit.entity.member.QMemberPosition.memberPosition;
 import static kr.co.studit.entity.QSkill.skill;
+import static kr.co.studit.entity.member.QMember.member;
+import static kr.co.studit.entity.member.QMemberPosition.memberPosition;
+import static kr.co.studit.entity.member.QMemberRegion.memberRegion;
 import static kr.co.studit.entity.member.QMemberSkill.memberSkill;
+
 @Repository
 @RequiredArgsConstructor
 //커스텀 인터페이스 쿼리 구현
@@ -97,22 +106,60 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     }
 
     @Override
-    public ProfileForm findProfileFormByMemberId(Long id) {
-       return queryFactory
-                .select(Projections.fields(ProfileForm.class,
-                        member.nickname,
-                        member.bio,
-                        member.onOffStatus,
-                        member.email,
-                        member.studyType,
-                        ExpressionUtils.as(JPAExpressions.select(memberRegion.region.area)
-                                            .from(memberRegion)
-                                            .where(memberRegion.member.id.eq(id)),"regions"))
-                        )
+    public Page<Member> searchPageMember(Pageable pageable) {
+        QueryResults<Member> results = queryFactory
+                .select(member)
                 .from(member)
-                .where(member.id.eq(id))
-                .fetchOne();
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(member.createAt.desc())
+                .fetchResults();
+        List<Member> content = results.getResults();
+        long total = results.getTotal();
 
+        return new PageImpl<>(content, pageable, total);
+    }
 
+    @Override
+    public Page<Member> searchPageMember(MemberSearchCondition condition, Pageable pageable) {
+        QueryResults<Member> results = queryFactory
+                .selectFrom(member).distinct()
+                .leftJoin(member.regions, memberRegion)
+                .leftJoin(member.positions, memberPosition)
+                .leftJoin(member.skills, memberSkill)
+                .where(
+                        studyTypeEq(condition.getStudyType()),
+                        onOffStatusEq(condition.getOnOffStatus()),
+                        areaEq(condition.getRegions()),
+                        positionEq(condition.getPositions()),
+                        skillEq(condition.getSkills())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(member.createAt.desc())
+                .fetchResults();
+        List<Member> content = results.getResults();
+        long total = results.getTotal();
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    private BooleanExpression skillEq(List<String> skills) {
+        return ListUtils.isEmpty(skills) ? null : memberSkill.skill.skillName.in(skills);
+    }
+
+    private BooleanExpression positionEq(List<String> positions) {
+        return ListUtils.isEmpty(positions) ? null : memberPosition.position.positionName.in(positions);
+    }
+
+    private BooleanExpression areaEq(List<String> regions) {
+        return ListUtils.isEmpty(regions) ? null : memberRegion.region.area.in(regions);
+    }
+
+    private BooleanExpression onOffStatusEq(OnOffStatus onOffStatus) {
+        return StringUtils.isEmpty(onOffStatus.toString()) ? null : member.onOffStatus.eq(onOffStatus);
+    }
+
+    private BooleanExpression studyTypeEq(StudyType studyType) {
+        return StringUtils.isEmpty(studyType.toString()) ? null :  member.studyType.eq(studyType);
     }
 }

@@ -1,6 +1,7 @@
 package kr.co.studit.service;
 
 import kr.co.studit.dto.ProfileForm;
+import kr.co.studit.dto.SearchMemberDto;
 import kr.co.studit.dto.SigninDto;
 import kr.co.studit.dto.SignupDto;
 import kr.co.studit.entity.enums.OnOffStatus;
@@ -14,6 +15,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
@@ -199,9 +203,7 @@ class MemberServiceTest {
         List<String> skills = new ArrayList<>();
         skills.add("스프링");
         profileForm.setSkills(skills);
-        profileForm.setUpdateRegion(true);
-        profileForm.setUpdatePosition(false);
-        profileForm.setUpdateSkill(false);
+
 
         memberService.editProfile(profileForm, member.getNickname());
 
@@ -209,9 +211,25 @@ class MemberServiceTest {
         //when
         ProfileForm findProfile = memberService.getProfile(member.getNickname());
 
+
         //then
-        assertThat(findProfile.getRegions().size()).isEqualTo(2);
+//        assertThat(findProfile.getRegions().size()).isEqualTo(2);
     }
+    @Test
+    @DisplayName("모든멤버 조회")
+    public void findMember() throws Exception {
+        //given
+
+        //when
+        // 멤버를 우선 조회 한다 .
+        PageRequest pageRequest = PageRequest.of(0, 12);
+        Page<Member> result = memberDataRepository.searchPageMember(pageRequest);
+
+        //then
+        assertThat(result.getSize()).isEqualTo(12);
+
+    }
+
 
 
 }

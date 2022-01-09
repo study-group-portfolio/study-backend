@@ -1,6 +1,7 @@
 package kr.co.studit.service;
 
 import kr.co.studit.dto.*;
+import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Region;
 import kr.co.studit.entity.Skill;
@@ -16,15 +17,26 @@ import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.util.mail.EmailMessage;
 import kr.co.studit.util.mail.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Service
 @Transactional
@@ -32,7 +44,6 @@ import java.util.List;
 public class MemberService {
 
     private final MemberDataRepository memberDataRepository;
-    private final MemberRegionDataRepository memberRegionDataRepository;
     private final RegionDataRepository regionDataRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -67,8 +78,7 @@ public class MemberService {
     }
 
 
-    public ResponseEntity<?>
-    authenticate(SigninDto signinDto) {
+    public ResponseEntity<?> authenticate(SigninDto signinDto) {
 
         Member member = signin(signinDto);
 
@@ -91,7 +101,7 @@ public class MemberService {
 
     public void sendSignupConfirmEmail(Member newMember) {
         Context context = new Context();
-        context.setVariable("link", "http://localhost:8080/api/member/checkEmailToken/" + newMember.getEmaiCheckToken() +"/" + newMember.getEmail());
+        context.setVariable("link", "http://localhost:8080/api/member/checkEmailToken/" + newMember.getEmaiCheckToken() + "/" + newMember.getEmail());
         context.setVariable("nickname", newMember.getNickname());
         context.setVariable("linkName", "이메일 인증하기");
         context.setVariable("message", "스터딧 서비스를 이용하시려면 링크를 클릭하세요");
@@ -116,22 +126,20 @@ public class MemberService {
     public void editProfile(ProfileForm profileForm, String nickname) {
         Member member = memberDataRepository.findMemberByNickname(nickname);
         member.updateMember(profileForm);
-        if (profileForm.isUpdateRegion() == true) {
-            updateMemberRegion(profileForm.getRegions(), member);
-        }
-        if (profileForm.isUpdatePosition() == true ) {
-            updateMemberPosition(profileForm.getPositions(), member);
-        }
-        if (profileForm.isUpdateSkill() == true) {
+        updateMemberRegion(profileForm.getRegions(), member);
+        updateMemberPosition(profileForm.getPositions(), member);
         updateMemberSkill(profileForm.getSkills(), member);
-        }
         member.updateAt();
     }
 
-    private void updateMemberSkill(List<String> skills, Member member) {
-        if (member.getSkills() == null || member.getSkills().isEmpty()) {
+    public void updateMemberSkill(List<String> skills, Member member) {
+        if (isEmpty(skills) && isEmpty(member.getSkills())) {
+            return;
+        }
+
+        if (isEmpty(member.getSkills()) && !isEmpty(skills)) {
             createMemberSkill(skills, member);
-        } else if (skills == null || skills.isEmpty()) {
+        } else if (!isEmpty(member.getSkills()) && isEmpty(skills)) {
             deleteSkill(member);
         } else {
             deleteSkill(member);
@@ -145,7 +153,7 @@ public class MemberService {
     }
 
     private void createMemberSkill(List<String> skills, Member member) {
-            List<Skill> findSkills = memberDataRepository.findSkillBySkillName(skills);
+        List<Skill> findSkills = memberDataRepository.findSkillBySkillName(skills);
         for (Skill skill : findSkills
         ) {
             MemberSkill memberSkill = MemberSkill.createMemberSkill(skill, member);
@@ -154,11 +162,15 @@ public class MemberService {
 
     }
 
-    private void updateMemberPosition(List<String> positions, Member member) {
+    public void updateMemberPosition(List<String> positions, Member member) {
 
-        if ( member.getPositions() == null || member.getPositions().isEmpty()) {
+        if (isEmpty(positions) && isEmpty(member.getPositions())) {
+            return;
+        }
+
+        if (isEmpty(member.getPositions()) && !isEmpty(positions)) {
             createMemberPositions(positions, member);
-        } else if (positions == null || positions.isEmpty()) {
+        } else if (!isEmpty(member.getPositions()) && isEmpty(positions)) {
             deletePosition(member);
         } else {
             deletePosition(member);
@@ -173,7 +185,7 @@ public class MemberService {
     }
 
     private void createMemberPositions(List<String> potions, Member member) {
-        for (String positionName: potions) {
+        for (String positionName : potions) {
             Position findPositon = memberDataRepository.findPositionByPositionName(positionName);
             MemberPosition memberPosition = MemberPosition.createMemberPosition(findPositon, member);
             memberDataRepository.saveMemberPosition(memberPosition);
@@ -183,9 +195,13 @@ public class MemberService {
 
     public void updateMemberRegion(List<String> regions, Member member) {
 
-        if (member.getRegions() == null || member.getRegions().isEmpty()) {
+        if (isEmpty(regions) && isEmpty(member.getRegions())) {
+            return;
+        }
+
+        if (isEmpty(member.getRegions()) && !isEmpty(regions)) {
             createMemberRegion(regions, member);
-        } else if (regions == null || regions.isEmpty()) {
+        } else if (!isEmpty(member.getRegions()) && isEmpty(regions)) {
             deleteRegion(member);
         } else {
             deleteRegion(member);
@@ -201,7 +217,7 @@ public class MemberService {
 
 
     private void createMemberRegion(List<String> regions, Member member) {
-        for (String area: regions) {
+        for (String area : regions) {
             Region region = regionDataRepository.findRegionByArea(area);
             MemberRegion newMemberRegion = MemberRegion.createMemberRegion(member, region);
             memberDataRepository.saveMemberRegion(newMemberRegion);
@@ -210,21 +226,46 @@ public class MemberService {
 
     public ProfileForm getProfile(String nickname) {
         Member member = memberDataRepository.findMemberByNickname(nickname);
-        ProfileForm profileForm = memberDataRepository.findProfileFormByMemberId(member.getId());
-//        ProfileForm profileForm = new ProfileForm();
-//        profileForm.setBio(member.getBio());
-//        profileForm.setNickname(member.getNickname());
-//        profileForm.setOnOffStatus(member.getOnOffStatus());
-////        List<String> positions = new ArrayList<>();
-//        while (member.getPositions().listIterator().hasNext()) {
-//            profileForm.getPositions().add(member.getPositions().listIterator().next().getPosition().getPositionName());
-//        }
-//        for (MemberPosition position: member.getPositions()) {
-//            positions.add(position.getPosition().getPositionName());
-//        }
-//        profileForm.setPositions(positions);
-//        List<String> regions = member.getRegions().listIterator().next().getRegion().getArea()
-//        profileForm.setRegions();
+        ProfileForm profileForm = new ProfileForm();
+        profileForm.setBio(member.getBio());
+        profileForm.setNickname(member.getNickname());
+        profileForm.setOnOffStatus(member.getOnOffStatus());
+        profileForm.setStudyType(member.getStudyType());
+        profileForm.setPositions(getStream(member.getPositions()).map(memberPosition -> memberPosition.getPosition().getPositionName()).collect(toList()));
+        profileForm.setRegions(getStream(member.getRegions()).map(memberRegion -> memberRegion.getRegion().getArea()).collect(toList()));
+        profileForm.setSkills(getStream(member.getSkills()).map(memberSkill -> memberSkill.getSkill().getSkillName()).collect(toList()));
         return profileForm;
     }
+
+    private <T> Stream<T> getStream(List<T> list) {
+        return Optional.ofNullable(list).map(List::stream).orElseGet(Stream::empty);
+    }
+
+    public Page<SearchMemberDto> searchMemberDto(Pageable pageable) {
+        Page<Member> members = memberDataRepository.searchPageMember(pageable);
+        Page<SearchMemberDto> page = createSearchMemberDto(members);
+        return page;
+    }
+
+    public Page<SearchMemberDto> searchMemberDto(MemberSearchCondition condition, Pageable pageable) {
+        Page<Member> members = memberDataRepository.searchPageMember(condition, pageable);
+        return createSearchMemberDto(members);
+    }
+
+    private Page<SearchMemberDto> createSearchMemberDto(Page<Member> members) {
+        List<SearchMemberDto> searchMemberDtos = new ArrayList<>();
+        for (Member member: members) {
+            SearchMemberDto searchMemberDto = new SearchMemberDto();
+            searchMemberDto.setMemberId(member.getId());
+            searchMemberDto.setNickname(member.getNickname());
+            searchMemberDto.setPositionName(getStream(member.getPositions()).map(memberPosition -> memberPosition.getPosition().getPositionName()).collect(toList()));
+            searchMemberDto.setSkillName(getStream(member.getSkills()).map(memberSkill -> memberSkill.getSkill().getSkillName()).collect(toList()));
+            searchMemberDto.setArea(getStream(member.getRegions()).map(memberRegion -> memberRegion.getRegion().getArea()).collect(toList()));
+            searchMemberDtos.add(searchMemberDto);
+        }
+        Page<SearchMemberDto> page = new PageImpl<>(searchMemberDtos, members.getPageable(), members.getTotalElements());
+        return page;
+    }
+
+
 }

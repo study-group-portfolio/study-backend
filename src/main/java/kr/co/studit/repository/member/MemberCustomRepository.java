@@ -1,12 +1,16 @@
 package kr.co.studit.repository.member;
 
 import kr.co.studit.dto.ProfileForm;
+import kr.co.studit.dto.SearchMemberDto;
+import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Skill;
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.member.MemberPosition;
 import kr.co.studit.entity.member.MemberRegion;
 import kr.co.studit.entity.member.MemberSkill;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,5 +37,7 @@ public interface MemberCustomRepository {
 
     void deleteSkill(Member member);
 
-    ProfileForm findProfileFormByMemberId(Long id);
+    Page<Member> searchPageMember(Pageable pageable);
+
+    Page<Member> searchPageMember(MemberSearchCondition condition, Pageable pageable);
 }
