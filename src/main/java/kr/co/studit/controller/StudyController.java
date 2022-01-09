@@ -22,30 +22,32 @@ public class StudyController {
     ModelMapper modelMapper;
 
     @GetMapping("/")
-    public ResponseEntity<ResponseListDto<StudyDto>> studyList() {
+    public ResponseEntity<?> studyList() {
+        try {
+            ResponseListDto<StudyDto> response = new ResponseListDto<>();
+            List<StudyDto> studies = studyService.findStudies();
+            response.setStatus("success");
+            response.setData(studies);
 
-        List<StudyDto> studies = studyService.findStudies();
-        ResponseListDto<StudyDto> response = new ResponseListDto<>();
-        response.setStatus("success");
-        response.setData(studies);
+            return new ResponseEntity<ResponseListDto<StudyDto>>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return getErrorResponseEntity(e);
+        }
 
-        return new ResponseEntity<ResponseListDto<StudyDto>>(response, HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<ResponseDto> AjaxCreate(@RequestBody StudyDto studyDto){
-
-        ResponseDto<StudyDto> response = new ResponseDto<>();
+    public ResponseEntity<?> AjaxCreate(@RequestBody StudyDto studyDto){
 
         try {
+            ResponseDto<StudyDto> response = new ResponseDto<>();
             StudyDto createStudy = studyService.createStudy(studyDto);
             response.setData(createStudy);
             response.setStatus("success");
             return new ResponseEntity<ResponseDto>(response, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            response.setStatus("false");
-            return new ResponseEntity<ResponseDto>(response, HttpStatus.BAD_REQUEST);
+            return getErrorResponseEntity(e);
         }
 
 
@@ -63,51 +65,46 @@ public class StudyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> findStudy(@PathVariable Long id) {
-        ResponseDto<StudyDto> response = new ResponseDto<StudyDto>();
-        try {
-            StudyDto studyDto = studyService.findStudy(id);
+    public ResponseEntity<?> findStudy(@PathVariable Long id) {
 
+        try {
+            ResponseDto<StudyDto> response = new ResponseDto<StudyDto>();
+            StudyDto studyDto = studyService.findStudy(id);
             response.setStatus("success");
             response.setData(studyDto);
             return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
         } catch (Exception e) {
-            response.setStatus("false");
-            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+            return getErrorResponseEntity(e);
         }
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDto> editStudy(@PathVariable Long id,@RequestBody StudyUpdateDto studyUpdateDto) {
-        ResponseDto<String> response = new ResponseDto<String>();
+    public ResponseEntity<?> editStudy(@PathVariable Long id,@RequestBody StudyUpdateDto studyUpdateDto) {
         try {
+            ResponseDto<String> response = new ResponseDto<String>();
             studyService.updateStudy(id, studyUpdateDto);
             response.setStatus("success");
             return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
         } catch (Exception e) {
-            response.setStatus("false");
-            response.setData(e.getMessage());
-            return new ResponseEntity<ResponseDto>(response, HttpStatus.BAD_REQUEST);
+            return getErrorResponseEntity(e);
         }
 
 
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDto> deleteStudy(@PathVariable Long id) {
-        ResponseDto<String> response = new ResponseDto<String>();
+    public ResponseEntity<?> deleteStudy(@PathVariable Long id) {
         try {
+            ResponseDto<String> response = new ResponseDto<String>();
             studyService.deleteStudy(id);
             response.setStatus("success");
             return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
         } catch (Exception e) {
-            response.setStatus("false");
-            response.setData(e.getMessage());
-            return new ResponseEntity<ResponseDto>(response, HttpStatus.BAD_REQUEST);
+            return getErrorResponseEntity(e);
         }
     }
     @PostMapping("/search")
-    public ResponseEntity<ResponseListDto> searchStudy(@RequestBody StudySearchDto searchDto) {
+    public ResponseEntity<?> searchStudy(@RequestBody StudySearchDto searchDto) {
 
         ResponseListDto<StudyDto> response = new ResponseListDto<StudyDto>();
         try {
@@ -116,9 +113,58 @@ public class StudyController {
             response.setData(studyDtoList);
             return new ResponseEntity<ResponseListDto>(response, HttpStatus.OK);
         } catch (Exception e) {
-//            response.setStatus("false");
-            response.setStatus(e.getMessage());
-            return new ResponseEntity<ResponseListDto>(response, HttpStatus.BAD_REQUEST);
+            return getErrorResponseEntity(e);
         }
+    }
+
+
+
+    @PostMapping("/position")
+    public ResponseEntity<?> applyPosition(@RequestBody PositionApplyDto positionApplyDto) {
+
+        try {
+            ResponseDto<StudyDto> response = new ResponseDto<StudyDto>();
+            studyService.positionApply(positionApplyDto);
+            response.setStatus("success");
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return getErrorResponseEntity(e);
+        }
+    }
+
+    @PostMapping("/alarm")
+    public ResponseEntity<?> applyStudy(@RequestBody EmailDto emailDto) {
+        try {
+            ResponseListDto<AlarmDto> response = new ResponseListDto<>();
+            List<AlarmDto> studyAlarmDtoList = studyService.studyAlarm(emailDto.getEmail());
+            response.setStatus("success");
+            response.setData(studyAlarmDtoList);
+            return new ResponseEntity<ResponseListDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return getErrorResponseEntity(e);
+        }
+    }
+
+    @PostMapping("/allow")
+    public ResponseEntity<?> allowStudy(@RequestBody StudyAllowDto studyAllowDto) {
+        ResponseEntity<?> response = studyService.joinStudy(studyAllowDto);
+        return response;
+    }
+
+    @PostMapping("/created")
+    public ResponseEntity<?> createdStudy(@RequestBody EmailDto emailDto) {
+        ResponseEntity<?> studyByEmail = studyService.findCreatedStudy(emailDto.getEmail());
+        return studyByEmail;
+    }
+    @PostMapping("/participated")
+    public ResponseEntity<?> participatedStudy(@RequestBody EmailDto emailDto) {
+        ResponseEntity<?> studyByEmail = studyService.findParticipatedStudy(emailDto.getEmail());
+        return studyByEmail;
+    }
+    private ResponseEntity<?> getErrorResponseEntity(Exception e) {
+        ResponseDto<String> errorResponse = new ResponseDto<String>();
+        errorResponse.setStatus("false");
+        errorResponse.setData(e.getMessage());
+        return new ResponseEntity<ResponseDto>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

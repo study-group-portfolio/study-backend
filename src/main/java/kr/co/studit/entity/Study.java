@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Study {
+public class Study extends BaseTimeEntity{
 
     // 스터디 ID
     @Id
@@ -55,6 +55,7 @@ public class Study {
     @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)
     private List<StudySkill> studySkill = new ArrayList<>();
 
+
     // 예상 진행 기간
     private String duration;
 
@@ -66,11 +67,20 @@ public class Study {
     // 모집 종료 기간
     private String receptionEnd;
 
+
+
+    @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)
+    private List<StudyApplication> studyApplication = new ArrayList<>();
+
+    @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)
+    private List<StudyParticipattion> studyParticipattion = new ArrayList<>();
+
     // 연관관계 메소드
     public void setMember(Member member) {
         this.member = member;
         member.getStudys().add(this);
     }
+
 
     // 생성 메소드
     public static Study createStudy(Member member, Region region) {
