@@ -1,9 +1,8 @@
 package kr.co.studit.service;
 
-import kr.co.studit.dto.ProfileForm;
-import kr.co.studit.dto.SearchMemberDto;
-import kr.co.studit.dto.SigninDto;
-import kr.co.studit.dto.SignupDto;
+import kr.co.studit.dto.member.ProfileForm;
+import kr.co.studit.dto.member.SigninDto;
+import kr.co.studit.dto.member.SignupDto;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;

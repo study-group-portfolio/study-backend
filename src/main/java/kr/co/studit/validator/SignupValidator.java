@@ -1,6 +1,6 @@
 package kr.co.studit.validator;
 
-import kr.co.studit.dto.SignupDto;
+import kr.co.studit.dto.member.SignupDto;
 import kr.co.studit.repository.member.MemberDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

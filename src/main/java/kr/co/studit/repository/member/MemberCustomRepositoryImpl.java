@@ -1,10 +1,9 @@
 package kr.co.studit.repository.member;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.studit.dto.ProfileForm;
+import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Skill;
@@ -110,9 +109,10 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         QueryResults<Member> results = queryFactory
                 .select(member)
                 .from(member)
+                .where(member.publicProfile.eq(true))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(member.createAt.desc())
+                .orderBy(member.createdDate.desc())
                 .fetchResults();
         List<Member> content = results.getResults();
         long total = results.getTotal();
@@ -128,6 +128,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
                 .leftJoin(member.positions, memberPosition)
                 .leftJoin(member.skills, memberSkill)
                 .where(
+                        member.publicProfile.eq(true),
                         studyTypeEq(condition.getStudyType()),
                         onOffStatusEq(condition.getOnOffStatus()),
                         areaEq(condition.getRegions()),
@@ -136,7 +137,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(member.createAt.desc())
+                .orderBy(member.createdDate.desc())
                 .fetchResults();
         List<Member> content = results.getResults();
         long total = results.getTotal();

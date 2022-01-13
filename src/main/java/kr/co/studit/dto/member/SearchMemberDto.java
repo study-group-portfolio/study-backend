@@ -1,4 +1,4 @@
-package kr.co.studit.dto;
+package kr.co.studit.dto.member;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;

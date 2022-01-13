@@ -1,7 +1,8 @@
 package kr.co.studit.entity.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import kr.co.studit.dto.ProfileForm;
+import kr.co.studit.dto.member.ProfileForm;
+import kr.co.studit.entity.BaseTimeEntity;
 import kr.co.studit.entity.Study;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
@@ -29,7 +30,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue
     @Column(name = "member_id")
@@ -69,10 +70,6 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<MemberSkill> skills = new ArrayList<>();
 
-    // 생성 날짜, 수정 날짜
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
-
     // 이에일 인증 여부
     private boolean emailVerified;
 
@@ -108,19 +105,6 @@ public class Member {
     public boolean canSendConfirmEmail() {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusMinutes(30));
     }
-
-    public void createAt() {
-        this.createAt = LocalDateTime.now();
-        this.updateAt = LocalDateTime.now();
-    }
-
-    public void updateAt() {
-        this.updateAt = LocalDateTime.now();
-    }
-
-
-
-
 
     public void updateMember(ProfileForm profileForm) {
         this.bio = profileForm.getBio();

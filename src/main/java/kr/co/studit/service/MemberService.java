@@ -2,6 +2,7 @@ package kr.co.studit.service;
 
 import kr.co.studit.dto.*;
 import kr.co.studit.dto.enums.Status;
+import kr.co.studit.dto.member.*;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Region;
@@ -13,7 +14,6 @@ import kr.co.studit.entity.member.MemberRegion;
 import kr.co.studit.entity.member.MemberSkill;
 import kr.co.studit.provider.TokenProvider;
 import kr.co.studit.repository.RegionDataRepository;
-import kr.co.studit.repository.data.MemberRegionDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.util.mail.EmailMessage;
 import kr.co.studit.util.mail.EmailService;
@@ -25,15 +25,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -120,7 +117,6 @@ public class MemberService {
 
     public void compleateSignup(Member member) {
         member.setRole(Role.USER);
-        member.createAt();
         member.compleateSignup();
     }
 
@@ -130,7 +126,6 @@ public class MemberService {
         updateMemberRegion(profileForm.getRegions(), member);
         updateMemberPosition(profileForm.getPositions(), member);
         updateMemberSkill(profileForm.getSkills(), member);
-        member.updateAt();
     }
 
     public void updateMemberSkill(List<String> skills, Member member) {
@@ -269,4 +264,9 @@ public class MemberService {
     }
 
 
+    public Member editBasicProfile(String nickname, BasicProfileForm basicProfileForm) {
+        Member member = memberDataRepository.findMemberByNickname(nickname);
+        member.setNickname(basicProfileForm.getNickname());
+        return member;
+    }
 }

@@ -18,7 +18,7 @@ public interface MemberDataRepository extends JpaRepository<Member, Long>, Membe
     Member findMemberByEmail(String email);
     Boolean existsByEmail(String email);
     Member findMemberByNickname(String nickname);
-
+    Boolean existsByNickname(String nickname);
 
 
 }
