@@ -6,16 +6,21 @@ import kr.co.studit.entity.BaseTimeEntity;
 import kr.co.studit.entity.enums.StudyType;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class AlarmDto extends BaseTimeEntity {
+public class AlarmDto {
 
     InviteType type;
     Long id;
+    Long studyId;
     String email;
     String title;
     String position;
     String message;
+
+    LocalDateTime createDate;
+    LocalDateTime modifiedDate;
 }

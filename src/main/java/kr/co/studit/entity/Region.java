@@ -2,6 +2,7 @@ package kr.co.studit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kr.co.studit.entity.member.MemberRegion;
+import kr.co.studit.entity.study.Study;
 import lombok.Getter;
 import lombok.Setter;
 

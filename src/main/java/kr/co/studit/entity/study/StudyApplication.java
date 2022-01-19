@@ -1,5 +1,7 @@
-package kr.co.studit.entity;
+package kr.co.studit.entity.study;
 
+import kr.co.studit.entity.BaseTimeEntity;
+import kr.co.studit.entity.Position;
 import kr.co.studit.entity.member.Member;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class StudyApplication {
+public class StudyApplication extends BaseTimeEntity {
     @Id
     @GeneratedValue
     @Column(name="study_application_id")
@@ -19,6 +21,7 @@ public class StudyApplication {
     @JoinColumn(name = "study_id")
     Study study;
 
+    //스터디에 지원한 사용자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     Member member;

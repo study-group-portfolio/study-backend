@@ -1,6 +1,8 @@
 package kr.co.studit.entity.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import kr.co.studit.dto.ProfileForm;
+import kr.co.studit.entity.study.Study;
 import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.entity.BaseTimeEntity;
 import kr.co.studit.entity.Bookmark;
