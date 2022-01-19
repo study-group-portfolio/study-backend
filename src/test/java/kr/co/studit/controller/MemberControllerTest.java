@@ -1,8 +1,8 @@
 package kr.co.studit.controller;
 
 import com.google.gson.Gson;
-import kr.co.studit.dto.SigninDto;
-import kr.co.studit.dto.SignupDto;
+import kr.co.studit.dto.member.SigninDto;
+import kr.co.studit.dto.member.SignupDto;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;

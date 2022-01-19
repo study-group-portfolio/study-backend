@@ -1,4 +1,4 @@
-package kr.co.studit.dto;
+package kr.co.studit.dto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

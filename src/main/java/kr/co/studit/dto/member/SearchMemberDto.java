@@ -1,4 +1,4 @@
-package kr.co.studit.dto;
+package kr.co.studit.dto.member;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
@@ -14,6 +14,9 @@ public class SearchMemberDto {
     private List<String> positionName = new ArrayList<>();
     private List<String> area = new ArrayList<>();
     private List<String> skillName = new ArrayList<>();
+
+    private Long bookmarkId;
+    private boolean bookmarkState;
 
 
 }

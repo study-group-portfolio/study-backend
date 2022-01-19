@@ -27,14 +27,14 @@ public class TokenProvider {
                 //header에 들어갈 내용 및 서명을 하기 위한 SECRET_KEY
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 //payload에 들어갈 내용
-                .setSubject(member.getNickname()) // sub
+                .setSubject(member.getEmail()) // sub
                 .setIssuer("studit app") // iss
                 .setIssuedAt(new Date()) // iat
                 .setExpiration(expiryDate) // exp
                 .compact();
     }
 
-    public String validateAndGetNickname(String token) {
+    public String validateAndGetEmail(String token) {
         // parseClaimJws 메서드가 Base64로 디코딩 및 파싱
         // 헤더와 페이로드를 setSigningKey로 넘어온 시크릿을 이용해 서명한 후 token의 서명과 비교
         // 위조되지 않았다면 페이로드(Claims) 리턴, 위조라면 예외를 던짐

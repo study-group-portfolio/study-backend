@@ -3,10 +3,13 @@ package kr.co.studit.repository.member;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.ListPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.studit.dto.ProfileForm;
+import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.dto.search.MemberSearchCondition;
+import kr.co.studit.entity.Bookmark;
 import kr.co.studit.entity.Position;
+import kr.co.studit.entity.QBookmark;
 import kr.co.studit.entity.Skill;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
@@ -25,6 +28,7 @@ import org.thymeleaf.util.StringUtils;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static kr.co.studit.entity.QBookmark.bookmark;
 import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QSkill.skill;
 import static kr.co.studit.entity.member.QMember.member;
@@ -110,9 +114,11 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         QueryResults<Member> results = queryFactory
                 .select(member)
                 .from(member)
+                .where(member.publicProfile.eq(true)
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(member.createAt.desc())
+                .orderBy(member.createdDate.desc())
                 .fetchResults();
         List<Member> content = results.getResults();
         long total = results.getTotal();
@@ -127,7 +133,9 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
                 .leftJoin(member.regions, memberRegion)
                 .leftJoin(member.positions, memberPosition)
                 .leftJoin(member.skills, memberSkill)
+                .leftJoin(member.bookmarks, bookmark)
                 .where(
+                        member.publicProfile.eq(true),
                         studyTypeEq(condition.getStudyType()),
                         onOffStatusEq(condition.getOnOffStatus()),
                         areaEq(condition.getRegions()),
@@ -136,12 +144,14 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(member.createAt.desc())
+                .orderBy(member.createdDate.desc())
                 .fetchResults();
         List<Member> content = results.getResults();
         long total = results.getTotal();
         return new PageImpl<>(content, pageable, total);
     }
+
+
 
     private BooleanExpression skillEq(List<String> skills) {
         return ListUtils.isEmpty(skills) ? null : memberSkill.skill.skillName.in(skills);
@@ -162,4 +172,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     private BooleanExpression studyTypeEq(StudyType studyType) {
         return StringUtils.isEmpty(studyType.toString()) ? null :  member.studyType.eq(studyType);
     }
+
+
+
 }

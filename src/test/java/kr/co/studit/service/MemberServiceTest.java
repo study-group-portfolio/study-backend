@@ -1,13 +1,15 @@
 package kr.co.studit.service;
 
-import kr.co.studit.dto.ProfileForm;
-import kr.co.studit.dto.SearchMemberDto;
-import kr.co.studit.dto.SigninDto;
-import kr.co.studit.dto.SignupDto;
+import kr.co.studit.dto.member.ProfileForm;
+import kr.co.studit.dto.member.SearchMemberDto;
+import kr.co.studit.dto.member.SigninDto;
+import kr.co.studit.dto.member.SignupDto;
+import kr.co.studit.entity.Bookmark;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.repository.RegionDataRepository;
+import kr.co.studit.repository.bookmark.BookmarkDataRepository;
 import kr.co.studit.repository.data.MemberRegionDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-@Commit
 class MemberServiceTest {
 
     static final String EMAIL = "studit@studit.com";
@@ -38,6 +39,9 @@ class MemberServiceTest {
     MemberService memberService;
     @Autowired
     MemberDataRepository memberDataRepository;
+
+    @Autowired
+    BookmarkDataRepository bookmarkDataRepository;
 
     @Autowired
     MemberRegionDataRepository memberRegionDataRepository;
@@ -116,11 +120,9 @@ class MemberServiceTest {
         //when
         memberService.editProfile(profileForm, member.getNickname());
         member.setPublicProfile(true);
-        member.updateAt();
         //then
         Member findMember = memberDataRepository.findMemberByEmail(EMAIL);
         assertThat(findMember.isPublicProfile()).isTrue();
-        assertThat(findMember.getCreateAt()).isNotEqualTo(findMember.getUpdateAt());
 
 
     }
@@ -209,7 +211,7 @@ class MemberServiceTest {
 
 
         //when
-        ProfileForm findProfile = memberService.getProfile(member.getNickname());
+        ProfileForm findProfile = memberService.getProfile(member.getId());
 
 
         //then
@@ -223,10 +225,42 @@ class MemberServiceTest {
         //when
         // 멤버를 우선 조회 한다 .
         PageRequest pageRequest = PageRequest.of(0, 12);
-        Page<Member> result = memberDataRepository.searchPageMember(pageRequest);
+        Page<Member> result = memberDataRepository.searchPageMember(null, pageRequest);
 
         //then
         assertThat(result.getSize()).isEqualTo(12);
+
+    }
+
+
+
+    @Test
+    public void searchBookmark() throws Exception {
+        //given
+        Member user1 = memberDataRepository.findMemberByNickname("user1");
+        Member user2 = memberDataRepository.findMemberByNickname("user2");
+        Member user3 = memberDataRepository.findMemberByNickname("user3");
+        Bookmark bookmark1 = Bookmark.builder()
+                .markMember(user1)
+                .markedMember(user2)
+                .build();
+
+        Bookmark bookmark2 = Bookmark.builder()
+                .markMember(user1)
+                .markedMember(user3)
+                .build();
+        bookmarkDataRepository.save(bookmark1);
+        bookmarkDataRepository.save(bookmark2);
+
+        Pageable pageable = PageRequest.of(0, 40);
+
+        //when
+
+        Page<SearchMemberDto> searchMemberDtos = memberService.searchMemberDto(user1, pageable);
+        List<SearchMemberDto> content = searchMemberDtos.getContent();
+
+
+        //then
 
     }
 
