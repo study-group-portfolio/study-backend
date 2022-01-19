@@ -3,12 +3,14 @@ package kr.co.studit.entity.member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.entity.BaseTimeEntity;
+import kr.co.studit.entity.Bookmark;
 import kr.co.studit.entity.Study;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
 import kr.co.studit.entity.enums.StudyType;
 import lombok.*;
 
+import javax.jdo.annotations.Unique;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import java.util.UUID;
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(
-                        columnNames = {"email"}
+                        columnNames = {"email","nickname"}
                 )
         }
 )
@@ -32,10 +34,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Member extends BaseTimeEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
+
+    @Column(name = "nickname")
     private String nickname;
+
+    @Column(name = "email")
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -82,6 +88,12 @@ public class Member extends BaseTimeEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private final List<Study> studys = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "markMember",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true)
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     public static Member createMember(String email) {
         Member member = new Member();
@@ -135,5 +147,4 @@ public class Member extends BaseTimeEntity {
         this.skills.add(memberSkill);
     }
 
-// TODO 프로필 포트폴리오 , 비밀번호 찾기, 비밀번호 재설정, 기타(스터디 활동)
 }

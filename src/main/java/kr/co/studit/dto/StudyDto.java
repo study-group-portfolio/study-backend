@@ -17,6 +17,9 @@ public class StudyDto extends StudyForm{
     @ApiModelProperty(hidden = true)
     private Long id;
 
+    // bookmark에 추가할 data
+    private Long bookmarkId;
 
+    private Boolean bookmarkState;
 
 }

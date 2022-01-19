@@ -2,6 +2,7 @@ package kr.co.studit.repository.member;
 
 import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.dto.search.MemberSearchCondition;
+import kr.co.studit.entity.Bookmark;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Skill;
 import kr.co.studit.entity.member.Member;
@@ -39,4 +40,5 @@ public interface MemberCustomRepository {
     Page<Member> searchPageMember(Pageable pageable);
 
     Page<Member> searchPageMember(MemberSearchCondition condition, Pageable pageable);
+
 }

@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.util.StringUtils;
 
 import javax.validation.Valid;
 
@@ -115,10 +116,10 @@ public class MemberController {
         return ResponseEntity.ok("인증 코드가 발송 되었습니다.");
     }
 
-    @PutMapping("/profile/update/basic")
-    public ResponseEntity<?> editBasicProfile(@AuthenticationPrincipal String nickname, @RequestBody BasicProfileForm basicProfileForm) {
+    @PutMapping("/profile/basic")
+    public ResponseEntity<?> editBasicProfile(@AuthenticationPrincipal String email, @RequestBody BasicProfileForm basicProfileForm) {
 
-        Member member = memberService.editBasicProfile(nickname, basicProfileForm);
+        Member member = memberService.editBasicProfile(email, basicProfileForm);
         String token = tokenProvider.create(member);
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .token(token)
@@ -130,34 +131,34 @@ public class MemberController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PutMapping("/profile/updatePassword")
-    public ResponseEntity<?> updatePassword(@AuthenticationPrincipal String nickname, @Valid @RequestBody UpdatePasswordForm updatePasswordForm, Errors errors) {
+    @PutMapping("/profile/password")
+    public ResponseEntity<?> updatePassword(@AuthenticationPrincipal String email, @Valid @RequestBody UpdatePasswordForm updatePasswordForm, Errors errors) {
 
         return null;
     }
 
-    @PutMapping("/profile/update")
-    public ResponseEntity<?> editProfile(@AuthenticationPrincipal String nickname, @RequestBody ProfileForm profileForm) {
-        memberService.editProfile(profileForm, nickname);
+    @PutMapping("/profile")
+    public ResponseEntity<?> editProfile(@AuthenticationPrincipal String email, @RequestBody ProfileForm profileForm) {
+        memberService.editProfile(profileForm, email);
 
 
         return ResponseEntity.ok().body("업데이트");
     }
 
     @GetMapping("/profile/myProfile")
-    public ResponseEntity<?> myProfile(@AuthenticationPrincipal String nickname) {
+    public ResponseEntity<?> myProfile(@AuthenticationPrincipal String email) {
         // 접근 권한 설정 해야함 시큐리티 설정 할 것
-        ProfileForm profileDto = memberService.getProfile(nickname);
+        ProfileForm profileDto = memberService.getProfile(email);
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .data(profileDto)
                 .build();
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @GetMapping("/profile/{nickname}")
-    public ResponseEntity<?> getProfile(@PathVariable String nickname) {
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<?> getProfile(@PathVariable Long id) {
         // 접근 권한 설정 해야함 시큐리티 설정 할 것
-        ProfileForm profileDto = memberService.getProfile(nickname);
+        ProfileForm profileDto = memberService.getProfile(id);
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .data(profileDto)
                 .build();
@@ -165,12 +166,16 @@ public class MemberController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> searchMembers(@RequestBody(required = false) MemberSearchCondition condition, Pageable pageable) {
+    public ResponseEntity<?> searchMembers(@AuthenticationPrincipal String email, @RequestBody(required = false) MemberSearchCondition condition, Pageable pageable) {
+        //로그인한 회원이 검색히 북마크 정보도 DTO에 담아서 리턴 해줘야한다. 로그인 유무
+
+        Member member = memberDataRepository.findMemberByNickname(email);
+
         Page<SearchMemberDto> searchMemberDtos = null;
         if (condition != null) {
-            searchMemberDtos = memberService.searchMemberDto(condition, pageable);
+            searchMemberDtos = memberService.searchMemberDto(member, condition, pageable);
         } else if (condition == null) {
-            searchMemberDtos = memberService.searchMemberDto(pageable);
+            searchMemberDtos = memberService.searchMemberDto(member, pageable);
         }
         ResponseDto<Object> responseListDto = ResponseDto.builder().data(searchMemberDtos)
                 .build();

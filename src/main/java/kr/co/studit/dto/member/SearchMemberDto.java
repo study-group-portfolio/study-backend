@@ -15,5 +15,8 @@ public class SearchMemberDto {
     private List<String> area = new ArrayList<>();
     private List<String> skillName = new ArrayList<>();
 
+    private Long bookmarkId;
+    private boolean bookmarkState;
+
 
 }
