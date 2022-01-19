@@ -1,7 +1,7 @@
-package kr.co.studit.dto;
+package kr.co.studit.dto.member;
 
-import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.annotations.ApiModelProperty;
+import kr.co.studit.dto.member.BasicProfileForm;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import lombok.Data;
@@ -12,10 +12,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class ProfileForm {
-
-    @ApiModelProperty(example = "nickname")
-    private String nickname;
+public class ProfileForm extends BasicProfileForm {
 
     @ApiModelProperty(example = "자기소개")
     private String bio;

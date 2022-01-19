@@ -1,13 +1,10 @@
 package kr.co.studit.repository.member;
 
 import kr.co.studit.entity.member.Member;
-import kr.co.studit.entity.member.MemberRegion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 @EnableJpaRepositories
 /**
@@ -16,9 +13,10 @@ import java.util.stream.Stream;
  */
 public interface MemberDataRepository extends JpaRepository<Member, Long>, MemberCustomRepository {
     Member findMemberByEmail(String email);
+    Member findMemberById(Long id);
     Boolean existsByEmail(String email);
     Member findMemberByNickname(String nickname);
-
+    Boolean existsByNickname(String nickname);
 
 
 }

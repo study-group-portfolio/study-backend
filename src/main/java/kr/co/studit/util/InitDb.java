@@ -1,5 +1,8 @@
 package kr.co.studit.util;
 
+import kr.co.studit.dto.PositionDto;
+import kr.co.studit.dto.StudyDto;
+import kr.co.studit.dto.StudyForm;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
@@ -8,6 +11,7 @@ import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.study.Study;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
+import kr.co.studit.service.StudyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -39,6 +43,7 @@ public class InitDb {
         private final EntityManager em;
         private final MemberDataRepository memberDataRepository;
         private final MemberService memberService;
+        private final StudyService studyService;
         private final PasswordEncoder passwordEncoder;
 
         // 메소드 분리
@@ -55,8 +60,62 @@ public class InitDb {
             return member1;
         }
 
-        private void serPosition() {
+        private void createStudys() {
+            for (int i = 0; i < 10; i++) {
+                Member member = memberDataRepository.findMemberByNickname("user" + i);
+                StudyDto studyDto = createStudyDto(member.getEmail());
+                studyService.createStudy(studyDto);
 
+            }
+        }
+
+        private StudyDto createStudyDto(String email) {
+            StudyDto studyDto = new StudyDto();
+
+            studyDto.setEmail(email);
+
+            studyDto.setType(StudyType.PROJECT);
+
+            studyDto.setTitle("타이틀");
+
+            studyDto.setContent("내용...");
+
+            studyDto.setProfileShare(true);
+
+            studyDto.setStatus(OnOffStatus.ON);
+
+            studyDto.setRegion("서울");
+
+            studyDto.setDuration("3달");
+
+            studyDto.setStudyDay("주말");
+
+            PositionDto position1 = new PositionDto();
+            position1.setPosition("백엔드");
+            position1.setCount(5);
+            position1.getSkills().add("스프링");
+            position1.getSkills().add("장고");
+
+            PositionDto position2 = new PositionDto();
+            position2.setPosition("프론트");
+            position2.setCount(4);
+            position2.getSkills().add("리엑트");
+            position2.getSkills().add("뷰");
+
+            studyDto.setPositions(new ArrayList<>());
+            studyDto.getPositions().add(position1);
+            studyDto.getPositions().add(position2);
+
+            studyDto.setReceptionStart("11월");
+            studyDto.setReceptionEnd("12월");
+
+            ArrayList<String> tools = new ArrayList<>();
+            tools.add("Git");
+            tools.add("Jira");
+
+            studyDto.setTools(tools);
+
+            return studyDto;
         }
 
         private void initMembers() {
@@ -67,8 +126,6 @@ public class InitDb {
                         .bio("user"+i+"입니다")
                         .email("studit"+i+"@studit.co.kr")
                         .password(passwordEncoder.encode("12345678"))
-                        .createAt(LocalDateTime.now())
-                        .updateAt(LocalDateTime.now())
                         .role(Role.USER)
                         .onOffStatus(OnOffStatus.ON)
                         .publicProfile(true)
@@ -95,8 +152,6 @@ public class InitDb {
                         .bio("user"+i+"입니다")
                         .email("studit"+i+"@studit.co.kr")
                         .password("12345678")
-                        .createAt(LocalDateTime.now())
-                        .updateAt(LocalDateTime.now())
                         .role(Role.USER)
                         .onOffStatus(OnOffStatus.OFF)
                         .publicProfile(true)
@@ -126,8 +181,6 @@ public class InitDb {
                         .bio("user"+i+"입니다")
                         .email("studit"+i+"@studit.co.kr")
                         .password("12345678")
-                        .createAt(LocalDateTime.now())
-                        .updateAt(LocalDateTime.now())
                         .role(Role.USER)
                         .onOffStatus(OnOffStatus.ONOFF)
                         .publicProfile(true)
@@ -219,6 +272,10 @@ public class InitDb {
             em.persist(study);
         }
 
+        private void createStudy() {
+            memberDataRepository.findMemberByNickname("user1");
+        }
+
         public void dbInit1() {
             Member member = initMember();
             Region zone = initRegion();
@@ -226,6 +283,7 @@ public class InitDb {
             initToll();
             initStudy(member, zone);
             initMembers();
+            createStudys();
             em.flush();
 //            em.clear();
 //            List<Study> list = member.getStudys();

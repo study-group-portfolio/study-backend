@@ -3,7 +3,9 @@ package kr.co.studit.service;
 import kr.co.studit.dto.*;
 import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
+import kr.co.studit.dto.member.*;
 import kr.co.studit.dto.search.MemberSearchCondition;
+import kr.co.studit.entity.Bookmark;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Region;
 import kr.co.studit.entity.Skill;
@@ -20,6 +22,7 @@ import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.util.mail.EmailMessage;
 import kr.co.studit.util.mail.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,15 +31,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -125,17 +125,15 @@ public class MemberService {
 
     public void compleateSignup(Member member) {
         member.setRole(Role.USER);
-        member.createAt();
         member.compleateSignup();
     }
 
-    public void editProfile(ProfileForm profileForm, String nickname) {
-        Member member = memberDataRepository.findMemberByNickname(nickname);
+    public void editProfile(ProfileForm profileForm, String email) {
+        Member member = memberDataRepository.findMemberByEmail(email);
         member.updateMember(profileForm);
         updateMemberRegion(profileForm.getRegions(), member);
         updateMemberPosition(profileForm.getPositions(), member);
         updateMemberSkill(profileForm.getSkills(), member);
-        member.updateAt();
     }
 
     public void updateMemberSkill(List<String> skills, Member member) {
@@ -230,11 +228,20 @@ public class MemberService {
         }
     }
 
-    public ProfileForm getProfile(String nickname) {
-        Member member = memberDataRepository.findMemberByNickname(nickname);
+    public ProfileForm getProfile(String email) {
+        Member member = memberDataRepository.findMemberByEmail(email);
+        return toProfleForm(member);
+    }
+
+    public ProfileForm getProfile(Long id) {
+        Member member = memberDataRepository.findMemberById(id);
+        return toProfleForm(member);
+    }
+    public ProfileForm toProfleForm(Member member) {
         ProfileForm profileForm = new ProfileForm();
         profileForm.setBio(member.getBio());
         profileForm.setNickname(member.getNickname());
+        profileForm.setEmail(member.getEmail());
         profileForm.setOnOffStatus(member.getOnOffStatus());
         profileForm.setStudyType(member.getStudyType());
         profileForm.setPositions(getStream(member.getPositions()).map(memberPosition -> memberPosition.getPosition().getPositionName()).collect(toList()));
@@ -247,19 +254,20 @@ public class MemberService {
         return Optional.ofNullable(list).map(List::stream).orElseGet(Stream::empty);
     }
 
-    public Page<SearchMemberDto> searchMemberDto(Pageable pageable) {
+    public Page<SearchMemberDto> searchMemberDto(Member loginMember, Pageable pageable) {
         Page<Member> members = memberDataRepository.searchPageMember(pageable);
-        Page<SearchMemberDto> page = createSearchMemberDto(members);
+        Page<SearchMemberDto> page = createSearchMemberDto(loginMember, members);
         return page;
     }
 
-    public Page<SearchMemberDto> searchMemberDto(MemberSearchCondition condition, Pageable pageable) {
+    public Page<SearchMemberDto> searchMemberDto(Member loginMember, MemberSearchCondition condition, Pageable pageable) {
         Page<Member> members = memberDataRepository.searchPageMember(condition, pageable);
-        return createSearchMemberDto(members);
+        return createSearchMemberDto(loginMember, members);
     }
 
-    private Page<SearchMemberDto> createSearchMemberDto(Page<Member> members) {
+    private Page<SearchMemberDto> createSearchMemberDto(Member loginMember ,Page<Member> members) {
         List<SearchMemberDto> searchMemberDtos = new ArrayList<>();
+
         for (Member member: members) {
             SearchMemberDto searchMemberDto = new SearchMemberDto();
             searchMemberDto.setMemberId(member.getId());
@@ -267,7 +275,12 @@ public class MemberService {
             searchMemberDto.setPositionName(getStream(member.getPositions()).map(memberPosition -> memberPosition.getPosition().getPositionName()).collect(toList()));
             searchMemberDto.setSkillName(getStream(member.getSkills()).map(memberSkill -> memberSkill.getSkill().getSkillName()).collect(toList()));
             searchMemberDto.setArea(getStream(member.getRegions()).map(memberRegion -> memberRegion.getRegion().getArea()).collect(toList()));
+            getStream(loginMember.getBookmarks()).filter(bookmark -> bookmark.getMarkedMember().getId() == member.getId()).forEach(bookmark -> {
+                searchMemberDto.setBookmarkId(bookmark.getId());
+                searchMemberDto.setBookmarkState(true);
+            });
             searchMemberDtos.add(searchMemberDto);
+
         }
         Page<SearchMemberDto> page = new PageImpl<>(searchMemberDtos, members.getPageable(), members.getTotalElements());
         return page;
@@ -320,5 +333,10 @@ public class MemberService {
             return alarmDto;
         }).collect(toList());
         return result;
+      
+    public Member editBasicProfile(String email, BasicProfileForm basicProfileForm) {
+        Member member = memberDataRepository.findMemberByEmail(email);
+        member.setNickname(basicProfileForm.getNickname());
+        return member;
     }
 }

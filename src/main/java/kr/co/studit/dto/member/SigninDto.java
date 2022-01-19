@@ -1,4 +1,4 @@
-package kr.co.studit.dto;
+package kr.co.studit.dto.member;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

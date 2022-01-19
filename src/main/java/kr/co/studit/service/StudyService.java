@@ -116,8 +116,8 @@ public class StudyService {
 
 
     }
-
-    private StudyDto studyDtoMapper(Study study) {
+    // bookmark에서 사용하기 위해 private -> public으로 변경 - jinu
+    public StudyDto studyDtoMapper(Study study) {
         StudyDto studyDto = new StudyDto();
         studyDto.setId(study.getId());
         studyDto.setType(study.getType());

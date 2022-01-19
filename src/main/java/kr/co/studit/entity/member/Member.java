@@ -3,11 +3,16 @@ package kr.co.studit.entity.member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kr.co.studit.dto.ProfileForm;
 import kr.co.studit.entity.study.Study;
+import kr.co.studit.dto.member.ProfileForm;
+import kr.co.studit.entity.BaseTimeEntity;
+import kr.co.studit.entity.Bookmark;
+import kr.co.studit.entity.Study;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
 import kr.co.studit.entity.enums.StudyType;
 import lombok.*;
 
+import javax.jdo.annotations.Unique;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,19 +27,23 @@ import java.util.UUID;
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(
-                        columnNames = {"email"}
+                        columnNames = {"email","nickname"}
                 )
         }
 )
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+public class Member extends BaseTimeEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
+
+    @Column(name = "nickname")
     private String nickname;
+
+    @Column(name = "email")
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -69,10 +78,6 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<MemberSkill> skills = new ArrayList<>();
 
-    // 생성 날짜, 수정 날짜
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
-
     // 이에일 인증 여부
     private boolean emailVerified;
 
@@ -85,6 +90,12 @@ public class Member {
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private final List<Study> studys = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "markMember",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true)
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     public static Member createMember(String email) {
         Member member = new Member();
@@ -108,19 +119,6 @@ public class Member {
     public boolean canSendConfirmEmail() {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusMinutes(30));
     }
-
-    public void createAt() {
-        this.createAt = LocalDateTime.now();
-        this.updateAt = LocalDateTime.now();
-    }
-
-    public void updateAt() {
-        this.updateAt = LocalDateTime.now();
-    }
-
-
-
-
 
     public void updateMember(ProfileForm profileForm) {
         this.bio = profileForm.getBio();
@@ -151,5 +149,4 @@ public class Member {
         this.skills.add(memberSkill);
     }
 
-// TODO 프로필 포트폴리오 , 비밀번호 찾기, 비밀번호 재설정, 기타(스터디 활동)
 }
