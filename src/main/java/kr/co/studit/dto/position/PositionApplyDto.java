@@ -1,4 +1,4 @@
-package kr.co.studit.dto;
+package kr.co.studit.dto.position;
 
 import lombok.Getter;
 import lombok.Setter;

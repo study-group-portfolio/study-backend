@@ -1,18 +1,15 @@
 package kr.co.studit.entity.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import kr.co.studit.dto.ProfileForm;
 import kr.co.studit.entity.study.Study;
 import kr.co.studit.dto.member.ProfileForm;
-import kr.co.studit.entity.BaseTimeEntity;
+import kr.co.studit.entity.common.BaseTimeEntity;
 import kr.co.studit.entity.Bookmark;
-import kr.co.studit.entity.Study;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
 import kr.co.studit.entity.enums.StudyType;
 import lombok.*;
 
-import javax.jdo.annotations.Unique;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,11 +36,7 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
-
-    @Column(name = "nickname")
     private String nickname;
-
-    @Column(name = "email")
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)

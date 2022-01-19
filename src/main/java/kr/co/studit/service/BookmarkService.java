@@ -1,14 +1,12 @@
 package kr.co.studit.service;
 
-import kr.co.studit.dto.StudyDto;
+import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.dto.bookmark.BookmarkRes;
 import kr.co.studit.dto.member.SearchMemberDto;
 import kr.co.studit.entity.Bookmark;
-import kr.co.studit.entity.Study;
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.study.Study;
 import kr.co.studit.repository.bookmark.BookmarkDataRepository;
-import kr.co.studit.repository.data.StudyDataRepository;
-import kr.co.studit.repository.member.MemberDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

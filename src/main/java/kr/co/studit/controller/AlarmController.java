@@ -2,13 +2,13 @@ package kr.co.studit.controller;
 
 import kr.co.studit.dto.*;
 import kr.co.studit.dto.enums.Status;
-import kr.co.studit.entity.member.Member;
+import kr.co.studit.dto.response.ResponseDto;
+import kr.co.studit.dto.study.StudyAllowDto;
 import kr.co.studit.error.ErrorResponse;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.service.StudyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,4 +1,4 @@
-package kr.co.studit.entity;
+package kr.co.studit.entity.common;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

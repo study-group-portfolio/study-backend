@@ -1,7 +1,7 @@
 package kr.co.studit.service;
 
-import kr.co.studit.dto.PositionDto;
-import kr.co.studit.dto.StudyDto;
+import kr.co.studit.dto.position.PositionDto;
+import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
@@ -10,8 +10,8 @@ import kr.co.studit.entity.study.Study;
 import kr.co.studit.entity.study.StudyPosition;
 import kr.co.studit.entity.study.StudySkill;
 import kr.co.studit.entity.study.StudyTool;
-import kr.co.studit.repository.StudyRepository;
-import kr.co.studit.repository.data.*;
+import kr.co.studit.repository.study.StudyRepository;
+import kr.co.studit.repository.study.*;
 import kr.co.studit.repository.member.MemberDataRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -138,7 +138,6 @@ class StudyServiceTest {
     private StudyDto createStudyDto(String email) {
         StudyDto studyDto = new StudyDto();
 
-        studyDto.setEmail(email);
 
         studyDto.setType(StudyType.PROJECT);
 

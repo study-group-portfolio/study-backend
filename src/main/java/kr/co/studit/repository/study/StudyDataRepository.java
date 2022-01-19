@@ -1,4 +1,4 @@
-package kr.co.studit.repository.data;
+package kr.co.studit.repository.study;
 
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.study.Study;

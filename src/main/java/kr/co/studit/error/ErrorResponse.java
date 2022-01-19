@@ -1,11 +1,10 @@
 package kr.co.studit.error;
 
 
-import kr.co.studit.dto.ResponseDto;
+import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.dto.enums.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 
 
 public class ErrorResponse {

@@ -4,8 +4,8 @@ import kr.co.studit.dto.*;
 import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.member.*;
+import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.dto.search.MemberSearchCondition;
-import kr.co.studit.entity.Bookmark;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Region;
 import kr.co.studit.entity.Skill;
@@ -15,14 +15,12 @@ import kr.co.studit.entity.study.Study;
 import kr.co.studit.error.ErrorResponse;
 import kr.co.studit.provider.TokenProvider;
 import kr.co.studit.repository.RegionDataRepository;
-import kr.co.studit.repository.StudyRepository;
-import kr.co.studit.repository.data.MemberRegionDataRepository;
-import kr.co.studit.repository.data.StudyDataRepository;
+import kr.co.studit.repository.study.StudyRepository;
+import kr.co.studit.repository.study.StudyDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.util.mail.EmailMessage;
 import kr.co.studit.util.mail.EmailService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -333,6 +331,7 @@ public class MemberService {
             return alarmDto;
         }).collect(toList());
         return result;
+    }
       
     public Member editBasicProfile(String email, BasicProfileForm basicProfileForm) {
         Member member = memberDataRepository.findMemberByEmail(email);

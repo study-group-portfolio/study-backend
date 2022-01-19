@@ -1,8 +1,7 @@
 package kr.co.studit.util;
 
-import kr.co.studit.dto.PositionDto;
-import kr.co.studit.dto.StudyDto;
-import kr.co.studit.dto.StudyForm;
+import kr.co.studit.dto.position.PositionDto;
+import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,16 +61,15 @@ public class InitDb {
         private void createStudys() {
             for (int i = 0; i < 10; i++) {
                 Member member = memberDataRepository.findMemberByNickname("user" + i);
-                StudyDto studyDto = createStudyDto(member.getEmail());
-                studyService.createStudy(studyDto);
+                StudyDto studyDto = createStudyDto();
+                studyService.createStudy(studyDto,member.getEmail());
 
             }
         }
 
-        private StudyDto createStudyDto(String email) {
+        private StudyDto createStudyDto() {
             StudyDto studyDto = new StudyDto();
 
-            studyDto.setEmail(email);
 
             studyDto.setType(StudyType.PROJECT);
 

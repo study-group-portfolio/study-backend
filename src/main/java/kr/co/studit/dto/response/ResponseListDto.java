@@ -1,4 +1,4 @@
-package kr.co.studit.dto;
+package kr.co.studit.dto.response;
 
 import kr.co.studit.dto.enums.Status;
 import lombok.AllArgsConstructor;

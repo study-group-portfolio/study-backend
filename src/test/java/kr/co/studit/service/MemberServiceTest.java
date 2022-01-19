@@ -10,7 +10,7 @@ import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.repository.RegionDataRepository;
 import kr.co.studit.repository.bookmark.BookmarkDataRepository;
-import kr.co.studit.repository.data.MemberRegionDataRepository;
+import kr.co.studit.repository.member.MemberRegionDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;

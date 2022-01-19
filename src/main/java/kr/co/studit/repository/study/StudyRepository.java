@@ -1,18 +1,15 @@
-package kr.co.studit.repository;
+package kr.co.studit.repository.study;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.studit.dto.mapper.StudySearchDto;
+import kr.co.studit.dto.search.StudySearchCondition;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.member.Member;
-import kr.co.studit.entity.member.MemberInvitation;
-import kr.co.studit.entity.member.QMemberInvitation;
 import kr.co.studit.entity.study.*;
 import kr.co.studit.repository.member.MemberDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
@@ -22,7 +19,6 @@ import java.util.List;
 import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QRegion.region;
 import static kr.co.studit.entity.QSkill.skill;
-import static kr.co.studit.entity.member.QMemberInvitation.memberInvitation;
 import static kr.co.studit.entity.study.QStudy.study;
 import static kr.co.studit.entity.study.QStudyApplication.studyApplication;
 import static kr.co.studit.entity.study.QStudyParticipation.studyParticipation;
@@ -111,7 +107,7 @@ public class StudyRepository {
                 .execute();
     }
 
-    public List<Study> findStudyByFilter(StudySearchDto searchDto) {
+    public List<Study> findStudyByFilter(StudySearchCondition searchDto) {
         List<Study> studyList = queryFactory
                 .selectFrom(study).distinct()
                 .leftJoin(study.studyPosition, studyPosition)

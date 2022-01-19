@@ -1,4 +1,4 @@
-package kr.co.studit.dto.mapper;
+package kr.co.studit.dto.search;
 
 import io.swagger.annotations.ApiModelProperty;
 import kr.co.studit.entity.enums.OnOffStatus;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-public class StudySearchDto {
+public class StudySearchCondition {
     @ApiModelProperty(example = "PROJECT")
     private StudyType type;
 

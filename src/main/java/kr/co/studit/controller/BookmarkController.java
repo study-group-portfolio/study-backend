@@ -1,29 +1,22 @@
 package kr.co.studit.controller;
 
-import kr.co.studit.dto.ResponseDto;
-import kr.co.studit.dto.StudyDto;
+import kr.co.studit.dto.response.ResponseDto;
+import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.dto.bookmark.BookmarkRes;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.member.SearchMemberDto;
-import kr.co.studit.entity.Bookmark;
-import kr.co.studit.entity.Study;
 import kr.co.studit.entity.member.Member;
-import kr.co.studit.repository.bookmark.BookmarkDataRepository;
-import kr.co.studit.repository.data.StudyDataRepository;
+import kr.co.studit.entity.study.Study;
+import kr.co.studit.repository.study.StudyDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.BookmarkService;
-import kr.co.studit.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/bookmark")

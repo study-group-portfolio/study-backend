@@ -1,4 +1,4 @@
-package kr.co.studit.repository.data;
+package kr.co.studit.repository.member;
 
 import kr.co.studit.entity.member.MemberRegion;
 import org.springframework.data.jpa.repository.JpaRepository;

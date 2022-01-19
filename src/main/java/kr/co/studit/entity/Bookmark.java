@@ -1,6 +1,7 @@
 package kr.co.studit.entity;
 
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.study.Study;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

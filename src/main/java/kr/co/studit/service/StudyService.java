@@ -3,31 +3,33 @@ package kr.co.studit.service;
 import kr.co.studit.dto.*;
 import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
-import kr.co.studit.dto.mapper.StudySearchDto;
+import kr.co.studit.dto.position.PositionApplyDto;
+import kr.co.studit.dto.position.PositionDto;
+import kr.co.studit.dto.response.ResponseDto;
+import kr.co.studit.dto.response.ResponseListDto;
+import kr.co.studit.dto.search.StudySearchCondition;
+import kr.co.studit.dto.study.StudyAllowDto;
+import kr.co.studit.dto.study.StudyDto;
+import kr.co.studit.dto.study.StudyForm;
+import kr.co.studit.dto.study.StudyUpdateDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
-import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.member.MemberInvitation;
 import kr.co.studit.entity.study.*;
 import kr.co.studit.error.ErrorResponse;
-import kr.co.studit.repository.StudyRepository;
-import kr.co.studit.repository.data.*;
+import kr.co.studit.repository.study.StudyRepository;
+import kr.co.studit.repository.study.*;
 import kr.co.studit.repository.member.MemberDataRepository;
 import lombok.AllArgsConstructor;
-import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,9 +40,9 @@ public class StudyService {
     private final StudyDataRepository studyDataRepository;
     private final StudyRepository studyRepository;
     private final MemberDataRepository memberDataRepository;
-    private final SqlSession sqlSession;
+//    private final SqlSession sqlSession;
 
-    public ResponseEntity<?> createStudy(StudyDto studyDto,String email) {
+    public ResponseEntity<?> createStudy(StudyDto studyDto, String email) {
         ResponseDto<StudyDto> response = new ResponseDto<>();
         try {
             Study study = studyMapper(studyDto,email);
@@ -162,7 +164,7 @@ public class StudyService {
     }
 
 
-    private Study studyMapper(StudyForm studyDto,String email) {
+    private Study studyMapper(StudyForm studyDto, String email) {
         Study study = new Study();
         if (studyDto.getId() != null) {
             study.setId(studyDto.getId());
@@ -245,7 +247,7 @@ public class StudyService {
     }
 
     @Transactional
-    public ResponseEntity<?> updateStudy(Long id,String email,StudyUpdateDto studyUpdateDto) {
+    public ResponseEntity<?> updateStudy(Long id, String email, StudyUpdateDto studyUpdateDto) {
         ResponseDto<String> response = new ResponseDto<String>();
         try {
             Study study = studyDataRepository.findById(id).orElseThrow(() -> new Exception("해당 글이 없습니다"));
@@ -262,11 +264,11 @@ public class StudyService {
     }
 
 
-    public ResponseEntity<?> searchStudy(StudySearchDto searchDto){
+    public ResponseEntity<?> searchStudy(StudySearchCondition studySearchCondition){
         ResponseListDto<StudyDto> response = new ResponseListDto<StudyDto>();
         try {
             List<StudyDto> studyDtoList = new ArrayList<>();
-            List<Study> studyList = studyRepository.findStudyByFilter(searchDto);
+            List<Study> studyList = studyRepository.findStudyByFilter(studySearchCondition);
 
             for (Study study : studyList) {
                 StudyDto studyDto = studyDtoMapper(study);
@@ -284,7 +286,7 @@ public class StudyService {
     }
 
 
-    public ResponseEntity<?> applyPosition(String applyEmail,PositionApplyDto positionApplyDto){
+    public ResponseEntity<?> applyPosition(String applyEmail, PositionApplyDto positionApplyDto){
 
         ResponseDto<String> response = new ResponseDto<>();
         try {

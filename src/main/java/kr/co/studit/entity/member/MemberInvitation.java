@@ -1,9 +1,8 @@
 package kr.co.studit.entity.member;
 
-import kr.co.studit.entity.BaseTimeEntity;
+import kr.co.studit.entity.common.BaseTimeEntity;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.study.Study;
-import kr.co.studit.entity.study.StudyApplication;
 import lombok.Getter;
 import lombok.Setter;
 

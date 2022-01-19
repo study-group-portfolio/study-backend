@@ -1,8 +1,8 @@
 package kr.co.studit.controller;
 
-import kr.co.studit.dto.*;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.member.*;
+import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.provider.TokenProvider;
@@ -18,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.util.StringUtils;
 
 import javax.validation.Valid;
 
@@ -122,7 +121,6 @@ public class MemberController {
         Member member = memberService.editBasicProfile(email, basicProfileForm);
         String token = tokenProvider.create(member);
         ResponseDto<Object> responseDto = ResponseDto.builder()
-                .token(token)
                 .data(basicProfileForm)
                 .status(Status.SUCCESS)
                 .build();

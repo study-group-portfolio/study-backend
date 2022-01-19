@@ -1,6 +1,7 @@
-package kr.co.studit.dto;
+package kr.co.studit.dto.study;
 
 import io.swagger.annotations.ApiModelProperty;
+import kr.co.studit.dto.position.PositionDto;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import lombok.Getter;

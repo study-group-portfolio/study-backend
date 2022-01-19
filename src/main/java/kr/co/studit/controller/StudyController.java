@@ -1,8 +1,11 @@
 package kr.co.studit.controller;
 
 
-import kr.co.studit.dto.*;
-import kr.co.studit.dto.mapper.StudySearchDto;
+import kr.co.studit.dto.position.PositionApplyDto;
+import kr.co.studit.dto.search.StudySearchCondition;
+import kr.co.studit.dto.study.StudyAllowDto;
+import kr.co.studit.dto.study.StudyDto;
+import kr.co.studit.dto.study.StudyUpdateDto;
 import kr.co.studit.service.StudyService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +38,7 @@ public class StudyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editStudy(@PathVariable Long id,@RequestBody StudyUpdateDto studyUpdateDto, @AuthenticationPrincipal String email) {
+    public ResponseEntity<?> editStudy(@PathVariable Long id, @RequestBody StudyUpdateDto studyUpdateDto, @AuthenticationPrincipal String email) {
         return studyService.updateStudy(id, email, studyUpdateDto);
     }
 
@@ -45,8 +48,8 @@ public class StudyController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> searchStudy(@RequestBody StudySearchDto searchDto) {
-        return studyService.searchStudy(searchDto);
+    public ResponseEntity<?> searchStudy(@RequestBody StudySearchCondition studySearchCondition) {
+        return studyService.searchStudy(studySearchCondition);
     }
 
     @PostMapping("/apply")
