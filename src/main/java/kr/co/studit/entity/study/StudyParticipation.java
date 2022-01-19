@@ -1,5 +1,6 @@
-package kr.co.studit.entity;
+package kr.co.studit.entity.study;
 
+import kr.co.studit.entity.Position;
 import kr.co.studit.entity.member.Member;
 import lombok.Data;
 
@@ -7,7 +8,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class StudyParticipattion {
+public class StudyParticipation {
     @Id
     @GeneratedValue
     @Column(name="study_participation_id")
@@ -25,9 +26,9 @@ public class StudyParticipattion {
     @JoinColumn(name = "position_id")
     Position position;
 
-    public static StudyParticipattion createStudyParticipattion(Study study, Member member, Position position) {
+    public static StudyParticipation createStudyParticipation(Study study, Member member, Position position) {
 
-        StudyParticipattion studyParticipattion = new StudyParticipattion();
+        StudyParticipation studyParticipattion = new StudyParticipation();
         studyParticipattion.setStudy(study);
         studyParticipattion.setMember(member);
         studyParticipattion.setPosition(position);
@@ -36,6 +37,6 @@ public class StudyParticipattion {
 
     public void setStudy(Study study) {
         this.study = study;
-        study.getStudyParticipattion().add(this);
+        study.getStudyParticipation().add(this);
     }
 }

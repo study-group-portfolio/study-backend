@@ -5,9 +5,7 @@ import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
-import kr.co.studit.entity.member.MemberPosition;
-import kr.co.studit.entity.member.MemberRegion;
-import kr.co.studit.entity.member.MemberSkill;
+import kr.co.studit.entity.study.Study;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +43,16 @@ public class InitDb {
 
         // 메소드 분리
         private Member initMember() {
-            Member member = Member.createMember("test@test.com");
-            em.persist(member);
-            return member;
+            Member member1 = Member.createMember("test@test.com");
+            member1.setPassword(passwordEncoder.encode("test"));
+            Member member2 = Member.createMember("test2@test.com");
+            member2.setPassword(passwordEncoder.encode("test"));
+            Member member3 = Member.createMember("test3@test.com");
+            member3.setPassword(passwordEncoder.encode("test"));
+            em.persist(member1);
+            em.persist(member2);
+            em.persist(member3);
+            return member1;
         }
 
         private void serPosition() {

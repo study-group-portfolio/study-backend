@@ -10,10 +10,8 @@ import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Skill;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
-import kr.co.studit.entity.member.Member;
-import kr.co.studit.entity.member.MemberPosition;
-import kr.co.studit.entity.member.MemberRegion;
-import kr.co.studit.entity.member.MemberSkill;
+import kr.co.studit.entity.member.*;
+import kr.co.studit.entity.study.StudyApplication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,6 +26,7 @@ import java.util.List;
 import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QSkill.skill;
 import static kr.co.studit.entity.member.QMember.member;
+import static kr.co.studit.entity.member.QMemberInvitation.memberInvitation;
 import static kr.co.studit.entity.member.QMemberPosition.memberPosition;
 import static kr.co.studit.entity.member.QMemberRegion.memberRegion;
 import static kr.co.studit.entity.member.QMemberSkill.memberSkill;
@@ -141,6 +140,40 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         List<Member> content = results.getResults();
         long total = results.getTotal();
         return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public List<MemberInvitation> findMemberInvitationByEmail(String email) {
+
+        return queryFactory
+                .selectFrom(memberInvitation)
+                .where(memberInvitation.member.email.eq(email))
+                .fetch();
+    }
+    public boolean checkInviteMember(String email) {
+        return queryFactory
+                .selectFrom(memberInvitation)
+                .where(memberInvitation.member.email.eq(email))
+                .fetch()
+                .size() >= 1;
+
+    }
+
+    @Override
+    public void deleteMemberInvitationById(Long id) {
+        queryFactory
+                .delete(memberInvitation)
+                .where(memberInvitation.id.eq(id))
+                .execute();
+    }
+
+    @Override
+    public MemberInvitation findMemberInvitationById(Long id) {
+        return queryFactory
+                .selectFrom(memberInvitation)
+                .where(memberInvitation.id.eq(id))
+                .fetchOne()
+                ;
     }
 
     private BooleanExpression skillEq(List<String> skills) {

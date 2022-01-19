@@ -15,9 +15,6 @@ public class StudyForm {
     @ApiModelProperty(example = "PROJECT")
     private StudyType type;
 
-    @ApiModelProperty(example = "test@test.com")
-    private String email;
-
     @ApiModelProperty(example = "타이틀")
     private String title;
 

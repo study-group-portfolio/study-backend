@@ -5,10 +5,8 @@ import kr.co.studit.dto.SearchMemberDto;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Skill;
-import kr.co.studit.entity.member.Member;
-import kr.co.studit.entity.member.MemberPosition;
-import kr.co.studit.entity.member.MemberRegion;
-import kr.co.studit.entity.member.MemberSkill;
+import kr.co.studit.entity.member.*;
+import kr.co.studit.entity.study.StudyApplication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -40,4 +38,12 @@ public interface MemberCustomRepository {
     Page<Member> searchPageMember(Pageable pageable);
 
     Page<Member> searchPageMember(MemberSearchCondition condition, Pageable pageable);
+
+    List<MemberInvitation> findMemberInvitationByEmail(String email);
+
+    boolean checkInviteMember(String inviteMember);
+
+    void deleteMemberInvitationById(Long id);
+
+    MemberInvitation findMemberInvitationById(Long id);
 }

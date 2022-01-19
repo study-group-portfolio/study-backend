@@ -5,9 +5,12 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.member.Member;
-import kr.co.studit.entity.member.QMember;
+import kr.co.studit.entity.member.MemberInvitation;
+import kr.co.studit.entity.member.QMemberInvitation;
+import kr.co.studit.entity.study.*;
 import kr.co.studit.repository.member.MemberDataRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +22,13 @@ import java.util.List;
 import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QRegion.region;
 import static kr.co.studit.entity.QSkill.skill;
-import static kr.co.studit.entity.QStudy.study;
-import static kr.co.studit.entity.QStudyApplication.studyApplication;
-import static kr.co.studit.entity.QStudyPosition.studyPosition;
-import static kr.co.studit.entity.QStudySkill.studySkill;
-import static kr.co.studit.entity.QStudyTool.studyTool;
+import static kr.co.studit.entity.member.QMemberInvitation.memberInvitation;
+import static kr.co.studit.entity.study.QStudy.study;
+import static kr.co.studit.entity.study.QStudyApplication.studyApplication;
+import static kr.co.studit.entity.study.QStudyParticipation.studyParticipation;
+import static kr.co.studit.entity.study.QStudyPosition.studyPosition;
+import static kr.co.studit.entity.study.QStudySkill.studySkill;
+import static kr.co.studit.entity.study.QStudyTool.studyTool;
 import static kr.co.studit.entity.QTool.tool;
 import static kr.co.studit.entity.member.QMember.member;
 
@@ -83,7 +88,6 @@ public class StudyRepository {
 //                .delete(study.region)
 //                .execute();
 //    }
-    @Transactional
     public void deletePosition(Study myStudy) {
         queryFactory
                 .delete(studyPosition)
@@ -93,7 +97,6 @@ public class StudyRepository {
 
 
     }
-    @Transactional
     public void deleteSkill(Study myStudy) {
         queryFactory
                 .delete(studySkill)
@@ -165,14 +168,13 @@ public class StudyRepository {
                 .fetch();
     }
 
-    public List<Study> findParticipatedStudyByEmail(String email) {
-        return null;
-    }
+
 
     public void deleteStudyApplicationById(Long id) {
         queryFactory
                 .delete(studyApplication)
-                .where(studyApplication.id.eq(id));
+                .where(studyApplication.id.eq(id))
+                .execute();
 
     }
     public StudyApplication findStudyApplicationById(Long id) {
@@ -182,6 +184,36 @@ public class StudyRepository {
                 .where(studyApplication.id.eq(id))
                 .fetchOne();
     }
+
+    public List<Study> findParticipatedStudyByEmail(Member findMember) {
+        return queryFactory
+                .select(studyParticipation.study)
+                .from(studyParticipation)
+                .where(studyParticipation.member.eq(findMember))
+                .fetch();
+    }
+
+    public boolean checkApplyStudy(Member findMember){
+        return queryFactory
+                .select(studyApplication.member)
+                .from(studyApplication)
+                .where(studyApplication.member.eq(findMember))
+                .fetch()
+                .size() >= 1;
+    }
+    public boolean checkParticipateStudy(String email){
+        return queryFactory
+                .select(studyParticipation.member)
+                .from(studyParticipation)
+                .where(studyParticipation.member.email.eq(email))
+                .fetch()
+                .size() >= 1;
+    }
+
+    public List<Study> findStudy(Pageable pageable) {
+        return null;
+    }
+
 
 //    public StudyApplication saveStudyApplication()
 

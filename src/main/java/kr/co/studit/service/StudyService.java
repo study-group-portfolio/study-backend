@@ -1,16 +1,23 @@
 package kr.co.studit.service;
 
 import kr.co.studit.dto.*;
+import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.mapper.StudySearchDto;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
+import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.member.MemberInvitation;
+import kr.co.studit.entity.study.*;
+import kr.co.studit.error.ErrorResponse;
 import kr.co.studit.repository.StudyRepository;
 import kr.co.studit.repository.data.*;
 import kr.co.studit.repository.member.MemberDataRepository;
+import lombok.AllArgsConstructor;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,28 +32,30 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class StudyService {
 
-    @Autowired
-    StudyDataRepository studyDataRepository;
-    @Autowired
-    StudyRepository studyRepository;
-    @Autowired
-    MemberDataRepository memberDataRepository;
+    private final StudyDataRepository studyDataRepository;
+    private final StudyRepository studyRepository;
+    private final MemberDataRepository memberDataRepository;
+    private final SqlSession sqlSession;
 
-    @Autowired
-    SqlSession sqlSession;
+    public ResponseEntity<?> createStudy(StudyDto studyDto,String email) {
+        ResponseDto<StudyDto> response = new ResponseDto<>();
+        try {
+            Study study = studyMapper(studyDto,email);
+            Study saveStudy = studyDataRepository.save(study);
+            StudyDto saveStudyDto = studyDtoMapper(saveStudy);
+            response.setData(saveStudyDto);
+            response.setStatus(Status.SUCCESS);
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            return ErrorResponse.getErrorResponse(e);
+        }
 
 
 
-
-    public StudyDto createStudy(StudyDto studyDto) {
-
-        Study study = studyMapper(studyDto);
-        Study saveStudy = studyDataRepository.save(study);
-        StudyDto saveStudyDto = studyDtoMapper(saveStudy);
-
-        return saveStudyDto;
     }
 
     private void createPositionSkill(Study study, ArrayList<PositionDto> positions) {
@@ -59,8 +68,6 @@ public class StudyService {
             studyPosition.setStudy(study);
             studyPosition.setCount(positionDto.getCount());
             studyPosition.setTotalCount(positionDto.getTotalCount());
-
-            study.getStudyPosition().add(studyPosition);
 
             for (String skl : positionDto.getSkills()) {
                 StudySkill studySkill = new StudySkill();
@@ -89,13 +96,25 @@ public class StudyService {
         study.setRegion(region);
     }
 
-    public List<StudyDto> findStudies() {
-        List<Study> allStudy = studyDataRepository.findAll();
-        List<StudyDto> list = new ArrayList<>();
-        for (Study study : allStudy) {
-            list.add(studyDtoMapper(study));
+    public ResponseEntity<?> findStudies(Pageable pageable) {
+        ResponseListDto<StudyDto> response = new ResponseListDto<>();
+        try {
+            List<Study> findStudis = studyRepository.findStudy(pageable);
+            List<StudyDto> list = new ArrayList<>();
+            for (Study study : findStudis) {
+                list.add(studyDtoMapper(study));
+            }
+
+            response.setStatus(Status.SUCCESS);
+            response.setData(list);
+
+            return new ResponseEntity<ResponseListDto<StudyDto>>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return ErrorResponse.getErrorResponse(e);
         }
-        return list;
+
+
+
     }
 
     private StudyDto studyDtoMapper(Study study) {
@@ -105,6 +124,8 @@ public class StudyService {
         studyDto.setTitle(study.getTitle());
         studyDto.setContent(study.getContent());
         studyDto.setStatus(study.getOnOffStatus());
+        studyDto.setCreateDate(study.getCreatedDate());
+        studyDto.setModifiedDate(study.getModifiedDate());
         if (study.getOnOffStatus() != OnOffStatus.OFF) {
             studyDto.setRegion(study.getRegion().getArea());
         }
@@ -141,12 +162,12 @@ public class StudyService {
     }
 
 
-    private Study studyMapper(StudyForm studyDto) {
+    private Study studyMapper(StudyForm studyDto,String email) {
         Study study = new Study();
         if (studyDto.getId() != null) {
             study.setId(studyDto.getId());
         }
-        Member member = memberDataRepository.findMemberByEmail(studyDto.getEmail());
+        Member member = memberDataRepository.findMemberByEmail(email);
         study.setMember(member);
 
         studySetData(study,studyDto,false);
@@ -187,82 +208,112 @@ public class StudyService {
 
     }
 
-    public StudyDto findStudy(Long id) throws Exception{
-        Optional<Study> optionalStudy = studyDataRepository.findById(id);
-        if(optionalStudy.isEmpty()){
-            throw new Exception();
+    public ResponseEntity<?> findStudy(Long id){
+        ResponseDto<StudyDto> response = new ResponseDto<StudyDto>();
+        try {
+            Study study = studyDataRepository.findById(id).orElseThrow(() -> new Exception("존재하지 않는 스터디 입니다"));
+            StudyDto studyDto = studyDtoMapper(study);
+            response.setStatus(Status.SUCCESS);
+            response.setData(studyDto);
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return getErrorResponseEntity(e);
         }
-        Study study = optionalStudy.get();
-        StudyDto studyDto = studyDtoMapper(study);
-        return studyDto;
+
+
     }
 
-    public void deleteStudy(Long id) {
-        studyDataRepository.deleteById(id);
+    public ResponseEntity<?> deleteStudy(Long id,String email) {
+        ResponseDto<String> response = new ResponseDto<String>();
+        try {
+            Study study = studyDataRepository.findById(id).orElseThrow(() -> new Exception("해당 글이 없습니다"));
+            if (study.getMember().getEmail().equals(email)) {
+                studyDataRepository.deleteById(id);
+                response.setData("정상 삭제됐습니다.");
+                response.setStatus(Status.SUCCESS);
+            }
+            else{
+                response.setData("스터디 글 생성자가 아닙니다.");
+                response.setStatus(Status.FALSE);
+            }
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return ErrorResponse.getErrorResponse(new Exception("해당 글이 존재하지 않습니다"));
+        }
+
 
     }
 
     @Transactional
-    public void updateStudy(Long id, StudyUpdateDto studyUpdateDto) throws Exception {
-        Optional<Study> optionalStudy = studyDataRepository.findById(id);
-        if(optionalStudy.isEmpty()){
-            throw new Exception();
-        }
-        Study study = optionalStudy.get();
-        studySetData(study,studyUpdateDto,true);
+    public ResponseEntity<?> updateStudy(Long id,String email,StudyUpdateDto studyUpdateDto) {
+        ResponseDto<String> response = new ResponseDto<String>();
+        try {
+            Study study = studyDataRepository.findById(id).orElseThrow(() -> new Exception("해당 글이 없습니다"));
 
-        studyDataRepository.save(study);
+            studySetData(study, studyUpdateDto, true);
+
+            studyDataRepository.save(study);
+
+            response.setStatus(Status.SUCCESS);
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return ErrorResponse.getErrorResponse(e);
+        }
+    }
+
+
+    public ResponseEntity<?> searchStudy(StudySearchDto searchDto){
+        ResponseListDto<StudyDto> response = new ResponseListDto<StudyDto>();
+        try {
+            List<StudyDto> studyDtoList = new ArrayList<>();
+            List<Study> studyList = studyRepository.findStudyByFilter(searchDto);
+
+            for (Study study : studyList) {
+                StudyDto studyDto = studyDtoMapper(study);
+                studyDtoList.add(studyDto);
+            }
+            response.setStatus(Status.SUCCESS);
+            response.setData(studyDtoList);
+            return new ResponseEntity<ResponseListDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return ErrorResponse.getErrorResponse(e);
+        }
+
+
 
     }
 
 
-    public List<StudyDto> searchStudy(StudySearchDto searchDto) throws SQLException {
-        List<StudyDto> studyDtoList = new ArrayList<>();
-        HashMap<String, String> filterMap = new HashMap<>();
+    public ResponseEntity<?> applyPosition(String applyEmail,PositionApplyDto positionApplyDto){
 
-        List<Study> studyList = studyRepository.findStudyByFilter(searchDto);
-//        String skillName = studyList.get(0).getStudySkill().get(0).getSkill().getSkillName();
+        ResponseDto<String> response = new ResponseDto<>();
+        try {
+            StudyPosition studyPosition = studyRepository.findStudyPositionByName(positionApplyDto.getStudyId(), positionApplyDto.getPosition());
+            Member member = memberDataRepository.findMemberByEmail(applyEmail);
+            if (studyPosition.getTotalCount() <= studyPosition.getCount() || studyRepository.checkApplyStudy(member) || studyRepository.checkParticipateStudy(applyEmail) ) {
+                throw new Exception("지원이 불가능한 상태입니다");
+            }
 
+            Study study = studyDataRepository.findById(positionApplyDto.getStudyId()).get();
 
-        for (Study study : studyList) {
-            StudyDto studyDto = studyDtoMapper(study);
-            studyDtoList.add(studyDto);
+            Position position = studyRepository.findPositionByPositionName(positionApplyDto.getPosition());
+
+            StudyApplication studyApplication = StudyApplication.createStudyApplication(study, member, position, positionApplyDto.getMessage());
+            if (study==null || member ==null || position ==null || studyApplication == null) {
+                throw new IllegalArgumentException();
+            }
+
+            response.setStatus(Status.SUCCESS);
+            response.setData("지원 성공");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return getErrorResponseEntity(e);
         }
-//        List<StudyMapperDto> studyMapperDtos = sqlSession.getMapper(StudyMapper.class).studyFilterSearch(searchDto);
-
-        return studyDtoList;
     }
 
-
-    public StudyApplication positionApply(PositionApplyDto positionApplyDto) {
-
-        StudyPosition studyPosition = studyRepository.findStudyPositionByName(positionApplyDto.getStudyId(), positionApplyDto.getPosition());
-        if (studyPosition.getTotalCount() <= studyPosition.getCount()) {
-            throw new IllegalArgumentException();
-        }
-//        studyPosition.setCount(studyPosition.getCount()+1);
-
-        Study study = studyDataRepository.findById(positionApplyDto.getStudyId()).get();
-        Member member = memberDataRepository.findMemberByEmail(positionApplyDto.getEmail());
-        Position position = studyRepository.findPositionByPositionName(positionApplyDto.getPosition());
-
-        StudyApplication studyApplication = StudyApplication.createStudyApplication(study, member, position, positionApplyDto.getMessage());
-        if (study==null || member ==null || position ==null || studyApplication == null) {
-            throw new IllegalArgumentException();
-        }
-
-
-
-//        studyRepository.flush();
-        return studyApplication;
-
-    }
-
-    public List<AlarmDto> studyAlarm(String email) {
-
+    public List<AlarmDto> findStudyAlarm(String email) {
         List<StudyApplication> studyApplicationList = studyRepository.findStudyApplicationByEmail(email);
         List<AlarmDto> studyAlarmDtoList = alarmSetData(studyApplicationList);
-//        System.out.println("email = " + studyApplicationList.get(0).getMember().getEmail());
         return studyAlarmDtoList;
     }
 
@@ -270,12 +321,16 @@ public class StudyService {
 
         List<AlarmDto> result = studyApplicationList.stream().map(sa -> {
             AlarmDto alarmDto = new AlarmDto();
-            alarmDto.setId(sa.getStudy().getId());
+            alarmDto.setType(InviteType.STUDY);
+            alarmDto.setId(sa.getId());
+            alarmDto.setStudyId(sa.getStudy().getId());
             alarmDto.setEmail(sa.getStudy().getMember().getEmail());
             alarmDto.setEmail(sa.getMember().getEmail());
             alarmDto.setTitle(sa.getStudy().getTitle());
             alarmDto.setPosition(sa.getPosition().getPositionName());
             alarmDto.setMessage(sa.getMessage());
+            alarmDto.setCreateDate(sa.getCreatedDate());
+            alarmDto.setModifiedDate(sa.getModifiedDate());
             return alarmDto;
         }).collect(Collectors.toList());
         return result;
@@ -304,7 +359,8 @@ public class StudyService {
 
     public ResponseEntity<?> findParticipatedStudy(String email) {
         try {
-            List<Study> studyByEmail = studyRepository.findParticipatedStudyByEmail(email);
+            Member findMember = memberDataRepository.findMemberByEmail(email);
+            List<Study> studyByEmail = studyRepository.findParticipatedStudyByEmail(findMember);
             List<StudyDto> studyDtoList = studyByEmail
                     .stream()
                     .map(this::studyDtoMapper)
@@ -325,24 +381,77 @@ public class StudyService {
         try {
             ResponseDto<String> response = new ResponseDto<>();
             if(!studyAllowDto.isAllow()){
-                studyRepository.deleteStudyApplicationById(studyAllowDto.getId());
+                if (studyAllowDto.getType().equals(InviteType.STUDY)) {
+                    studyRepository.deleteStudyApplicationById(studyAllowDto.getId());
+                    response.setData("지원을 거절하였습니다.");
+                }
+                else{
+                    memberDataRepository.deleteMemberInvitationById(studyAllowDto.getId());
+
+                }
                 response.setStatus(Status.SUCCESS);
+
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            StudyApplication studyApplication = studyRepository.findStudyApplicationById(studyAllowDto.getId());
 
-            Study study = studyDataRepository.findById(studyAllowDto.getStudyId()).get();
-            List<StudyPosition> studyPosition = study.getStudyPosition();
+            
 
-            studyPosition.stream()
-                    .filter(sp -> sp.getPosition().getPositionName().equals(studyApplication.getPosition()) && sp.getCount()<sp.getTotalCount())
-                    .limit(1)
-                    .forEach(sa->sa.setCount(sa.getCount()+1));
-            response.setStatus(Status.SUCCESS);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            if (studyRepository.checkParticipateStudy(studyAllowDto.getEmail()) ) {
+                throw new Exception("지원이 불가능한 상태입니다");
+            }
+
+            // 스터디 지원을 허락
+            if (studyAllowDto.getType().equals(InviteType.STUDY)) {
+                StudyApplication studyApplication = studyRepository.findStudyApplicationById(studyAllowDto.getId());
+                Position position = studyApplication.getPosition();
+//                String studyPositionName = position.getPositionName();
+                return getResponseDtoToStudyAllow(studyAllowDto,position, response);
+            }
+
+            // 멤버 초대를 허락
+            else{
+                MemberInvitation memberInvitation = memberDataRepository.findMemberInvitationById(studyAllowDto.getId());
+                Position position = memberInvitation.getPosition();
+                return getResponseDtoToStudyAllow(studyAllowDto, position,response);
+            }
+
         } catch (Exception e) {
             return getErrorResponseEntity(e);
         }
+    }
+
+
+    private ResponseEntity<ResponseDto<String>> getResponseDtoToStudyAllow(StudyAllowDto studyAllowDto,Position position, ResponseDto<String> response) {
+//        StudyApplication studyApplication = studyRepository.findStudyApplicationById(studyAllowDto.getId());
+//        Position position = studyApplication.getPosition();
+
+        String studyPositionName = position.getPositionName();
+        Member member = memberDataRepository.findMemberByEmail(studyAllowDto.getEmail());
+
+        Study study = studyDataRepository.findById(studyAllowDto.getStudyId()).get();
+
+
+        List<StudyPosition> studyPosition = study.getStudyPosition();
+
+        studyPosition.stream()
+                .filter(sp -> {
+                    String positionName = sp.getPosition().getPositionName();
+                    return positionName.equals(studyPositionName) && sp.getCount() < sp.getTotalCount();
+                })
+                .limit(1)
+                .forEach(sa -> {
+                    sa.setCount(sa.getCount() + 1);
+                    StudyParticipation.createStudyParticipation(study, member, position);
+                    if(studyAllowDto.getType().equals(InviteType.STUDY)){
+                        studyRepository.deleteStudyApplicationById(studyAllowDto.getId());
+                    }
+                    else{
+                        memberDataRepository.deleteMemberInvitationById(studyAllowDto.getId());
+                    }
+                });
+
+        response.setStatus(Status.SUCCESS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private ResponseEntity<?> getErrorResponseEntity(Exception e) {

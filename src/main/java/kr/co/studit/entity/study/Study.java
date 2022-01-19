@@ -1,9 +1,12 @@
-package kr.co.studit.entity;
+package kr.co.studit.entity.study;
 
 
+import kr.co.studit.entity.BaseTimeEntity;
+import kr.co.studit.entity.Region;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.member.MemberInvitation;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -13,7 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Study extends BaseTimeEntity{
+public class Study extends BaseTimeEntity {
 
     // 스터디 ID
     @Id
@@ -73,7 +76,10 @@ public class Study extends BaseTimeEntity{
     private List<StudyApplication> studyApplication = new ArrayList<>();
 
     @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)
-    private List<StudyParticipattion> studyParticipattion = new ArrayList<>();
+    private List<MemberInvitation> memberInvitation = new ArrayList<>();
+
+    @OneToMany(mappedBy = "study",cascade = CascadeType.ALL)
+    private List<StudyParticipation> studyParticipation = new ArrayList<>();
 
     // 연관관계 메소드
     public void setMember(Member member) {

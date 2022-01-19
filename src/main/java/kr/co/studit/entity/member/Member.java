@@ -2,7 +2,7 @@ package kr.co.studit.entity.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kr.co.studit.dto.ProfileForm;
-import kr.co.studit.entity.Study;
+import kr.co.studit.entity.study.Study;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
 import kr.co.studit.entity.enums.StudyType;

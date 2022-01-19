@@ -1,19 +1,21 @@
 package kr.co.studit.service;
 
 import kr.co.studit.dto.*;
+import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Position;
 import kr.co.studit.entity.Region;
 import kr.co.studit.entity.Skill;
-import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.member.*;
 import kr.co.studit.entity.enums.Role;
-import kr.co.studit.entity.member.MemberPosition;
-import kr.co.studit.entity.member.MemberRegion;
-import kr.co.studit.entity.member.MemberSkill;
+import kr.co.studit.entity.study.Study;
+import kr.co.studit.error.ErrorResponse;
 import kr.co.studit.provider.TokenProvider;
 import kr.co.studit.repository.RegionDataRepository;
+import kr.co.studit.repository.StudyRepository;
 import kr.co.studit.repository.data.MemberRegionDataRepository;
+import kr.co.studit.repository.data.StudyDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.util.mail.EmailMessage;
 import kr.co.studit.util.mail.EmailService;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,6 +49,8 @@ public class MemberService {
 
     private final MemberDataRepository memberDataRepository;
     private final RegionDataRepository regionDataRepository;
+    private final StudyRepository studyRepository;
+    private final StudyDataRepository studyDataRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
@@ -269,4 +274,51 @@ public class MemberService {
     }
 
 
+    public ResponseEntity<?> inviteMember(InvitationDto invitationDto) {
+        try {
+            boolean checkInviteMember = memberDataRepository.checkInviteMember(invitationDto.getInviteMember());
+            boolean checkParticipateStudy = studyRepository.checkParticipateStudy(invitationDto.getInviteMember());
+            if (checkInviteMember || checkParticipateStudy) {
+                return ErrorResponse.getErrorResponse(new Exception("스터디 참여 또는 스터디 초대를 하였습니다"));
+            }
+
+            ResponseDto<String> response = new ResponseDto<>();
+
+
+
+            Member findMember = memberDataRepository.findMemberByEmail(invitationDto.getInviteMember());
+            Study study = studyDataRepository.findById(invitationDto.getStudyId()).get();
+            Position position = studyRepository.findPositionByPositionName(invitationDto.getPosition());
+            MemberInvitation.createStudyInvitation(study, findMember, position, invitationDto.getMessage());
+            response.setStatus(Status.SUCCESS);
+            response.setData("초대 성공");
+            return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return ErrorResponse.getErrorResponse(e);
+        }
+
+    }
+
+    public List<AlarmDto> findMemberAlarm(String email) {
+        List<MemberInvitation> memberInvitationList = memberDataRepository.findMemberInvitationByEmail(email);
+        List<AlarmDto> memberAlarmDtoList = alarmSetData(memberInvitationList);
+        return memberAlarmDtoList;
+    }
+
+    private List<AlarmDto> alarmSetData(List<MemberInvitation> memberInvitationList) {
+        List<AlarmDto> result = memberInvitationList.stream().map(mi -> {
+            AlarmDto alarmDto = new AlarmDto();
+            alarmDto.setType(InviteType.MEMBER);
+            alarmDto.setId(mi.getId());
+            alarmDto.setStudyId(mi.getStudy().getId());
+            alarmDto.setEmail(mi.getStudy().getMember().getEmail());
+            alarmDto.setTitle(mi.getStudy().getTitle());
+            alarmDto.setPosition(mi.getPosition().getPositionName());
+            alarmDto.setMessage(mi.getMessage());
+            alarmDto.setCreateDate(mi.getCreatedDate());
+            alarmDto.setModifiedDate(mi.getModifiedDate());
+            return alarmDto;
+        }).collect(toList());
+        return result;
+    }
 }
