@@ -1,6 +1,11 @@
 package kr.co.studit.entity.study;
 
 
+import kr.co.studit.dto.position.PositionDto;
+import kr.co.studit.dto.study.StudyDto;
+import kr.co.studit.entity.Position;
+import kr.co.studit.entity.Skill;
+import kr.co.studit.entity.Tool;
 import kr.co.studit.entity.common.BaseTimeEntity;
 import kr.co.studit.entity.Region;
 import kr.co.studit.entity.enums.OnOffStatus;
@@ -94,6 +99,36 @@ public class Study extends BaseTimeEntity {
         study.setMember(member);
         study.setRegion(region);
         return study;
+    }
+
+    public StudyDto toStudyDto() {
+
+        StudyDto studyDto = new StudyDto();
+        studyDto.setId(this.getId());
+        studyDto.setType(this.getType());
+        studyDto.setTitle(this.getTitle());
+        studyDto.setContent(this.getContent());
+        studyDto.setStatus(this.getOnOffStatus());
+        studyDto.setCreateDate(this.getCreatedDate());
+        studyDto.setModifiedDate(this.getModifiedDate());
+        if (this.getOnOffStatus() != OnOffStatus.OFF) {
+            studyDto.setRegion(this.getRegion().getArea());
+        }
+        studyDto.setDuration(this.getDuration());
+        studyDto.setStudyDay(this.getStudyDay());
+
+        studyDto.setReceptionStart(this.getReceptionStart());
+        studyDto.setReceptionEnd(this.getReceptionEnd());
+        studyDto.setTools(new ArrayList<>());
+        List<StudyTool> studyTools = this.getStudytool();
+        for (StudyTool studyTool : studyTools) {
+            Tool tool = studyTool.getTool();
+            String toolName = tool.getToolName();
+            studyDto.getTools().add(toolName);
+        }
+
+
+        return studyDto;
     }
 
 }

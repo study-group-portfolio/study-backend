@@ -8,6 +8,7 @@ import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.dto.study.StudyUpdateDto;
 import kr.co.studit.service.StudyService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,8 +49,8 @@ public class StudyController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> searchStudy(@RequestBody StudySearchCondition studySearchCondition) {
-        return studyService.searchStudy(studySearchCondition);
+    public ResponseEntity<?> searchStudy(@RequestBody StudySearchCondition studySearchCondition,Pageable pageable) {
+        return studyService.searchStudy(studySearchCondition,pageable);
     }
 
     @PostMapping("/apply")
@@ -63,12 +64,12 @@ public class StudyController {
     }
 
     @GetMapping("/created")
-    public ResponseEntity<?> createdStudy(@AuthenticationPrincipal String email) {
-        return studyService.findCreatedStudy(email);
+    public ResponseEntity<?> createdStudy(@AuthenticationPrincipal String email,Pageable pageable) {
+        return studyService.findCreatedStudy(email,pageable);
     }
 
     @GetMapping("/participated")
-    public ResponseEntity<?> participatedStudy(@AuthenticationPrincipal String email) {
-        return studyService.findParticipatedStudy(email);
+    public ResponseEntity<?> participatedStudy(@AuthenticationPrincipal String email,Pageable pageable) {
+        return studyService.findParticipatedStudy(email,pageable);
     }
 }

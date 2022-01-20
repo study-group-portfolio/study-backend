@@ -65,7 +65,7 @@ public class BookmarkService {
     private Page<StudyDto> createStudyBookmarkList(Long loginMemberId, Page<Bookmark> bookmarks) {
         List<StudyDto> studyDtos = new ArrayList<>();
         for (Bookmark bookmark : bookmarks) {
-            StudyDto studyDto = studyService.studyDtoMapper(bookmark.getMarkedStudy());
+            StudyDto studyDto = studyService.getStudyDto(bookmark.getMarkedStudy());
             studyDto.setBookmarkId(bookmark.getId());
             studyDto.setBookmarkState(true);
             studyDtos.add(studyDto);
