@@ -1,6 +1,8 @@
 package kr.co.studit.controller;
 
 
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import kr.co.studit.dto.position.PositionApplyDto;
 import kr.co.studit.dto.search.StudySearchCondition;
 import kr.co.studit.dto.study.StudyAllowDto;
@@ -29,7 +31,8 @@ public class StudyController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createStudy(@AuthenticationPrincipal String email,@RequestBody StudyDto studyDto){
+    @ApiOperation(value = "스터디 글 생성"/*, tags = "sampleqq"*/)
+    public ResponseEntity<?> createStudy(@AuthenticationPrincipal String email, @RequestBody StudyDto studyDto){
         return studyService.createStudy(studyDto,email);
     }
 

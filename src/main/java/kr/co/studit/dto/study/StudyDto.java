@@ -16,12 +16,15 @@ public class StudyDto extends StudyForm{
     @ApiModelProperty(hidden = true)
     private Long id;
 
+    @ApiModelProperty(hidden = true)
     private LocalDateTime createDate;
+    @ApiModelProperty(hidden = true)
     private LocalDateTime modifiedDate;
 
+    @ApiModelProperty(hidden = true)
     // bookmark에 추가할 data
     private Long bookmarkId;
-
+    @ApiModelProperty(hidden = true)
     private Boolean bookmarkState;
 
 }
