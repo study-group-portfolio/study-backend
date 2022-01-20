@@ -1,5 +1,6 @@
 package kr.co.studit.repository.study;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.search.StudySearchCondition;
@@ -8,6 +9,8 @@ import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.study.*;
 import kr.co.studit.repository.member.MemberDataRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +18,7 @@ import javax.persistence.EntityManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QRegion.region;
@@ -107,8 +111,8 @@ public class StudyRepository {
                 .execute();
     }
 
-    public List<Study> findStudyByFilter(StudySearchCondition searchDto) {
-        List<Study> studyList = queryFactory
+    public Page<Study> findStudyByFilter(StudySearchCondition searchDto,Pageable pageable) {
+        QueryResults<Study> results = queryFactory
                 .selectFrom(study).distinct()
                 .leftJoin(study.studyPosition, studyPosition)
                 .leftJoin(studyPosition.position, position)
@@ -121,9 +125,13 @@ public class StudyRepository {
                                 .and(positionEmpty(searchDto.getPositions()))
                                 .and(skillEmpty(searchDto.getSkills()))
 
-                ).fetch();
+                ).offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        List<Study> content = results.getResults();
+        long total = results.getTotal();
+        return new PageImpl<>(content, pageable, total);
 
-        return studyList;
     }
 
     public List<StudyApplication> findStudyApplicationByEmail(String email) {
@@ -157,11 +165,17 @@ public class StudyRepository {
                 .fetchOne();
     }
 
-    public List<Study> findCreatedStudyByEmail(String email) {
-        return queryFactory
+    public Page<Study> findCreatedStudyByEmail(String email,Pageable pageable) {
+        QueryResults<Study> results = queryFactory
                 .selectFrom(study)
                 .where(study.member.email.eq(email))
-                .fetch();
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        List<Study> content = results.getResults();
+        long total = results.getTotal();
+        return new PageImpl<>(content, pageable, total);
+
     }
 
 
@@ -181,12 +195,17 @@ public class StudyRepository {
                 .fetchOne();
     }
 
-    public List<Study> findParticipatedStudyByEmail(Member findMember) {
-        return queryFactory
+    public Page<Study> findParticipatedStudyByEmail(String email, Pageable pageable) {
+        QueryResults<Study> results = queryFactory
                 .select(studyParticipation.study)
                 .from(studyParticipation)
-                .where(studyParticipation.member.eq(findMember))
-                .fetch();
+                .where(studyParticipation.member.email.eq(email))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        List<Study> content = results.getResults();
+        long total = results.getTotal();
+        return new PageImpl<>(content, pageable, total);
     }
 
     public boolean checkApplyStudy(Member findMember){
@@ -206,8 +225,24 @@ public class StudyRepository {
                 .size() >= 1;
     }
 
-    public List<Study> findStudy(Pageable pageable) {
-        return null;
+    public Page<Study> findStudy(Pageable pageable) {
+        QueryResults<Study> results = queryFactory
+                .selectFrom(study)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        List<Study> content = results.getResults();
+        long total = results.getTotal();
+        return new PageImpl<>(content, pageable, total);
+
+    }
+
+    public Optional<Study> findStudyByEmailAndId(Long studyId, String email) {
+        Study result = queryFactory
+                .selectFrom(study)
+                .where(study.member.email.eq(email), QStudy.study.id.eq(studyId))
+                .fetchOne();
+        return Optional.ofNullable(result);
     }
 
 

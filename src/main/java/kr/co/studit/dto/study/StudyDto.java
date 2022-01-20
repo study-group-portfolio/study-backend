@@ -1,6 +1,8 @@
 package kr.co.studit.dto.study;
 
 import io.swagger.annotations.ApiModelProperty;
+import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.study.Study;
 import lombok.Getter;
 import lombok.Setter;
 

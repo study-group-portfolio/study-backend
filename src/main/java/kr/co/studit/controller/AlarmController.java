@@ -44,7 +44,7 @@ public class AlarmController {
 
     @PostMapping("/invite")
     public ResponseEntity<?> inviteMember(@AuthenticationPrincipal String email, @RequestBody InvitationDto invitationDto) {
-        return memberService.inviteMember(invitationDto);
+        return memberService.inviteMember(invitationDto,email);
     }
 
     @PostMapping("/allow")

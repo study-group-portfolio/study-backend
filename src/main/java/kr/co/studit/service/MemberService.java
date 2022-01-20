@@ -285,20 +285,20 @@ public class MemberService {
     }
 
 
-    public ResponseEntity<?> inviteMember(InvitationDto invitationDto) {
+    public ResponseEntity<?> inviteMember(InvitationDto invitationDto ,String email) {
         try {
+            Optional<Study> findOpStudy = studyRepository.findStudyByEmailAndId(invitationDto.getStudyId(), email);
+            Study study = findOpStudy.orElseThrow(() -> new Exception("사용자가 스터디를 생성하지 않았습니다"));
+
             boolean checkInviteMember = memberDataRepository.checkInviteMember(invitationDto.getInviteMember());
             boolean checkParticipateStudy = studyRepository.checkParticipateStudy(invitationDto.getInviteMember());
             if (checkInviteMember || checkParticipateStudy) {
-                return ErrorResponse.getErrorResponse(new Exception("스터디 참여 또는 스터디 초대를 하였습니다"));
+                return ErrorResponse.getErrorResponse(new Exception("스터디 참여 또는 스터디 초대를 이미 하였습니다"));
             }
 
             ResponseDto<String> response = new ResponseDto<>();
 
-
-
             Member findMember = memberDataRepository.findMemberByEmail(invitationDto.getInviteMember());
-            Study study = studyDataRepository.findById(invitationDto.getStudyId()).get();
             Position position = studyRepository.findPositionByPositionName(invitationDto.getPosition());
             MemberInvitation.createStudyInvitation(study, findMember, position, invitationDto.getMessage());
             response.setStatus(Status.SUCCESS);
