@@ -119,7 +119,7 @@ public class MemberController {
     public ResponseEntity<?> editBasicProfile(@AuthenticationPrincipal String email, @RequestBody BasicProfileForm basicProfileForm) {
 
         Member member = memberService.editBasicProfile(email, basicProfileForm);
-        String token = tokenProvider.create(member);
+        String token = tokenProvider.createAccessToken(member);
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .data(basicProfileForm)
                 .status(Status.SUCCESS)

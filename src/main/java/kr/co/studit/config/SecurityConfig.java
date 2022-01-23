@@ -2,6 +2,7 @@ package kr.co.studit.config;
 
 
 import kr.co.studit.filter.JwtAuthenticationFilter;
+import kr.co.studit.filter.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -37,10 +39,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .disable()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+       /*         .and()
                 .authorizeRequests()
-                .anyRequest().permitAll();
+                .anyRequest().permitAll();*/
+
+        http.authorizeRequests().antMatchers("/api/member/signin", "/api/auth/refresh-token").permitAll();
+        http.authorizeRequests().antMatchers("/api/member/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().anyRequest().authenticated();
+
 
         /**
          filter 등록
@@ -50,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           */
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
     };
 
 }

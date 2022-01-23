@@ -47,6 +47,7 @@ public class InitDb {
         // 메소드 분리
         private Member initMember() {
             Member member1 = Member.createMember("test@test.com");
+            member1.setRole(Role.USER);
             member1.setPassword(passwordEncoder.encode("test"));
             Member member2 = Member.createMember("test2@test.com");
             member2.setPassword(passwordEncoder.encode("test"));
@@ -149,7 +150,7 @@ public class InitDb {
                         .bio("user"+i+"입니다")
                         .email("studit"+i+"@studit.co.kr")
                         .password("12345678")
-                        .role(Role.USER)
+                        .role(Role.USER.USER)
                         .onOffStatus(OnOffStatus.OFF)
                         .publicProfile(true)
                         .studyType(StudyType.PROJECT)

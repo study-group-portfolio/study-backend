@@ -58,7 +58,7 @@ public class Member extends BaseTimeEntity {
     private OnOffStatus onOffStatus;
 
     @Builder.Default
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     private List<MemberRegion> regions = new ArrayList<>();
 
     // 업무 포지션

@@ -1,5 +1,6 @@
 package kr.co.studit.service;
 
+import javassist.NotFoundException;
 import kr.co.studit.dto.*;
 import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
@@ -38,6 +39,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static kr.co.studit.error.ErrorResponse.getErrorResponse;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Service
@@ -72,35 +74,36 @@ public class MemberService {
         return memberDataRepository.save(newMember);
     }
 
-    public Member signin(SigninDto signinDto) {
+    public Member signin(SigninDto signinDto) throws NotFoundException {
 
         Member findMember = memberDataRepository.findMemberByEmail(signinDto.getEmail().strip());
         if (findMember != null && passwordEncoder.matches(signinDto.getPassword(), findMember.getPassword())) {
             return findMember;
         }
-        return null;
+        throw new NotFoundException("아이디 및 비밀번호가 일치하지 않습니다.");
     }
 
 
     public ResponseEntity<?> authenticate(SigninDto signinDto) {
-
-        Member member = signin(signinDto);
-
-        if (member != null) {
-            String token = tokenProvider.create(member);
-            MemberDto responseMemberDto = MemberDto.builder()
+        try {
+            Member member = signin(signinDto);
+            String accessToken = tokenProvider.createAccessToken(member);
+            String refreshToken = tokenProvider.createRefreshToken(member);
+            SigninRes signinRes = SigninRes.builder()
+                    .accesToken(accessToken)
+                    .refreshToken(refreshToken)
                     .email(member.getEmail())
-                    .token(token)
+                    .nickname(member.getNickname())
                     .build();
-            return ResponseEntity.ok().body(responseMemberDto);
-        } else {
-            ResponseDto responseDto = ResponseDto.builder()
-                    .status(Status.FALSE)
-                    .build();
-            return ResponseEntity
-                    .badRequest()
-                    .body(responseDto);
+            ResponseDto<Object> responseDto = ResponseDto.builder()
+                    .status(Status.SUCCESS)
+                    .data(signinRes).build();
+
+            return ResponseEntity.ok().body(responseDto);
+        } catch (Exception e) {
+            return getErrorResponse(e);
         }
+
     }
 
     public void sendSignupConfirmEmail(Member newMember) {
@@ -235,6 +238,7 @@ public class MemberService {
         Member member = memberDataRepository.findMemberById(id);
         return toProfleForm(member);
     }
+
     public ProfileForm toProfleForm(Member member) {
         ProfileForm profileForm = new ProfileForm();
         profileForm.setBio(member.getBio());
@@ -263,10 +267,10 @@ public class MemberService {
         return createSearchMemberDto(loginMember, members);
     }
 
-    private Page<SearchMemberDto> createSearchMemberDto(Member loginMember ,Page<Member> members) {
+    private Page<SearchMemberDto> createSearchMemberDto(Member loginMember, Page<Member> members) {
         List<SearchMemberDto> searchMemberDtos = new ArrayList<>();
 
-        for (Member member: members) {
+        for (Member member : members) {
             SearchMemberDto searchMemberDto = new SearchMemberDto();
             searchMemberDto.setMemberId(member.getId());
             searchMemberDto.setNickname(member.getNickname());
@@ -290,11 +294,10 @@ public class MemberService {
             boolean checkInviteMember = memberDataRepository.checkInviteMember(invitationDto.getInviteMember());
             boolean checkParticipateStudy = studyRepository.checkParticipateStudy(invitationDto.getInviteMember());
             if (checkInviteMember || checkParticipateStudy) {
-                return ErrorResponse.getErrorResponse(new Exception("스터디 참여 또는 스터디 초대를 하였습니다"));
+                return getErrorResponse(new Exception("스터디 참여 또는 스터디 초대를 하였습니다"));
             }
 
             ResponseDto<String> response = new ResponseDto<>();
-
 
 
             Member findMember = memberDataRepository.findMemberByEmail(invitationDto.getInviteMember());
@@ -305,7 +308,7 @@ public class MemberService {
             response.setData("초대 성공");
             return new ResponseEntity<ResponseDto>(response, HttpStatus.OK);
         } catch (Exception e) {
-            return ErrorResponse.getErrorResponse(e);
+            return getErrorResponse(e);
         }
 
     }
@@ -332,7 +335,7 @@ public class MemberService {
         }).collect(toList());
         return result;
     }
-      
+
     public Member editBasicProfile(String email, BasicProfileForm basicProfileForm) {
         Member member = memberDataRepository.findMemberByEmail(email);
         member.setNickname(basicProfileForm.getNickname());

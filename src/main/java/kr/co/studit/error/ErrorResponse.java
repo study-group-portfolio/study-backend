@@ -15,4 +15,12 @@ public class ErrorResponse {
         errorResponse.setData(e.getMessage());
         return new ResponseEntity<ResponseDto>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    public static ResponseEntity<?> getErrorResponse(Exception e, HttpStatus status, String message) {
+        ResponseDto<String> errorResponse = new ResponseDto<String>();
+        errorResponse.setStatus(Status.FALSE);
+        errorResponse.setData(e.getMessage());
+        errorResponse.setMessage(message);
+        return new ResponseEntity<ResponseDto>(errorResponse, status);
+    }
 }
