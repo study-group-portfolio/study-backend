@@ -1,7 +1,6 @@
 package kr.co.studit.dto.member;
 
 import io.swagger.annotations.ApiModelProperty;
-import kr.co.studit.dto.member.BasicProfileForm;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import lombok.Data;
@@ -42,6 +41,12 @@ public class ProfileForm extends BasicProfileForm {
             "\t\"스프링\"\n" +
             "  ]")
     private List<String> skills = new ArrayList<>();
+
+    // 포트폴리오 주소
+    @ApiModelProperty(example = "[\n" +
+            "\t\"https://naver.com\",\"https://studit.co.kr\"\n" +
+            "  ]")
+    private List<String> portpolios = new ArrayList<>();
 
 
 

@@ -1,6 +1,7 @@
 package kr.co.studit.entity.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import kr.co.studit.entity.Portfolio;
 import kr.co.studit.entity.study.Study;
 import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.entity.common.BaseTimeEntity;
@@ -79,10 +80,20 @@ public class Member extends BaseTimeEntity {
 
     // 이메일 인증 토큰 발급 시간
     private LocalDateTime emailCheckTokenGeneratedAt;
+
+    // 비밀 번호 찾기 이메일 인증 토큰
+    private String passwordFindToken;
+
+    // 비밀 번호 찾기 이메일 토큰 발급 시간
+    private LocalDateTime passwordFindTokenGeneratedAt;
     // 읽기 전용
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private final List<Study> studys = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member")
+    private List<Portfolio> portfolios = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "markMember",
@@ -101,16 +112,29 @@ public class Member extends BaseTimeEntity {
         this.emailCheckTokenGeneratedAt = LocalDateTime.now();
     }
 
+    public void generatePasswordFindToken() {
+        this.passwordFindToken = UUID.randomUUID().toString();
+        this.emailCheckTokenGeneratedAt = LocalDateTime.now();
+    }
+
     public void compleateSignup() {
         this.emailVerified = true;
     }
 
-    public boolean isVaildToken(String token) {
+    public boolean isVaildEmailCheckToken(String token) {
         return this.emaiCheckToken.equals(token);
     }
 
     public boolean canSendConfirmEmail() {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusMinutes(30));
+    }
+
+    public boolean isValidPasswordToken(String token) {
+        return this.passwordFindToken.equals(token);
+    }
+
+    public Boolean canSendPasswordFindEmail() {
+        return this.passwordFindTokenGeneratedAt.isBefore(LocalDateTime.now().minusMinutes(10));
     }
 
     public void updateMember(ProfileForm profileForm) {
@@ -142,4 +166,7 @@ public class Member extends BaseTimeEntity {
         this.skills.add(memberSkill);
     }
 
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }

@@ -46,4 +46,6 @@ public interface MemberCustomRepository {
     void deleteMemberInvitationById(Long id);
 
     MemberInvitation findMemberInvitationById(Long id);
+
+    void deletePortpolio(Member member);
 }

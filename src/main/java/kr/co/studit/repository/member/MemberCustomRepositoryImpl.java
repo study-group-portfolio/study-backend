@@ -7,10 +7,7 @@ import com.querydsl.core.types.dsl.ListPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.dto.search.MemberSearchCondition;
-import kr.co.studit.entity.Bookmark;
-import kr.co.studit.entity.Position;
-import kr.co.studit.entity.QBookmark;
-import kr.co.studit.entity.Skill;
+import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.*;
@@ -27,6 +24,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static kr.co.studit.entity.QBookmark.bookmark;
+import static kr.co.studit.entity.QPortfolio.portfolio;
 import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QSkill.skill;
 import static kr.co.studit.entity.member.QMember.member;
@@ -58,6 +56,14 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         queryFactory
                 .delete(memberRegion)
                 .where(memberRegion.member.id.eq(member.getId()))
+                .execute();
+    }
+
+    @Override
+    public void deletePortpolio(Member member) {
+        queryFactory
+                .delete(portfolio)
+                .where(portfolio.member.id.eq(member.getId()))
                 .execute();
     }
 

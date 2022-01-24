@@ -15,16 +15,14 @@ import static org.springframework.security.config.Elements.JWT;
 @Service
 public class TokenProvider {
     private static final String SECRET_KEY = "NMA8JPct587c";
-    private static final int ACCESS_TOKEN_EXP = 1800;
-    private static final int REFRESH_TOKEN_EXP = 604800;
 
     public String createAccessToken(Member member) {
 
         //기한은 지금으로 부터 30분
         Date expiryDate = Date.from(
                 Instant.now()
-//                        .plus(ACCESS_TOKEN_EXP, ChronoUnit.MILLIS)
-                        .plus(2, ChronoUnit.MINUTES) //TEST
+                        .plus(30, ChronoUnit.MINUTES)
+//                        .plus(2, ChronoUnit.MINUTES) //TEST
 
         );
 
@@ -48,8 +46,8 @@ public class TokenProvider {
         //기한은 지금으로 부터 7일
         Date expiryDate = Date.from(
                 Instant.now()
-//                        .plus(REFRESH_TOKEN_EXP, ChronoUnit.MILLIS)
-                        .plus(5, ChronoUnit.MINUTES)//TEST
+                        .plus(7, ChronoUnit.DAYS)
+//                        .plus(5, ChronoUnit.MINUTES)//TEST
         );
 
 

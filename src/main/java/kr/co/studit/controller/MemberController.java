@@ -5,7 +5,6 @@ import kr.co.studit.dto.member.*;
 import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.member.Member;
-import kr.co.studit.provider.TokenProvider;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.validator.SignupValidator;
@@ -31,7 +30,6 @@ public class MemberController {
     private final UpdatePasswordValidator updatePasswordValidator;
     private final MemberService memberService;
     private final MemberDataRepository memberDataRepository;
-    private final TokenProvider tokenProvider;
 
 
     @InitBinder({"signupDto"})
@@ -95,31 +93,24 @@ public class MemberController {
     @GetMapping("/checkEmailToken/{token}/{email}")
     public ResponseEntity<?> checkEmailToken(@PathVariable String token, @PathVariable String email) {
         Member member = memberDataRepository.findMemberByEmail(email);
+        if (member.isEmailVerified()) {
+            return ResponseEntity.badRequest().body("이미 인증된 회원입니다");
+        }
         if (member == null) {
             return ResponseEntity.badRequest().body("유효하지 않은 이메일입니다.");
         }
 
-        if (!member.isVaildToken(token)) {
+        if (!member.isVaildEmailCheckToken(token)) {
             return ResponseEntity.badRequest().body("유효하지 않은 토큰 입니다.");
         }
 
-        memberService.compleateSignup(member);
-
-
-        return ResponseEntity.ok().body("이메일 인증이 완료 되었습니다.");
-    }
-
-    @GetMapping("/sendEmailVerifyToken/{email}")
-    public ResponseEntity<?> sendEmailVerifyToken(@PathVariable String email) {
-
-        return ResponseEntity.ok("인증 코드가 발송 되었습니다.");
+        return memberService.compleateSignup(member);
     }
 
     @PutMapping("/profile/basic")
     public ResponseEntity<?> editBasicProfile(@AuthenticationPrincipal String email, @RequestBody BasicProfileForm basicProfileForm) {
 
         Member member = memberService.editBasicProfile(email, basicProfileForm);
-        String token = tokenProvider.createAccessToken(member);
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .data(basicProfileForm)
                 .status(Status.SUCCESS)
@@ -131,16 +122,50 @@ public class MemberController {
 
     @PutMapping("/profile/password")
     public ResponseEntity<?> updatePassword(@AuthenticationPrincipal String email, @Valid @RequestBody UpdatePasswordForm updatePasswordForm, Errors errors) {
+        if (errors.hasErrors()) {
+            ResponseDto<Object> responseDto = ResponseDto.builder()
+                    .message("변경하실 비밀번호가 일치 하지 않습니다.")
+                    .status(Status.FALSE)
+                    .build();
+            return ResponseEntity.badRequest().body(responseDto);
+        } else {
+            return memberService.updatePassword(email, updatePasswordForm);
+        }
+    }
 
-        return null;
+    @PutMapping("/password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+        return memberService.resetPassword(resetPasswordDto);
+    }
+
+    @PostMapping("/password/send-mail")
+    public ResponseEntity<?> findPassword(@RequestBody FindPasswordDto findPasswordDto) {
+        String email = findPasswordDto.getEmail();
+        return memberService.findPassword(email);
+    }
+
+    @GetMapping("/checkFindPasswordToken/{token}/{email}")
+    public ResponseEntity<?> checkFindPasswordToken(@PathVariable String token, @PathVariable String email) {
+        Member member = memberDataRepository.findMemberByEmail(email);
+        if (member == null) {
+            return ResponseEntity.badRequest().body("유효하지 않은 이메일입니다.");
+        }
+
+        if (!member.isValidPasswordToken(token)) {
+            return ResponseEntity.badRequest().body("유효하지 않은 토큰 입니다.");
+        }
+
+        memberService.compleateSignup(member);
+
+
+        return ResponseEntity.ok().body("이메일 인증이 완료 되었습니다.");
     }
 
     @PutMapping("/profile")
     public ResponseEntity<?> editProfile(@AuthenticationPrincipal String email, @RequestBody ProfileForm profileForm) {
-        memberService.editProfile(profileForm, email);
 
 
-        return ResponseEntity.ok().body("업데이트");
+        return memberService.editProfile(profileForm, email);
     }
 
     @GetMapping("/profile/myProfile")
@@ -167,7 +192,7 @@ public class MemberController {
     public ResponseEntity<?> searchMembers(@AuthenticationPrincipal String email, @RequestBody(required = false) MemberSearchCondition condition, Pageable pageable) {
         //로그인한 회원이 검색히 북마크 정보도 DTO에 담아서 리턴 해줘야한다. 로그인 유무
 
-        Member member = memberDataRepository.findMemberByNickname(email);
+        Member member = memberDataRepository.findMemberByEmail(email);
 
         Page<SearchMemberDto> searchMemberDtos = null;
         if (condition != null) {
