@@ -34,6 +34,7 @@ public class StudyApplication extends BaseTimeEntity {
 
     public static StudyApplication createStudyApplication(Study study, Member member, Position position, String message) {
 
+
         StudyApplication studyApplication = new StudyApplication();
         studyApplication.setStudy(study);
         studyApplication.setMember(member);

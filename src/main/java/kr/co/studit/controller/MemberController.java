@@ -1,5 +1,7 @@
 package kr.co.studit.controller;
 
+import io.swagger.annotations.ApiOperation;
+import kr.co.studit.dto.InvitationDto;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.member.*;
 import kr.co.studit.dto.response.ResponseDto;
@@ -178,6 +180,12 @@ public class MemberController {
         ResponseDto<Object> responseListDto = ResponseDto.builder().data(searchMemberDtos)
                 .build();
         return ResponseEntity.ok().body(responseListDto);
+    }
+
+    @PostMapping("/invite")
+    @ApiOperation(value = "맴버 초대")
+    public ResponseEntity<?> inviteMember(@AuthenticationPrincipal String email, @RequestBody InvitationDto invitationDto) {
+        return memberService.inviteMember(invitationDto,email);
     }
 
 }
