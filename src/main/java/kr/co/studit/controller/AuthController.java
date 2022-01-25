@@ -1,5 +1,6 @@
 package kr.co.studit.controller;
 
+import io.swagger.annotations.ApiOperation;
 import kr.co.studit.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.io.IOException;
 public class AuthController {
     private final AuthService authService;
 
+    @ApiOperation(value = "access_token 재발급")
     @GetMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) throws IOException {
         return authService.checkRefreshToken(request);

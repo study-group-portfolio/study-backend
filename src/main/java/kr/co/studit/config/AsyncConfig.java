@@ -23,6 +23,4 @@ public class AsyncConfig extends AsyncConfigurerSupport {
         executor.initialize();
         return executor;
     }
-
-    //TODO error 처리
 }
