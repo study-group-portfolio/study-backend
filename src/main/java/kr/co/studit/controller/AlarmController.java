@@ -1,5 +1,6 @@
 package kr.co.studit.controller;
 
+import io.swagger.annotations.ApiOperation;
 import kr.co.studit.dto.*;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.response.ResponseDto;
@@ -26,6 +27,7 @@ public class AlarmController {
     private final StudyService studyService;
 
     @GetMapping()
+    @ApiOperation(value = "알람 리스트")
     public ResponseEntity<?> alarm(@AuthenticationPrincipal String email) {
         try {
             List<AlarmDto> studyAlarm = studyService.findStudyAlarm(email);
@@ -42,12 +44,9 @@ public class AlarmController {
 
     }
 
-    @PostMapping("/invite")
-    public ResponseEntity<?> inviteMember(@AuthenticationPrincipal String email, @RequestBody InvitationDto invitationDto) {
-        return memberService.inviteMember(invitationDto);
-    }
 
     @PostMapping("/allow")
+    @ApiOperation(value = "내가 생성한 스터디")
     public ResponseEntity<?> allowStudy(@RequestBody StudyAllowDto studyAllowDto) {
         ResponseEntity<?> response = studyService.joinStudy(studyAllowDto);
         return response;

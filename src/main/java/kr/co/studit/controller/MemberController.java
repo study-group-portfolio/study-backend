@@ -1,6 +1,7 @@
 package kr.co.studit.controller;
 
 import io.swagger.annotations.ApiOperation;
+import kr.co.studit.dto.InvitationDto;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.member.*;
 import kr.co.studit.dto.response.ResponseDto;
@@ -175,6 +176,7 @@ public class MemberController {
     @ApiOperation(value = "프로필 수정")
     @PutMapping("/profile")
     public ResponseEntity<?> editProfile(@AuthenticationPrincipal String email, @RequestBody ProfileForm profileForm) {
+        memberService.editProfile(profileForm, email);
 
 
         return memberService.editProfile(profileForm, email);
