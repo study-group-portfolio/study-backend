@@ -42,6 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/auth/refresh-token",
             "/api/member/checkFindPasswordToken/**",
 
+            "/api/study/search"
+
+
     };
 
     @Bean
@@ -67,8 +70,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll();*/
         http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll();
         http.authorizeRequests().antMatchers(GET, "/api/member/profile/*").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/study").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/study/*").permitAll();
 
         http.authorizeRequests().antMatchers("/api/member/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers("/api/study/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers("/api/bookmark/**").hasAnyAuthority("ROLE_USER");
+
         http.authorizeRequests().anyRequest().authenticated();
 
 
@@ -83,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
     }
 
-    ;
+
 
     @Override
     public void configure(WebSecurity web) throws Exception {
