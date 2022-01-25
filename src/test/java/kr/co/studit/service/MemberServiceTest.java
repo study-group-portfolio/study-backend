@@ -85,8 +85,8 @@ class MemberServiceTest {
     public void signup() throws Exception {
         //given
         SignupDto signupDto = new SignupDto();
-        signupDto.setNickname("스터디왕");
-        signupDto.setEmail(EMAIL);
+        signupDto.setNickname("스터디왕1");
+        signupDto.setEmail("test"+EMAIL);
         signupDto.setPassword("1234567");
         //when
         memberService.createMember(signupDto);
@@ -117,7 +117,7 @@ class MemberServiceTest {
         Member member = memberDataRepository.findMemberByEmail(EMAIL);
         ProfileForm profileForm = new ProfileForm();
         //when
-        memberService.editProfile(profileForm, member.getNickname());
+        memberService.editProfile(profileForm, member.getEmail());
         member.setPublicProfile(true);
         //then
         Member findMember = memberDataRepository.findMemberByEmail(EMAIL);
@@ -170,18 +170,7 @@ class MemberServiceTest {
         //then
         Member findMember = memberDataRepository.findMemberByNickname("스터디왕");
 
-        assertThat(findMember.getRegions().size()).isEqualTo(2);
-    }
-
-
-//    @Test
-    @DisplayName("프로필 업데이트")
-    public void editProfile() throws Exception {
-        //given
-
-        //when
-
-        //then
+        assertThat(findMember.getRegions().size()).isEqualTo(1);
     }
 
     @Test
@@ -206,7 +195,7 @@ class MemberServiceTest {
         profileForm.setSkills(skills);
 
 
-        memberService.editProfile(profileForm, member.getNickname());
+        memberService.editProfile(profileForm, member.getEmail());
 
 
         //when
@@ -224,7 +213,7 @@ class MemberServiceTest {
         //when
         // 멤버를 우선 조회 한다 .
         PageRequest pageRequest = PageRequest.of(0, 12);
-        Page<Member> result = memberDataRepository.searchPageMember(null, pageRequest);
+        Page<Member> result = memberDataRepository.searchPageMember( pageRequest);
 
         //then
         assertThat(result.getSize()).isEqualTo(12);

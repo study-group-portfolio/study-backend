@@ -47,7 +47,7 @@ public class InitDb {
         // 메소드 분리
         private Member initMember() {
             Member member1 = Member.createMember("test@test.com");
-            member1.setRole(Role.USER);
+            member1.setRole(Role.ADMIN);
             member1.setPassword(passwordEncoder.encode("test"));
             Member member2 = Member.createMember("test2@test.com");
             member2.setPassword(passwordEncoder.encode("test"));
