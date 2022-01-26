@@ -1,12 +1,14 @@
+server:
+  port:  8080
+
 spring:
+  profiles:
+    active: dev
   datasource:
-    url: jdbc:h2:tcp://localhost/~/studit
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-
-
-
+    url: jdbc:mariadb://${rds.hostname}:${rds.port}/${rds.db.name}
+    username: ${rds.username}
+    password: ${rds.password}
+    driver-class-name: org.mariadb.jdbc.Driver
 
 
 

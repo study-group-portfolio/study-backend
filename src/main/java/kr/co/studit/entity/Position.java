@@ -9,13 +9,13 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "positions")
 @Getter
 @Setter
 public class Position {
     // 분야 ID
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "position_id")
     private Long id;
 
