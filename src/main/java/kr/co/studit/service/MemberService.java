@@ -1,6 +1,7 @@
 package kr.co.studit.service;
 
 import javassist.NotFoundException;
+import kr.co.studit.config.AppProperties;
 import kr.co.studit.dto.*;
 import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
@@ -55,6 +56,7 @@ public class MemberService {
     private final RegionDataRepository regionDataRepository;
     private final StudyRepository studyRepository;
     private final StudyDataRepository studyDataRepository;
+    private final AppProperties appProperties;
 
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
@@ -129,7 +131,8 @@ public class MemberService {
 
     private void sendSignupConfirmEmail(Member newMember) {
         Context context = new Context();
-        context.setVariable("link", "http://localhost:8080/api/member/checkEmailToken/" + newMember.getEmaiCheckToken() + "/" + newMember.getEmail());
+        context.setVariable("host", appProperties.getBackhost() );
+        context.setVariable("link", "/api/member/checkEmailToken/" + newMember.getEmaiCheckToken() + "/" + newMember.getEmail());
         context.setVariable("nickname", newMember.getNickname());
         context.setVariable("linkName", "이메일 인증하기");
         context.setVariable("message", "스터딧 서비스를 이용하시려면 링크를 클릭하세요");
@@ -443,7 +446,8 @@ public class MemberService {
 
     private void sendFindPassword(Member member) {
         Context context = new Context();
-        context.setVariable("link", "http://localhost:8080/api/member/checkFindPasswordToken/" + member.getPasswordFindToken() + "/" + member.getEmail());
+        context.setVariable("host", appProperties.getBackhost() );
+        context.setVariable("link", "/api/member/checkFindPasswordToken/" + member.getPasswordFindToken() + "/" + member.getEmail());
         context.setVariable("nickname", member.getNickname());
         context.setVariable("linkName", "비밀번호 재설정");
         context.setVariable("message", "새로운 비밀호를 설정하시려면 링크를 클릭하세요");

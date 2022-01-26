@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
@@ -19,9 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -45,7 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/member/checkEmailToken/**",
             "/api/auth/refresh-token",
             "/api/member/checkFindPasswordToken/**",
-
             "/api/study/search"
 
 
@@ -61,14 +56,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // 어떠한 요청에도 인증 받게
         http
-                .cors()
-                .and()
-                .csrf()
-                .disable()
-                .httpBasic()
-                .disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//            .cors().configurationSource(corsConfigurationSource())
+            .csrf()
+            .disable()
+            .httpBasic()
+            .disable()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
        /*         .and()
                 .authorizeRequests()
                 .anyRequest().permitAll();*/
@@ -83,6 +77,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().anyRequest().authenticated();
 
+//        http.cors().configurationSource(request -> {
+//            var cors = new CorsConfiguration();
+//            cors.setAllowedOrigins(List.of("http://localhost:8080"));
+//            cors.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE", "OPTIONS"));
+//            cors.setAllowedHeaders(List.of("*"));
+//            return cors;
+//        });
 
         /**
          filter 등록
@@ -121,18 +122,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return roleHierarchyVoter;
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-
-
-        corsConfiguration.addAllowedOrigin("http://localhost:8080");
-        corsConfiguration.addAllowedOrigin("https://study-group-portfolio.github.io");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-
-        return source;
-    }
 }

@@ -1,5 +1,6 @@
 package kr.co.studit.service;
 
+import kr.co.studit.config.AppProperties;
 import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.dto.member.SearchMemberDto;
 import kr.co.studit.dto.member.SigninDto;
@@ -50,6 +51,8 @@ class MemberServiceTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    AppProperties appProperties;
 
     @BeforeEach
     void beforeEach() {
@@ -91,6 +94,7 @@ class MemberServiceTest {
         //when
         memberService.createMember(signupDto);
         Member newMember = memberDataRepository.findMemberByEmail(signupDto.getEmail());
+        System.out.println("appProperties = " + appProperties.getBackhost());
         //then
         assertThat(newMember.getEmail()).isEqualTo(signupDto.getEmail());
         assertThat(newMember.getPassword()).isNotEqualTo(signupDto.getPassword());
