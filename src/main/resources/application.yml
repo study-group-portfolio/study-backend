@@ -43,7 +43,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: "deb_db"
+      on-profile: "dev_db"
   datasource:
     url: jdbc:mariadb://${rds.hostname}:${rds.port}/${rds.db.name}
     username: ${rds.username}
