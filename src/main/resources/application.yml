@@ -45,7 +45,7 @@ spring:
     activate:
       on-profile: "dev_db"
   datasource:
-    url: jdbc:mariadb://${rds.hostname}:${rds.port}/${rds.db.name}
+    url: jdbc:mysql://${rds.hostname}:${rds.port}/${rds.db.name}
     username: ${rds.username}
     password: ${rds.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
