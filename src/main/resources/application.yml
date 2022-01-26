@@ -1,14 +1,23 @@
+
+server:
+  port: 8080
+
 spring:
+  profiles:
+    group:
+      "local": "local_db"
+      "dev": "dev_db"
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "local_db"
   datasource:
     url: jdbc:h2:tcp://localhost/~/studit
     username: sa
     password:
     driver-class-name: org.h2.Driver
-
-
-
-
-
 
   jpa:
     hibernate:
@@ -18,9 +27,7 @@ spring:
         show_sql: true
         format_sql: true
         default_batch_fetch_size: 100
-mybatis:
-  type-aliases-package: kr.co.studit.dto.mapper
-  mapper-locations: mapper/**/*.xml
+
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
@@ -30,6 +37,17 @@ logging.level:
 spring:
   config:
     import: application-email.yml
+---
 
+
+spring:
+  config:
+    activate:
+      on-profile: "deb_db"
+  datasource:
+    url: jdbc:mariadb://${rds.hostname}:${rds.port}/${rds.db.name}
+    username: ${rds.username}
+    password: ${rds.password}
+    driver-class-name: org.mariadb.jdbc.Driver
 
 
