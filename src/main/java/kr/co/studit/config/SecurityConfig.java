@@ -18,6 +18,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -31,8 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtExceptionFilter jwtExceptionFilter;
     private static final String[] AUTH_WHITELIST = {
             "/",
-            "/api/member/signin",
             "/api/member/signup",
+            "/api/member/signin",
             "/api/member/password/send-mail",
             "/api/member/checkNickname/*",
             "/api/member/profile/*",
@@ -56,7 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // 어떠한 요청에도 인증 받게
         http
-//            .cors().configurationSource(corsConfigurationSource())
             .csrf()
             .disable()
             .httpBasic()
@@ -66,6 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
        /*         .and()
                 .authorizeRequests()
                 .anyRequest().permitAll();*/
+        http.cors();
         http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll();
         http.authorizeRequests().antMatchers(GET, "/api/member/profile/*").permitAll();
         http.authorizeRequests().antMatchers(GET, "/api/study").permitAll();
@@ -120,6 +125,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AccessDecisionVoter<? extends Object> roleVoter() {
         RoleHierarchyVoter roleHierarchyVoter = new RoleHierarchyVoter(roleHierarchy());
         return roleHierarchyVoter;
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 }
