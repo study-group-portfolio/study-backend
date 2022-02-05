@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class StudyUpdateDto extends StudyForm{
 
-    @ApiModelProperty
+    @ApiModelProperty(hidden = true)
     private Long id;
 
 

@@ -7,15 +7,13 @@ import com.querydsl.core.types.dsl.ListPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.dto.search.MemberSearchCondition;
-import kr.co.studit.entity.Bookmark;
-import kr.co.studit.entity.Position;
-import kr.co.studit.entity.QBookmark;
-import kr.co.studit.entity.Skill;
+import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.*;
 import kr.co.studit.entity.study.StudyApplication;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +25,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static kr.co.studit.entity.QBookmark.bookmark;
+import static kr.co.studit.entity.QPortfolio.portfolio;
 import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QSkill.skill;
 import static kr.co.studit.entity.member.QMember.member;
@@ -35,6 +34,7 @@ import static kr.co.studit.entity.member.QMemberPosition.memberPosition;
 import static kr.co.studit.entity.member.QMemberRegion.memberRegion;
 import static kr.co.studit.entity.member.QMemberSkill.memberSkill;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 //커스텀 인터페이스 쿼리 구현
@@ -58,6 +58,14 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         queryFactory
                 .delete(memberRegion)
                 .where(memberRegion.member.id.eq(member.getId()))
+                .execute();
+    }
+
+    @Override
+    public void deletePortpolio(Member member) {
+        queryFactory
+                .delete(portfolio)
+                .where(portfolio.member.id.eq(member.getId()))
                 .execute();
     }
 
@@ -202,6 +210,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     }
 
     private BooleanExpression studyTypeEq(StudyType studyType) {
+        log.info("info {}", StringUtils.isEmpty(studyType.toString()));
         return StringUtils.isEmpty(studyType.toString()) ? null :  member.studyType.eq(studyType);
     }
 

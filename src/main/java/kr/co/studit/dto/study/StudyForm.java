@@ -28,7 +28,7 @@ public class StudyForm {
     @ApiModelProperty(example = "ON")
     private OnOffStatus status;
 
-    @ApiModelProperty(example = "지역")
+    @ApiModelProperty(example = "서울")
     private String region;
 
     // 예상 진행 기간

@@ -20,9 +20,9 @@ public class StudySearchCondition {
     @ApiModelProperty(example = "서울")
     private String region;
 
-    @ApiModelProperty(example = "[\"백엔드\"]")
+    @ApiModelProperty(example = "[\"백엔드\",\"프론트\"]")
     private ArrayList<String> positions = new ArrayList<>();
 
-    @ApiModelProperty(example = "[\"스프링\"]")
+    @ApiModelProperty(example = "[\"리엑트\"]")
     private ArrayList<String> skills = new ArrayList<>();
 }

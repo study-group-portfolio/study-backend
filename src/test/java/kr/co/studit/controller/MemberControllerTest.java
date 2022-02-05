@@ -44,6 +44,7 @@ class MemberControllerTest {
         SignupDto signupDto = SignupDto.builder()
                 .email("studit@studit.com")
                 .password("1234567")
+                .confirmPassword("1234567")
                 .build();
         memberService.createMember(signupDto);
 
@@ -58,6 +59,7 @@ class MemberControllerTest {
                 .email("jinu@gmail.com")
                 .password("1234567")
                 .confirmPassword("1234567")
+                .nickname("닉네임")
                 .build();
         Gson gson = new Gson();
         String json = gson.toJson(signupDto);

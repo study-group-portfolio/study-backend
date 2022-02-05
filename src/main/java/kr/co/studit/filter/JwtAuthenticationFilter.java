@@ -1,11 +1,16 @@
 package kr.co.studit.filter;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.SignatureException;
 import kr.co.studit.provider.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -18,37 +23,53 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenProvider tokenProvider;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            //요청에서 토큰 가져오기
-            String token = parseBearerToken(request);
-//            log.info("Filter is running...");
-            //토큰 검사하기 JWT이므로 인가 서버에 요청하지 않고도 검증 가능
-            if (token != null && !token.equalsIgnoreCase("null")) {
-                String email = tokenProvider.validateAndGetEmail(token);
-                //member email 가져오기. 위조된 경우 예외 처리
-                log.info("Authenticated member email : " + email );
-                // 인증 완료. SecurityContextHolder에 등록해야 인증된 사용자라고 생각한다.
-                AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        email, null, AuthorityUtils.NO_AUTHORITIES
-                );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                securityContext.setAuthentication(authentication);
-                SecurityContextHolder.setContext(securityContext);
-            }
-        } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
-        }
+        if (request.getServletPath().equals("/api/member/signin") || request.getServletPath().equals("/api/auth/refresh-token")) {
+            filterChain.doFilter(request, response);
+        } else {
+            try {
+                //요청에서 토큰 가져오기
+                String token = parseBearerToken(request);
 
-        filterChain.doFilter(request, response);
+                log.info("Filter is running...");
+                //토큰 검사하기 JWT이므로 인가 서버에 요청하지 않고도 검증 가능
+                if (token != null && !token.equalsIgnoreCase("null")) {
+                    Claims claims = tokenProvider.getClaims(token);
+                    Set<GrantedAuthority> authorities = new HashSet<>();
+                    authorities.add(new SimpleGrantedAuthority((String) claims.get("role")));
+                    String email = claims.getSubject();
+                    log.info("Authenticated member email : " + email);
+                    // 인증 완료. SecurityContextHolder에 등록해야 인증된 사용자라고 생각한다.
+                    AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            email, null, authorities);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+                    securityContext.setAuthentication(authentication);
+                    SecurityContextHolder.setContext(securityContext);
+                }
+            } catch (IllegalArgumentException ex) {
+                logger.error("Could not set user authentication in security context", ex);
+                throw new JwtException("token is not valid");
+            } catch (ExpiredJwtException ex) {
+                logger.error("the token is expired and not valid anymore", ex);
+                throw new JwtException("access token is expired", ex);
+            } catch (SignatureException ex) {
+                logger.error("signature is not valid");
+                throw new JwtException("signature is not valid", ex);
+            }
+
+            filterChain.doFilter(request, response);
+        }
     }
 
     private String parseBearerToken(HttpServletRequest request) {

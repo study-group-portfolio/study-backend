@@ -10,23 +10,31 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import static org.springframework.security.config.Elements.JWT;
+
 @Service
 public class TokenProvider {
     private static final String SECRET_KEY = "NMA8JPct587c";
 
-    public String create(Member member) {
+    public String createAccessToken(Member member) {
 
-        //기한은 지금부터 1일로 설정
+        //기한은 지금으로 부터 30분
         Date expiryDate = Date.from(
                 Instant.now()
-                        .plus(1, ChronoUnit.DAYS)
+                        .plus(30, ChronoUnit.MINUTES)
+//                        .plus(2, ChronoUnit.MINUTES) //TEST
+
         );
+
 
         //JWT 토큰 생성
         return Jwts.builder()
                 //header에 들어갈 내용 및 서명을 하기 위한 SECRET_KEY
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 //payload에 들어갈 내용
+                .claim("nickname", member.getNickname())
+                .claim("id", member.getId())
+                .claim("role", "ROLE_"+member.getRole())
                 .setSubject(member.getEmail()) // sub
                 .setIssuer("studit app") // iss
                 .setIssuedAt(new Date()) // iat
@@ -34,17 +42,35 @@ public class TokenProvider {
                 .compact();
     }
 
-    public String validateAndGetEmail(String token) {
-        // parseClaimJws 메서드가 Base64로 디코딩 및 파싱
-        // 헤더와 페이로드를 setSigningKey로 넘어온 시크릿을 이용해 서명한 후 token의 서명과 비교
-        // 위조되지 않았다면 페이로드(Claims) 리턴, 위조라면 예외를 던짐
-        // 필요한게 nickname 이므로 getbody를 호출.
+    public String createRefreshToken(Member member) {
+        //기한은 지금으로 부터 7일
+        Date expiryDate = Date.from(
+                Instant.now()
+                        .plus(7, ChronoUnit.DAYS)
+//                        .plus(5, ChronoUnit.MINUTES)//TEST
+        );
 
+
+        //JWT 토큰 생성
+        return Jwts.builder()
+                //header에 들어갈 내용 및 서명을 하기 위한 SECRET_KEY
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                //payload에 들어갈 내용
+                .claim("role", "ROLE_"+member.getRole())
+                .setSubject(member.getEmail()) // sub
+                .setIssuer("studit app") // iss
+                .setIssuedAt(new Date()) // iat
+                .setExpiration(expiryDate) // exp
+                .compact();
+    }
+
+    public Claims getClaims(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody();
-
-        return claims.getSubject();
+        return claims;
     }
+
+
 }

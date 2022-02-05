@@ -6,5 +6,5 @@ import lombok.Data;
 public class UpdatePasswordForm {
     private String currentPassword;
     private String newPassword;
-    private String newPasswordConfirm;
+    private String newConfirmPassword;
 }
