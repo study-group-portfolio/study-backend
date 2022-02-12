@@ -135,9 +135,8 @@ public class MemberService {
         context.setVariable("host", appProperties.getBackhost() );
         context.setVariable("link", "/api/member/checkEmailToken/" + newMember.getEmaiCheckToken() + "/" + newMember.getEmail());
         context.setVariable("nickname", newMember.getNickname());
-        context.setVariable("linkName", "이메일 인증하기");
-        context.setVariable("message", "스터딧 서비스를 이용하시려면 링크를 클릭하세요");
-        String message = templateEngine.process("mail/simple-link", context);
+        context.setVariable("logo", "logo");
+        String message = templateEngine.process("mail/signup-link", context);
 
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(newMember.getEmail())
