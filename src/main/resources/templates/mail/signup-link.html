@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Simple Call To Action</title>
+</head>
+<body
+        style="
+      background-color: #eaebed;
+      font-family: sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      line-height: 1.4;
+      margin: 0;
+      padding: 0;
+      -ms-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+    "
+>
+<table
+        role="presentation"
+        border="0"
+        cellpadding="0"
+        cellspacing="0"
+        class="body"
+        style="
+        border-collapse: separate;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+        min-width: 100%;
+        width: 100%;
+        background-color: #eaebed;
+        width: 100%;
+      "
+>
+    <tr>
+        <td
+                style="font-family: sans-serif; font-size: 14px; vertical-align: top"
+        >
+            &nbsp;
+        </td>
+        <td
+                class="container"
+                style="
+            display: block;
+            margin: 0 auto !important;
+            /* makes it centered */
+            max-width: 580px;
+            padding: 10px;
+            width: 580px;
+          "
+        >
+            <div class="header" style="padding: 20px 0">
+                <table
+                        role="presentation"
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                >
+                    <tr>
+                        <td class="align-left"></td>
+                    </tr>
+                </table>
+            </div>
+            <div
+                    class="content"
+                    style="
+              box-sizing: border-box;
+              display: block;
+              margin: 0 auto;
+              max-width: 580px;
+              padding: 10px;
+            "
+            >
+                <!-- START CENTERED WHITE CONTAINER -->
+                <table
+                        role="presentation"
+                        class="main"
+                        style="background: #ffffff; border-radius: 3px; width: 100%"
+                >
+                    <!-- START MAIN CONTENT AREA -->
+                    <tr>
+                        <td
+                                class="wrapper"
+                                style="box-sizing: border-box; padding: 20px"
+                        >
+                            <table
+                                    role="presentation"
+                                    border="0"
+                                    cellpadding="0"
+                                    cellspacing="0"
+                            >
+                                <tr>
+                                    <td>
+                                        <a th:href="${host}"
+                                        ><img width="80" height="22" th:src="|cid:${logo}|">
+</a>
+                                        <p
+                                                style="
+                            color: #101828;
+                            font-size: 24px;
+                            padding-top: 34px;
+                          "
+                                        >
+                                            이메일 인증
+                                        </p>
+                                        <p
+                                                style="
+                            font-size: 14px;
+                            line-height: 24px;
+                            color: #101828;
+                            padding-bottom: 20px;
+                          "
+                                        >
+                                            안녕하세요, <span th:text="${nickname}"></span>님.<br />스터딧을 이용해주셔서
+                                            감사합니다.<br />아래 버튼을 클릭하여 이메일 인증을
+                                            완료해주세요.
+                                        </p>
+                                        <table
+                                                role="presentation"
+                                                border="0"
+                                                cellpadding="0"
+                                                cellspacing="0"
+                                                class="btn btn-primary"
+                                                style="
+                            box-sizing: border-box;
+                            min-width: 100%;
+                            width: 100%;
+                          "
+                                        >
+                                            <tbody>
+                                            <tr>
+                                                <td align="left" style="padding-bottom: 15px">
+                                                    <table
+                                                            role="presentation"
+                                                            border="0"
+                                                            cellpadding="0"
+                                                            cellspacing="0"
+                                                            style="min-width: auto; width: auto"
+                                                    >
+                                                        <tbody>
+                                                        <tr>
+                                                            <td
+                                                                    style="
+                                          background-color: #175cd3;
+                                          border-radius: 5px;
+                                          text-align: center;
+                                        "
+                                                            >
+                                                                <a
+                                                                        th:href="${host + link}"
+                                                                        target="_blank"
+                                                                        style="
+                                            background-color: #175cd3;
+                                            border: solid 1px #175cd3;
+                                            border-radius: 5px;
+                                            box-sizing: border-box;
+                                            color: #fff;
+                                            cursor: pointer;
+                                            display: inline-block;
+                                            font-size: 14px;
+                                            font-weight: bold;
+                                            margin: 0;
+                                            padding: 12px 25px;
+                                            text-decoration: none;
+                                            text-transform: capitalize;
+                                          "
+                                                                >이메일 인증하기</a
+                                                                >
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <p
+                                                style="
+                            padding-top: 20px;
+                            font-size: 14px;
+                            line-height: 24px;
+                          "
+                                        >
+                                            감사합니다,<br />스터딧드림.
+                                        </p>
+                                        <hr
+                                                style="margin-top: 40px; border: 1px solid #e4e7ec"
+                                        />
+                                        <p
+                                                style="
+                            margin-top: 10px;
+                            color: #667085;
+                            font-size: 12px;
+                          "
+                                        >
+                                            버튼이 동작하지 않을 경우 아래 링크를 복사하여
+                                            접속해주세요.
+                                        </p>
+                                        <p
+                                                style="
+                            margin-top: 4px;
+                            color: #667085;
+                            font-size: 12px;
+                          "
+                                        >
+                                            <small th:text="${host + link}"></small>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    ​
+                    <!-- END MAIN CONTENT AREA -->
+                </table>
+                ​
+                <!-- END CENTERED WHITE CONTAINER -->
+            </div>
+        </td>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,10 +1,22 @@
+server:
+  port: 8080
+
 spring:
+  profiles:
+    group:
+      "local": "local_db"
+      "dev": "dev_db"
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "local_db"
   datasource:
     url: jdbc:h2:tcp://localhost/~/studit
     username: sa
     password:
     driver-class-name: org.h2.Driver
-
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -13,18 +25,39 @@ spring:
         show_sql: true
         format_sql: true
         default_batch_fetch_size: 100
-mybatis:
-  type-aliases-package: kr.co.studit.dto.mapper
-  mapper-locations: mapper/**/*.xml
+
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
 
+app:
+  backhost : http://localhost:8080
 ---
 
 spring:
   config:
     import: application-email.yml
+---
 
+
+spring:
+  config:
+    activate:
+      on-profile: "dev_db"
+  datasource:
+    url: jdbc:mysql://${rds.hostname}:${rds.port}/${rds.db.name}
+    username: ${rds.username}
+    password: ${rds.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+
+app:
+  backhost : studit-back.ap-northeast-2.elasticbeanstalk.com
 
 

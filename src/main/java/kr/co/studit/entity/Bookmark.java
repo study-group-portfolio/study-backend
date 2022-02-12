@@ -20,7 +20,7 @@ import java.util.List;
 public class Bookmark {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "bookmark_id")
     private Long id;
 
