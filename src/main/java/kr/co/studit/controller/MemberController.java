@@ -21,6 +21,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/member")
@@ -55,16 +57,13 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupDto signupDto, Errors errors) {
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body("error");
+            Map<String, String> err = new HashMap<>();
+            errors.getFieldErrors().stream().forEach(fieldError -> err.put(fieldError.getField(), fieldError.getDefaultMessage()));
+
+            return ResponseEntity.badRequest().body(err);
         }
-        Member newMember = memberService.processCreateMember(signupDto);
-        MemberDto responseMemberDto = MemberDto.builder()
-                .email(newMember.getEmail())
-                .nickname(newMember.getNickname())
-                .build();
 
-        return ResponseEntity.ok(responseMemberDto);
-
+        return memberService.processCreateMember(signupDto);
     }
 
     @ApiOperation(value = "로그인")

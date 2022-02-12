@@ -63,10 +63,11 @@ public class MemberService {
     private final EmailService emailService;
     private final TemplateEngine templateEngine;
 
-    public Member processCreateMember(SignupDto signupDto) {
+    public ResponseEntity<?> processCreateMember(SignupDto signupDto) {
         Member newMember = createMember(signupDto);
         sendSignupConfirmEmail(newMember);
-        return newMember;
+
+        return signin(newMember);
     }
 
     public Member createMember(SignupDto signupDto) {
