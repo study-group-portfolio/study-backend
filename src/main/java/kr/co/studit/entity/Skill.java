@@ -1,5 +1,6 @@
 package kr.co.studit.entity;
 
+import kr.co.studit.entity.position.Position;
 import lombok.Getter;
 import lombok.Setter;
 

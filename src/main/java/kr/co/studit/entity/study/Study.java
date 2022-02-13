@@ -1,10 +1,7 @@
 package kr.co.studit.entity.study;
 
 
-import kr.co.studit.dto.position.PositionDto;
 import kr.co.studit.dto.study.StudyDto;
-import kr.co.studit.entity.Position;
-import kr.co.studit.entity.Skill;
 import kr.co.studit.entity.Tool;
 import kr.co.studit.entity.common.BaseTimeEntity;
 import kr.co.studit.entity.Region;

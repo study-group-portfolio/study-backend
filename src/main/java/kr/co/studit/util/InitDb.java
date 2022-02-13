@@ -7,6 +7,8 @@ import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.position.Position;
+import kr.co.studit.entity.position.PositionType;
 import kr.co.studit.entity.study.Study;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
@@ -218,8 +220,14 @@ public class InitDb {
         }
 
         private void initPositionAndSkill() {
+            PositionType positionTypeBack = PositionType.createPostionType("개발");
+            PositionType positionTypeDesign = PositionType.createPostionType("디자인");
+            PositionType positionTypePlan = PositionType.createPostionType("기획");
+
+
             Position position1 = Position.createPostion("백엔드");
-            em.persist(position1);
+            position1.setPositionType(positionTypeBack);
+
 
             Skill skillBack1 = Skill.createSkill("스프링");
             skillBack1.setPosition(position1);
@@ -230,9 +238,7 @@ public class InitDb {
             Skill skillBack3 = Skill.createSkill("노드");
             skillBack3.setPosition(position1);
 
-            em.persist(skillBack1);
-            em.persist(skillBack2);
-            em.persist(skillBack3);
+
 
             position1.getSkills().add(skillBack1);
             position1.getSkills().add(skillBack2);
@@ -240,7 +246,7 @@ public class InitDb {
 
 
             Position position2 = Position.createPostion("프론트");
-            em.persist(position2);
+            position2.setPositionType(positionTypeBack);
 
             Skill skillFront1 = Skill.createSkill("리엑트");
             skillFront1.setPosition(position2);
@@ -251,9 +257,9 @@ public class InitDb {
             Skill skillFront3 = Skill.createSkill("앵귤러");
             skillFront3.setPosition(position2);
 
-            em.persist(skillFront1);
-            em.persist(skillFront2);
-            em.persist(skillFront3);
+            em.persist(positionTypeBack);
+            em.persist(positionTypeDesign);
+            em.persist(positionTypePlan);
         }
 
         private void initToll() {

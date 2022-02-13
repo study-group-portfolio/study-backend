@@ -6,6 +6,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.search.StudySearchCondition;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.position.Position;
+import kr.co.studit.entity.position.QPosition;
 import kr.co.studit.entity.study.*;
 import kr.co.studit.repository.member.MemberDataRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static kr.co.studit.entity.QPosition.position;
+
 import static kr.co.studit.entity.QRegion.region;
 import static kr.co.studit.entity.QSkill.skill;
+import static kr.co.studit.entity.position.QPosition.position;
 import static kr.co.studit.entity.study.QStudy.study;
 import static kr.co.studit.entity.study.QStudyApplication.studyApplication;
 import static kr.co.studit.entity.study.QStudyParticipation.studyParticipation;

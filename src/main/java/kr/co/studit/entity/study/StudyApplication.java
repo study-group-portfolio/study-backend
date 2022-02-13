@@ -1,7 +1,7 @@
 package kr.co.studit.entity.study;
 
 import kr.co.studit.entity.common.BaseTimeEntity;
-import kr.co.studit.entity.Position;
+import kr.co.studit.entity.position.Position;
 import kr.co.studit.entity.member.Member;
 import lombok.Getter;
 import lombok.Setter;

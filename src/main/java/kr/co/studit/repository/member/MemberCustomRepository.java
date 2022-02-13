@@ -2,11 +2,9 @@ package kr.co.studit.repository.member;
 
 import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.dto.search.MemberSearchCondition;
-import kr.co.studit.entity.Bookmark;
-import kr.co.studit.entity.Position;
+import kr.co.studit.entity.position.Position;
 import kr.co.studit.entity.Skill;
 import kr.co.studit.entity.member.*;
-import kr.co.studit.entity.study.StudyApplication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

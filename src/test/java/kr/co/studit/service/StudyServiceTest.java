@@ -6,6 +6,7 @@ import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.position.Position;
 import kr.co.studit.entity.study.Study;
 import kr.co.studit.entity.study.StudyPosition;
 import kr.co.studit.entity.study.StudySkill;

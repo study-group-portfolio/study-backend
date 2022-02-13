@@ -1,6 +1,6 @@
 package kr.co.studit.entity.member;
 
-import kr.co.studit.entity.Position;
+import kr.co.studit.entity.position.Position;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

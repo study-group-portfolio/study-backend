@@ -1,9 +1,7 @@
 package kr.co.studit.repository.member;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.ListPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.dto.search.MemberSearchCondition;
@@ -11,7 +9,8 @@ import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.*;
-import kr.co.studit.entity.study.StudyApplication;
+import kr.co.studit.entity.position.Position;
+import kr.co.studit.entity.position.QPosition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,13 +25,13 @@ import java.util.List;
 
 import static kr.co.studit.entity.QBookmark.bookmark;
 import static kr.co.studit.entity.QPortfolio.portfolio;
-import static kr.co.studit.entity.QPosition.position;
 import static kr.co.studit.entity.QSkill.skill;
 import static kr.co.studit.entity.member.QMember.member;
 import static kr.co.studit.entity.member.QMemberInvitation.memberInvitation;
 import static kr.co.studit.entity.member.QMemberPosition.memberPosition;
 import static kr.co.studit.entity.member.QMemberRegion.memberRegion;
 import static kr.co.studit.entity.member.QMemberSkill.memberSkill;
+import static kr.co.studit.entity.position.QPosition.position;
 
 @Slf4j
 @Repository

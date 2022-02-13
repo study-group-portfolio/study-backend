@@ -9,7 +9,7 @@ import kr.co.studit.dto.member.*;
 import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Portfolio;
-import kr.co.studit.entity.Position;
+import kr.co.studit.entity.position.Position;
 import kr.co.studit.entity.Region;
 import kr.co.studit.entity.Skill;
 import kr.co.studit.entity.member.*;
@@ -33,7 +33,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 

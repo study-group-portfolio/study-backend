@@ -46,7 +46,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/member/checkEmailToken/**",
             "/api/auth/refresh-token",
             "/api/member/checkFindPasswordToken/**",
-            "/api/study/search"
+            "/api/study/search",
+
+            "/api/resource/*"
 
 
     };
