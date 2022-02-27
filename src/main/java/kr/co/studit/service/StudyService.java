@@ -7,10 +7,7 @@ import kr.co.studit.dto.position.PositionApplyDto;
 import kr.co.studit.dto.position.PositionDto;
 import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.dto.search.StudySearchCondition;
-import kr.co.studit.dto.study.StudyAllowDto;
-import kr.co.studit.dto.study.StudyDto;
-import kr.co.studit.dto.study.StudyForm;
-import kr.co.studit.dto.study.StudyUpdateDto;
+import kr.co.studit.dto.study.*;
 import kr.co.studit.entity.*;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.member.Member;
@@ -327,7 +324,30 @@ public class StudyService {
             return getErrorResponseEntity(e);
         }
     }
-
+    public ResponseEntity<?> findCountPositionStudy(Long id) {
+        try {
+            List<StudyPosition> studyPositionList = studyRepository.findStudyPositionByStudyId(id);
+            StudyPositionDto studyPositionDto = new StudyPositionDto();
+            List<PositionDto> result = studyPositionList
+                    .stream()
+                    .map(studyPosition -> {
+                        PositionDto positionDto = new PositionDto();
+                        positionDto.setPosition(studyPosition.getPosition().getPositionName());
+                        positionDto.setTotalCount(studyPosition.getTotalCount());
+                        positionDto.setCount(studyPosition.getCount());
+                        return positionDto;
+                    })
+                    .collect(Collectors.toList());
+            studyPositionDto.setStudyId(id);
+            studyPositionDto.setPositions(result);
+            ResponseDto<StudyPositionDto> response = new ResponseDto<>();
+            response.setData(studyPositionDto);
+            response.setStatus(Status.SUCCESS);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return getErrorResponseEntity(e);
+        }
+    }
 
 
 
@@ -427,4 +447,6 @@ public class StudyService {
 
 
     }
+
+
 }

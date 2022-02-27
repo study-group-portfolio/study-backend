@@ -248,6 +248,16 @@ public class StudyRepository {
         return Optional.ofNullable(result);
     }
 
+    public List<StudyPosition> findStudyPositionByStudyId(Long id) {
+        QueryResults<StudyPosition> results = queryFactory
+                .selectFrom(studyPosition)
+                .where(studyPosition.study.id.eq(id))
+                .fetchResults();
+        List<StudyPosition> studyPositions = results.getResults();
+
+        return studyPositions;
+    }
+
 
 //    public StudyApplication saveStudyApplication()
 

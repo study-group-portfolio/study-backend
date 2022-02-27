@@ -92,13 +92,15 @@ public class InitDb {
 
             PositionDto position1 = new PositionDto();
             position1.setPosition("백엔드");
-            position1.setCount(5);
+            position1.setTotalCount(5);
+            position1.setCount(2);
             position1.getSkills().add("스프링");
             position1.getSkills().add("장고");
 
             PositionDto position2 = new PositionDto();
             position2.setPosition("프론트");
-            position2.setCount(4);
+            position2.setTotalCount(6);
+            position2.setCount(3);
             position2.getSkills().add("리엑트");
             position2.getSkills().add("뷰");
 

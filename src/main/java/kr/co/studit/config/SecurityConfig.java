@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/auth/refresh-token",
             "/api/member/checkFindPasswordToken/**",
             "/api/study/search",
-
+            "/api/study/position/*",
             "/api/resource/*"
 
 

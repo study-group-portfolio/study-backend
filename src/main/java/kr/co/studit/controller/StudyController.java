@@ -79,4 +79,10 @@ public class StudyController {
     public ResponseEntity<?> participatedStudy(@AuthenticationPrincipal String email,Pageable pageable) {
         return studyService.findParticipatedStudy(email,pageable);
     }
+
+    @GetMapping("/position/{id}")
+    @ApiOperation(value = "스터디 포지션 정보")
+    public ResponseEntity<?> countPositionStudy(@PathVariable Long id) {
+        return studyService.findCountPositionStudy(id);
+    }
 }
