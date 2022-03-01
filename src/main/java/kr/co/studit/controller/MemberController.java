@@ -79,7 +79,7 @@ public class MemberController {
         if (existsByNickname) {
             return ResponseEntity.ok(false);
         } else {
-            return ResponseEntity.ok(false);
+            return ResponseEntity.ok(true);
         }
     }
 
