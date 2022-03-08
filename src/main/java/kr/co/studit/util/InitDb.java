@@ -10,7 +10,9 @@ import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.position.Position;
 import kr.co.studit.entity.position.PositionType;
 import kr.co.studit.entity.study.Study;
+import kr.co.studit.repository.RegionDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
+import kr.co.studit.repository.member.MemberRegionDataRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.service.StudyService;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +31,13 @@ public class InitDb {
 
 
     private final InitService initService;
-
+    private final MemberDataRepository memberDataRepository;
     @PostConstruct
     public void init() {
-        initService.dbInit1();
+        if (!memberDataRepository.existsByNickname("user0")){
+            initService.dbInit1();
+        }
+
 //        initService.dbInit2();
     }
 
@@ -44,6 +49,7 @@ public class InitDb {
         private final MemberDataRepository memberDataRepository;
         private final MemberService memberService;
         private final StudyService studyService;
+        private final RegionDataRepository regionDataRepository;
         private final PasswordEncoder passwordEncoder;
 
         // 메소드 분리
@@ -62,9 +68,17 @@ public class InitDb {
         }
 
         private void createStudys() {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 15; i++) {
                 Member member = memberDataRepository.findMemberByNickname("user" + i);
                 StudyDto studyDto = createStudyDto();
+                if (i < 5) {
+                    studyDto.setRegion("서울");
+                } else if (5 <= i && i < 10) {
+                    studyDto.setRegion("충청");
+                } else if (10 <= i) {
+                    studyDto.setType(StudyType.SHARE);
+                    studyDto.setRegion("경상");
+                }
                 studyService.createStudy(studyDto,member.getEmail());
 
             }
@@ -168,12 +182,12 @@ public class InitDb {
                 positions.add("프론트");
                 memberService.updateMemberPosition(positions, member);
                 List<String> regions = new ArrayList<>();
-                regions.add("대전");
+                regions.add("충청");
                 regions.add("서울");
                 memberService.updateMemberRegion(regions, member);
                 List<String> skills = new ArrayList<>();
-                skills.add("리엑트");
-                skills.add("뷰");
+                skills.add("React");
+                skills.add("Vue");
                 memberService.updateMemberSkill(skills, member);
             }
 
@@ -201,8 +215,8 @@ public class InitDb {
                 regions.add("서울");
                 memberService.updateMemberRegion(regions, member);*/
                 List<String> skills = new ArrayList<>();
-                skills.add("스프링");
-                skills.add("장고");
+                skills.add("Spring");
+                skills.add("C++");
                 memberService.updateMemberSkill(skills, member);
             }
 
@@ -272,7 +286,8 @@ public class InitDb {
             em.persist(tool2);
         }
 
-        private void initStudy(Member member, Region zone) {
+        private void initStudy(Member member) {
+            Region zone = regionDataRepository.findRegionByArea("서울");
             Study study = Study.createStudy(member,zone);
             study.setTitle("타이틀이요");
             em.persist(study);
@@ -284,10 +299,10 @@ public class InitDb {
 
         public void dbInit1() {
             Member member = initMember();
-            Region zone = initRegion();
-            initPositionAndSkill();
+//            Region zone = initRegion();
+//            initPositionAndSkill();
             initToll();
-            initStudy(member, zone);
+            initStudy(member);
             initMembers();
             createStudys();
             em.flush();
