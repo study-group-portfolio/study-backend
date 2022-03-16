@@ -59,6 +59,43 @@ insert into skill (skill_id, position_id, skill_name) values (null, 305, 'Maria'
 insert into skill (skill_id, position_id, skill_name) values (null, 305, 'Oracle');
 insert into skill (skill_id, position_id, skill_name) values (null, 305, 'NoSql');
 
+insert into tool (tool_id, tool_name) values (1, 'Git');
+insert into tool (tool_id, tool_name) values (2, 'Jira');
+insert into tool (tool_id, tool_name) values (3, 'Figma');
+
 -- 멤버
 insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
-values (null, NOW(), NOW(), '자기소개', NULL, 'admin@studit.co.kr', NULL, true, 'admin', 'ONOFF', '1234', NULL, NULL, NULL, true, 'ADMIN', 'SHARE');
+values (null, NOW(), NOW(), '자기소개', NULL, 'admin@studit.co.kr', NULL, true, 'admin', 'ONOFF', '{noop}12345678', NULL, NULL, NULL, true, 'ADMIN', 'SHARE');
+
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null,  NOW(), NOW(), '자기소개', NULL, 'test@test.com', NULL, false, 'test', NULL, '{noop}12345678' , NULL, NULL, NULL, false, 'ADMIN', NULL);
+--
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null,  NOW(), NOW(), '자기소개', NULL, 'test2@test.com', NULL, false, 'test2', NULL, '{noop}12345678', NULL, NULL, NULL, false, 'USER', NULL);
+--
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null,  NOW(), NOW(), '자기소개', NULL, 'test3@test.com', NULL, false, 'test3', NULL, '{noop}12345678', NULL, NULL, NULL, false, 'USER', NULL);
+
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null, NOW(), NOW(), 'user0입니다', NULL, 'studit0@studit.co.kr', NULL, false, 'user0', 'ON', '{noop}12345678', NULL, NULL, NULL, true, 'USER', 'SHARE');
+--
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null, NOW(), NOW(), 'user1입니다', NULL, 'studit1@studit.co.kr', NULL, false, 'user1', 'ON', '{noop}12345678', NULL, NULL, NULL, true, 'USER', 'SHARE');
+--
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null, NOW(), NOW(), 'user2입니다', NULL, 'studit2@studit.co.kr', NULL, false, 'user2', 'ON', '{noop}12345678', NULL, NULL, NULL, true, 'USER', 'SHARE');
+--
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null, NOW(), NOW(), 'user3입니다', NULL, 'studit3@studit.co.kr', NULL, false, 'user3', 'ON', '{noop}12345678', NULL, NULL, NULL, true, 'USER', 'SHARE');
+--
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null, NOW(), NOW(), 'user4입니다', NULL, 'studit4@studit.co.kr', NULL, false, 'user4', 'ON', '{noop}12345678', NULL, NULL, NULL, true, 'USER', 'SHARE');
+--
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null, NOW(), NOW(), 'user5입니다', NULL, 'studit5@studit.co.kr', NULL, false, 'user5', 'ON', '{noop}12345678', NULL, NULL, NULL, true, 'USER', 'SHARE');
+--
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null, NOW(), NOW(), 'user6입니다', NULL, 'studit6@studit.co.kr', NULL, false, 'user6', 'ON', '{noop}12345678', NULL, NULL, NULL, true, 'USER', 'SHARE');
+--
+-- insert into member (member_id, created_date, modified_date, bio, emai_check_token, email, email_check_token_generated_at, email_verified, nickname, on_off_status, password, password_find_token, password_find_token_generated_at, profile_img, public_profile, role, study_type)
+-- values (null, NOW(), NOW(), 'user7입니다', NULL, 'studit7@studit.co.kr', NULL, false, 'user7', 'ON', '{noop}12345678', NULL, NULL, NULL, true, 'USER', 'SHARE');

@@ -16,30 +16,45 @@ import kr.co.studit.repository.member.MemberRegionDataRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.service.StudyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
+import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
+@Order(Ordered.LOWEST_PRECEDENCE)
 @RequiredArgsConstructor
 public class InitDb {
 
 
     private final InitService initService;
     private final MemberDataRepository memberDataRepository;
-    @PostConstruct
-    public void init() {
-        if (!memberDataRepository.existsByNickname("user0")){
-            initService.dbInit1();
-        }
+    private final DataSource dataSource;
 
-//        initService.dbInit2();
+    @EventListener(ApplicationReadyEvent.class)
+    public void loadData() {
+        ResourceDatabasePopulator resourceDatabasePopulator =
+                new ResourceDatabasePopulator(false, false, "UTF-8", new ClassPathResource("data.sql") );
+        resourceDatabasePopulator.execute(dataSource);
+            initService.dbInit1();
     }
+
 
     @Component
     @Transactional
@@ -75,7 +90,7 @@ public class InitDb {
                     studyDto.setRegion("서울");
                 } else if (5 <= i && i < 10) {
                     studyDto.setRegion("충청");
-                } else if (10 <= i) {
+                } else if (10 <= 15) {
                     studyDto.setType(StudyType.SHARE);
                     studyDto.setRegion("경상");
                 }
@@ -105,18 +120,18 @@ public class InitDb {
             studyDto.setStudyDay("주말");
 
             PositionDto position1 = new PositionDto();
-            position1.setPosition("백엔드");
+            position1.setPosition("백엔드 개발자");
             position1.setTotalCount(5);
             position1.setCount(2);
-            position1.getSkills().add("스프링");
-            position1.getSkills().add("장고");
+            position1.getSkills().add("Java");
+            position1.getSkills().add("Spring");
 
             PositionDto position2 = new PositionDto();
-            position2.setPosition("프론트");
+            position2.setPosition("프론트엔드 개발자");
             position2.setTotalCount(6);
             position2.setCount(3);
-            position2.getSkills().add("리엑트");
-            position2.getSkills().add("뷰");
+            position2.getSkills().add("React");
+            position2.getSkills().add("Vue");
 
             studyDto.setPositions(new ArrayList<>());
             studyDto.getPositions().add(position1);
@@ -141,7 +156,7 @@ public class InitDb {
                 Member member = Member.builder()
                         .bio("user"+i+"입니다")
                         .email("studit"+i+"@studit.co.kr")
-                        .password(passwordEncoder.encode("12345678"))
+                        .password("{noop}12345678")
                         .role(Role.USER)
                         .onOffStatus(OnOffStatus.ON)
                         .publicProfile(true)
@@ -152,13 +167,13 @@ public class InitDb {
                 em.persist(member);
                 em.flush();
                 List<String> positions = new ArrayList<>();
-                positions.add("백엔드");
+                positions.add("백엔드 개발자");
                 memberService.updateMemberPosition(positions, member);
                 List<String> regions = new ArrayList<>();
                 regions.add("서울");
                 memberService.updateMemberRegion(regions, member);
                 List<String> skills = new ArrayList<>();
-                skills.add("스프링");
+                skills.add("Java");
                 memberService.updateMemberSkill(skills, member);
             }
 
@@ -167,7 +182,7 @@ public class InitDb {
                 Member member = Member.builder()
                         .bio("user"+i+"입니다")
                         .email("studit"+i+"@studit.co.kr")
-                        .password("12345678")
+                        .password("{noop}12345678")
                         .role(Role.USER.USER)
                         .onOffStatus(OnOffStatus.OFF)
                         .publicProfile(true)
@@ -179,7 +194,7 @@ public class InitDb {
                 em.flush();
 
                 List<String> positions = new ArrayList<>();
-                positions.add("프론트");
+                positions.add("프론트엔드 개발자");
                 memberService.updateMemberPosition(positions, member);
                 List<String> regions = new ArrayList<>();
                 regions.add("충청");
@@ -196,7 +211,7 @@ public class InitDb {
                 Member member = Member.builder()
                         .bio("user"+i+"입니다")
                         .email("studit"+i+"@studit.co.kr")
-                        .password("12345678")
+                        .password("{noop}12345678")
                         .role(Role.USER)
                         .onOffStatus(OnOffStatus.ONOFF)
                         .publicProfile(true)
@@ -209,7 +224,7 @@ public class InitDb {
                 em.persist(member);
                 em.flush();
                 List<String> positions = new ArrayList<>();
-                positions.add("백엔드");
+                positions.add("백엔드 개발자");
                 memberService.updateMemberPosition(positions, member);
                /* List<String> regions = new ArrayList<>();
                 regions.add("서울");
@@ -223,16 +238,11 @@ public class InitDb {
 
         }
 
-        private Region initRegion() {
-            Region zone1 = Region.createRegion("서울");
-            Region zone2 = Region.createRegion("부산");
-            Region zone3 = Region.createRegion("대전");
-            Region zone4 = Region.createRegion("대구");
-            em.persist(zone1);
-            em.persist(zone2);
-            em.persist(zone3);
-            em.persist(zone4);
-            return zone1;
+        private void initRegion() {
+            String[] areas = {"서울", "부산", "인천", "경기", "강원", "충청", "전라", "경상", "제주"};
+            List<Region> regions = Arrays.stream(areas).map(s -> Region.createRegion(s)).collect(Collectors.toList());
+
+            em.persist(regions);
         }
 
         private void initPositionAndSkill() {
@@ -241,17 +251,17 @@ public class InitDb {
             PositionType positionTypePlan = PositionType.createPostionType("기획");
 
 
-            Position position1 = Position.createPostion("백엔드");
+            Position position1 = Position.createPostion("백엔드 개발자");
             position1.setPositionType(positionTypeBack);
 
 
-            Skill skillBack1 = Skill.createSkill("스프링");
+            Skill skillBack1 = Skill.createSkill("Spring");
             skillBack1.setPosition(position1);
 
-            Skill skillBack2 = Skill.createSkill("장고");
+            Skill skillBack2 = Skill.createSkill("Java");
             skillBack2.setPosition(position1);
 
-            Skill skillBack3 = Skill.createSkill("노드");
+            Skill skillBack3 = Skill.createSkill("Node.js");
             skillBack3.setPosition(position1);
 
 
@@ -261,13 +271,13 @@ public class InitDb {
             position1.getSkills().add(skillBack3);
 
 
-            Position position2 = Position.createPostion("프론트");
+            Position position2 = Position.createPostion("프론트엔드 개발자");
             position2.setPositionType(positionTypeBack);
 
-            Skill skillFront1 = Skill.createSkill("리엑트");
+            Skill skillFront1 = Skill.createSkill("React");
             skillFront1.setPosition(position2);
 
-            Skill skillFront2 = Skill.createSkill("뷰");
+            Skill skillFront2 = Skill.createSkill("Vue");
             skillFront2.setPosition(position2);
 
             Skill skillFront3 = Skill.createSkill("앵귤러");
@@ -301,7 +311,7 @@ public class InitDb {
             Member member = initMember();
 //            Region zone = initRegion();
 //            initPositionAndSkill();
-            initToll();
+//            initToll();
             initStudy(member);
             initMembers();
             createStudys();
