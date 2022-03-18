@@ -70,14 +70,11 @@ class MemberServiceTest {
         profileForm.setOnOffStatus(OnOffStatus.ON);
         List<String> regions = new ArrayList<>();
         regions.add("서울");
-        regions.add("용인");
         List<String> positions = new ArrayList<>();
-        positions.add("백엔드");
-        positions.add("기획");
+        positions.add("백엔드 개발자");
         List<String> skills = new ArrayList<>();
-        skills.add("자바");
-        skills.add("스프링 부트");
-        skills.add("JPA");
+        skills.add("Java");
+        skills.add("Spring");
 
 
     }
@@ -146,10 +143,10 @@ class MemberServiceTest {
         regions.add("서울");
         profileForm.setRegions(regions);
         List<String> positions = new ArrayList<>();
-        positions.add("백엔드");
+        positions.add("백엔드 개발자");
         profileForm.setPositions(positions);
         List<String> skills = new ArrayList<>();
-        skills.add("스프링");
+        skills.add("Spring");
         profileForm.setSkills(skills);
 
 
@@ -189,13 +186,13 @@ class MemberServiceTest {
         profileForm.setOnOffStatus(OnOffStatus.ON);
         List<String> regions = new ArrayList<>();
         regions.add("서울");
-        regions.add("부산");
+
         profileForm.setRegions(regions);
         List<String> positions = new ArrayList<>();
-        positions.add("백엔드");
+        positions.add("백엔드 개발자");
         profileForm.setPositions(positions);
         List<String> skills = new ArrayList<>();
-        skills.add("스프링");
+        skills.add("Spring");
         profileForm.setSkills(skills);
 
 

@@ -157,16 +157,16 @@ class StudyServiceTest {
         studyDto.setStudyDay("주말");
 
         PositionDto position1 = new PositionDto();
-        position1.setPosition("백엔드");
+        position1.setPosition("백엔드 개발자");
         position1.setCount(5);
-        position1.getSkills().add("스프링");
-        position1.getSkills().add("장고");
+        position1.getSkills().add("Spring");
+        position1.getSkills().add("Java");
 
         PositionDto position2 = new PositionDto();
-        position2.setPosition("프론트");
+        position2.setPosition("프론트엔드 개발자");
         position2.setCount(4);
-        position2.getSkills().add("리엑트");
-        position2.getSkills().add("뷰");
+        position2.getSkills().add("React");
+        position2.getSkills().add("Vue");
 
         studyDto.setPositions(new ArrayList<>());
         studyDto.getPositions().add(position1);

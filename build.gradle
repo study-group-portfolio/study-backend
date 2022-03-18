@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.5.6'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 	id 'java'
 }
 
@@ -19,6 +20,9 @@ repositories {
 	mavenCentral()
 }
 
+
+
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -32,7 +36,7 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
-	implementation 'com.querydsl:querydsl-jpa'
+
 	implementation 'org.springframework.boot:spring-boot-configuration-processor:'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
@@ -42,11 +46,61 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	implementation 'com.querydsl:querydsl-jpa'
+
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'io.rest-assured:spring-mock-mvc:4.5.1'
+
+//	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+//	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+
+
+}
+ext {
+	snippetsDir = file('build/generated-snippets')
 }
 
 test {
 	useJUnitPlatform()
+	outputs.dir snippetsDir
 }
+
+asciidoctor {
+	dependsOn test
+	inputs.dir snippetsDir
+}
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+
+
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'BOOT-INF/classes/static/docs'
+	}
+}
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
+}
+
+// clean task 실행시 QClass 삭제
+clean {
+	delete file('src/main/generated') // 인텔리제이 Annotation processor 생성물 생성 위치
+}
+
+
 //querydsl 추가 시작
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
@@ -62,6 +116,8 @@ configurations {
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
+
+
 
 jar {
 	enabled = false

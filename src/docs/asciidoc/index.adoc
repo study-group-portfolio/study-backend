@@ -1,0 +1,49 @@
+
+= Spring Rest Doc
+ifndef::snippets[]
+endif::[]
+:doctype: book
+:icons: font
+:toc: left
+:source-highlighter: highlightjs
+:toclevels: 2
+:sectlinks:
+:snippets: ./build/generated-snippets
+
+== MemberController
+
+=== 회원가입
+
+==== REQUEST
+
+include::{snippets}/signup/http-request.adoc[]
+
+==== REQUEST FIELDS
+
+include::{snippets}/signup/request-fields.adoc[]
+
+
+==== RESPONSE
+include::{snippets}/signup/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/signup/response-fields.adoc[]
+
+=== 로그인
+
+==== REQUEST
+
+include::{snippets}/signin/http-request.adoc[]
+
+==== REQUEST FIELDS
+
+include::{snippets}/signin/request-fields.adoc[]
+
+
+==== RESPONSE
+include::{snippets}/signin/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/signin/response-fields.adoc[]

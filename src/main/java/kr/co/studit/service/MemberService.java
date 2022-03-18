@@ -101,8 +101,10 @@ public class MemberService {
                 .build();
         ResponseDto<?> responseDto = ResponseDto.builder()
                 .status(Status.SUCCESS)
-                .data(signinRes).build();
-        return ResponseEntity.ok(responseDto);
+                .data(signinRes)
+                .message("로그인 완료").build();
+        return ResponseEntity.ok().body(responseDto);
+//        return ResponseEntity.ok(responseDto);
     }
 
 
@@ -119,6 +121,7 @@ public class MemberService {
                     .build();
             ResponseDto<Object> responseDto = ResponseDto.builder()
                     .status(Status.SUCCESS)
+                    .message("로그인 완료")
                     .data(signinRes).build();
 
             return ResponseEntity.ok().body(responseDto);
