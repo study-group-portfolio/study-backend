@@ -1,14 +1,18 @@
 
+
+
 = Spring Rest Doc
 ifndef::snippets[]
 endif::[]
 :doctype: book
+:docinfo: shared
 :icons: font
 :toc: left
 :source-highlighter: highlightjs
 :toclevels: 2
 :sectlinks:
 :snippets: ./build/generated-snippets
+
 
 == MemberController
 
@@ -47,3 +51,200 @@ include::{snippets}/signin/http-response.adoc[]
 ==== RESPONSE FIELDS
 
 include::{snippets}/signin/response-fields.adoc[]
+
+=== 닉네임 중복 체크
+
+==== REQUEST
+
+include::{snippets}/checkNickname/http-request.adoc[]
+
+==== PATH-PARAMETER
+
+include::{snippets}/checkNickname/path-parameters.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/checkNickname/http-response.adoc[]
+
+[.small]#true : 사용가능 / false : 사용 불가능#
+
+=== 이메일 중복 체크
+
+==== REQUEST
+
+include::{snippets}/checkEmail/http-request.adoc[]
+
+==== PATH-PARAMETER
+
+include::{snippets}/checkEmail/path-parameters.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/checkEmail/http-response.adoc[]
+
+true : 사용가능 / false : 사용 불가능
+
+=== 기본 프로필 업데이트
+
+==== REQUEST
+
+include::{snippets}/update-profile-basic/http-request.adoc[]
+
+==== REQUEST FIELDS
+
+include::{snippets}/update-profile-basic/request-fields.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/update-profile-basic/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/update-profile-basic/response-fields.adoc[]
+
+=== 프로필 업데이트
+
+==== REQUEST
+
+include::{snippets}/update-profile/http-request.adoc[]
+
+==== REQUEST FIELDS
+
+include::{snippets}/update-profile/request-fields.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/update-profile/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/update-profile/response-fields.adoc[]
+
+=== 내 프로필 조회
+
+==== REQUEST
+
+include::{snippets}/myPage/http-request.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/myPage/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/myPage/response-fields.adoc[]
+
+=== 프로필 조회
+
+==== REQUEST
+
+include::{snippets}/getProfile/http-request.adoc[]
+
+==== PATH-PARAMETER
+
+include::{snippets}/getProfile/path-parameters.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/getProfile/response-fields.adoc[]
+
+=== 비밀번호 변경
+
+==== REQUEST
+
+include::{snippets}/update-password/http-request.adoc[]
+
+==== REQUEST FIELDS
+
+include::{snippets}/update-password/request-fields.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/update-password/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/update-password/response-fields.adoc[]
+
+=== 이메일 인증
+
+==== REQUEST
+
+include::{snippets}/email-verife/http-request.adoc[]
+
+==== PATH-PARAMETER
+
+include::{snippets}/email-verife/path-parameters.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/email-verife/http-response.adoc[]
+
+=== 비밀번호 찾기 이메일 전송
+
+==== REQUEST
+
+include::{snippets}/send-email-reset-password/http-request.adoc[]
+
+==== REQUEST FILEDS
+
+include::{snippets}/send-email-reset-password/request-fields.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/send-email-reset-password/http-response.adoc[]
+
+=== 비밀번호 찾기 이메일 인증
+
+==== REQUEST
+
+include::{snippets}/email-verife-reset/http-request.adoc[]
+
+==== PATH-PARAMETER
+
+include::{snippets}/email-verife-reset/path-parameters.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/email-verife-reset/http-response.adoc[]
+
+[%collapsible]
+=== 멤버조회
+search-condition == null인 경우
+
+==== REQUEST
+
+include::{snippets}/memberlist-v1/http-request.adoc[]
+
+==== REQUEST FILEDS
+
+include::{snippets}/memberlist-v1/request-parameters.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/memberlist-v1/response-body.adoc[]
+
+
+
+include::{snippets}/memberlist-v1/response-fields.adoc[]
+
+
+==== REQUEST
+
+include::{snippets}/memberlist-v2/http-request.adoc[]
+
+
+==== RESPONSE FIELDS
+
+include::{snippets}/memberlist-v2/request-fields.adoc[]
+
+
+==== RESPONSE
+
+include::{snippets}/memberlist-v2/response-body.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/memberlist-v2/response-fields.adoc[]
+
+

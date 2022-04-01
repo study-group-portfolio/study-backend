@@ -1,5 +1,6 @@
 package kr.co.studit.service;
 
+import kr.co.studit.dto.search.CustomPage;
 import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.dto.bookmark.BookmarkRes;
 import kr.co.studit.dto.member.SearchMemberDto;
@@ -50,7 +51,7 @@ public class BookmarkService {
         return res;
     }
 
-    public Page<SearchMemberDto> findMemberBookmarkList(Long loginMemberId, Pageable pageable) {
+    public CustomPage<SearchMemberDto> findMemberBookmarkList(Long loginMemberId, Pageable pageable) {
         Page<Bookmark> memberBookmarkList = bookmarkDataRepository.findMemberBookmarkList(loginMemberId, pageable);
 
         return createMemberBookmarkList(loginMemberId, memberBookmarkList);
@@ -75,7 +76,7 @@ public class BookmarkService {
     }
 
 
-    private Page<SearchMemberDto> createMemberBookmarkList(Long loginMemberId, Page<Bookmark> bookmarks) {
+    private CustomPage<SearchMemberDto> createMemberBookmarkList(Long loginMemberId, Page<Bookmark> bookmarks) {
         List<SearchMemberDto> searchMemberDtos = new ArrayList<>();
 
         for (Bookmark bookmark: bookmarks) {
@@ -92,7 +93,8 @@ public class BookmarkService {
             searchMemberDtos.add(searchMemberDto);
 
         }
-        Page<SearchMemberDto> page = new PageImpl<>(searchMemberDtos, bookmarks.getPageable(), bookmarks.getTotalElements());
+        CustomPage<SearchMemberDto> page = new CustomPage<>(searchMemberDtos, bookmarks);
+//        CustomPage<SearchMemberDto> page = new PageImpl<>(searchMemberDtos, bookmarks.getPageable(), bookmarks.getTotalElements());
         return page;
     }
 

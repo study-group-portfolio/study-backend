@@ -24,6 +24,10 @@ public class ProfileForm extends BasicProfileForm {
     @ApiModelProperty(example = "ON")
     private OnOffStatus onOffStatus;
 
+    // 프로필 공개여부
+    @ApiModelProperty(example = "true")
+    private boolean publicProfile;
+
     // 지역
     @ApiModelProperty(example = "[\n" +
             "\t\"서울\",\"대전\"\n" +

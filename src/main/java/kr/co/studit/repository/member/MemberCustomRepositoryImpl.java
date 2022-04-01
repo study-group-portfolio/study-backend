@@ -25,6 +25,7 @@ import java.util.List;
 
 import static kr.co.studit.entity.QBookmark.bookmark;
 import static kr.co.studit.entity.QPortfolio.portfolio;
+import static kr.co.studit.entity.QRegion.*;
 import static kr.co.studit.entity.QSkill.skill;
 import static kr.co.studit.entity.member.QMember.member;
 import static kr.co.studit.entity.member.QMemberInvitation.memberInvitation;
@@ -136,10 +137,14 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     public Page<Member> searchPageMember(MemberSearchCondition condition, Pageable pageable) {
         QueryResults<Member> results = queryFactory
                 .selectFrom(member).distinct()
-                .leftJoin(member.regions, memberRegion)
-                .leftJoin(member.positions, memberPosition)
-                .leftJoin(member.skills, memberSkill)
-                .leftJoin(member.bookmarks, bookmark)
+                .innerJoin(member.regions, memberRegion)
+                .innerJoin(member.positions, memberPosition)
+                .innerJoin(member.skills, memberSkill)
+//                .innerJoin(member.bookmarks, bookmark)
+//                .leftJoin(member.regions, memberRegion)
+//                .leftJoin(member.positions, memberPosition)
+//                .leftJoin(member.skills, memberSkill)
+//                .leftJoin(member.bookmarks, bookmark)
                 .where(
                         member.publicProfile.eq(true),
                         studyTypeEq(condition.getStudyType()),

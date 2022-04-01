@@ -7,6 +7,7 @@ import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.member.*;
 import kr.co.studit.dto.response.ResponseDto;
+import kr.co.studit.dto.search.CustomPage;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.Portfolio;
 import kr.co.studit.entity.position.Position;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,9 +38,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.rmi.NoSuchObjectException;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -90,7 +91,7 @@ public class MemberService {
     }
 
     //이메일 인증 후 로그인 과정
-    private ResponseEntity<?> signin(Member member) {
+    public ResponseEntity<?> signin(Member member) {
         String accessToken = tokenProvider.createAccessToken(member);
         String refreshToken = tokenProvider.createRefreshToken(member);
         SigninRes signinRes = SigninRes.builder()
@@ -157,6 +158,7 @@ public class MemberService {
     }
 
     public ResponseEntity<?> editProfile(ProfileForm profileForm, String email) {
+        //TODO 포지션 타입 넣어함, 공개여부, 진행방식
         Member member = memberDataRepository.findMemberByEmail(email);
         member.updateMember(profileForm);
         updateMemberRegion(profileForm.getRegions(), member);
@@ -312,8 +314,14 @@ public class MemberService {
         return toProfleForm(member);
     }
 
-    public ProfileForm getProfile(Long id) {
+    public ProfileForm getProfile(Long id) throws NoSuchObjectException {
+
         Member member = memberDataRepository.findMemberById(id);
+
+        if (member == null) {
+            throw new NoSuchObjectException("존재 하지 않는 회원입니다.");
+        }
+
         return toProfleForm(member);
     }
 
@@ -335,18 +343,18 @@ public class MemberService {
         return Optional.ofNullable(list).map(List::stream).orElseGet(Stream::empty);
     }
 
-    public Page<SearchMemberDto> searchMemberDto(Member loginMember, Pageable pageable) {
+    public CustomPage<SearchMemberDto> searchMemberDto(Member loginMember, Pageable pageable) {
         Page<Member> members = memberDataRepository.searchPageMember(pageable);
-        Page<SearchMemberDto> page = createSearchMemberDto(loginMember, members);
+        CustomPage<SearchMemberDto> page = createSearchMemberDto(loginMember, members);
         return page;
     }
 
-    public Page<SearchMemberDto> searchMemberDto(Member loginMember, MemberSearchCondition condition, Pageable pageable) {
+    public CustomPage<SearchMemberDto> searchMemberDto(Member loginMember, MemberSearchCondition condition, Pageable pageable) {
         Page<Member> members = memberDataRepository.searchPageMember(condition, pageable);
         return createSearchMemberDto(loginMember, members);
     }
 
-    private Page<SearchMemberDto> createSearchMemberDto(Member loginMember, Page<Member> members) {
+    private CustomPage<SearchMemberDto> createSearchMemberDto(Member loginMember, Page<Member> members) {
         List<SearchMemberDto> searchMemberDtos = new ArrayList<>();
 
         for (Member member : members) {
@@ -365,7 +373,9 @@ public class MemberService {
             searchMemberDtos.add(searchMemberDto);
 
         }
-        Page<SearchMemberDto> page = new PageImpl<>(searchMemberDtos, members.getPageable(), members.getTotalElements());
+
+        CustomPage<SearchMemberDto> page = new CustomPage<>(searchMemberDtos, members);
+
         return page;
     }
 
@@ -420,6 +430,7 @@ public class MemberService {
     }
 
     public Member editBasicProfile(String email, BasicProfileForm basicProfileForm) {
+        //TODO 추후 img 업데이트
         Member member = memberDataRepository.findMemberByEmail(email);
         member.setNickname(basicProfileForm.getNickname());
         return member;
@@ -476,9 +487,14 @@ public class MemberService {
                 if (member == null) {
                     throw new NotFoundException("이메일을 찾지 못했습니다");
                 }
+                if ( !member.isValidPasswordToken(resetPasswordDto.getResetToken())) {
+                    throw new RuntimeException("리셋 토큰이 유효하지 않습니다.");
+                }
                 member.updatePassword(passwordEncoder.encode(resetPasswordDto.getPassword()));
-                message = "비밀번호가 재설정 되었습니다.";
-                return ResponseEntity.ok().body(message);
+                Map<String, String> response = new HashMap();
+                response.put("message", "비밀번호가 재설정 되었습니다.");
+                response.put("status", Status.SUCCESS.toString());
+                return ResponseEntity.ok().body(response);
             } catch (Exception e) {
                 log.error("error : {} ", e.getMessage());
                return getErrorResponse(e, HttpStatus.BAD_REQUEST, e.getMessage());

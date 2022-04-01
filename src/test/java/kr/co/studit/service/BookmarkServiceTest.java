@@ -2,6 +2,7 @@ package kr.co.studit.service;
 
 import kr.co.studit.dto.bookmark.BookmarkRes;
 import kr.co.studit.dto.member.SearchMemberDto;
+import kr.co.studit.dto.search.CustomPage;
 import kr.co.studit.entity.Bookmark;
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.repository.bookmark.BookmarkDataRepository;
@@ -73,7 +74,7 @@ class BookmarkServiceTest {
 
         //when
         bookmarkDataRepository.findAll();
-        Page<SearchMemberDto> memberBookmarkList = bookmarkService.findMemberBookmarkList(user1.getId(), PageRequest.of(0, 100));
+        CustomPage<SearchMemberDto> memberBookmarkList = bookmarkService.findMemberBookmarkList(user1.getId(), PageRequest.of(0, 100));
         List<SearchMemberDto> content = memberBookmarkList.getContent();
         //then
 

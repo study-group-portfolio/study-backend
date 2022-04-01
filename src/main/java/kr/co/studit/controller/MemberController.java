@@ -1,19 +1,26 @@
 package kr.co.studit.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.swagger.annotations.ApiOperation;
 import kr.co.studit.dto.InvitationDto;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.member.*;
 import kr.co.studit.dto.response.ResponseDto;
+import kr.co.studit.dto.search.CustomPage;
 import kr.co.studit.dto.search.MemberSearchCondition;
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.error.ErrorResponse;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.validator.SignupValidator;
 import kr.co.studit.validator.UpdatePasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
@@ -21,6 +28,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.rmi.NoSuchObjectException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +84,7 @@ public class MemberController {
     @GetMapping("/checkNickname/{nickname}")
     public ResponseEntity<?> checkNickname(@PathVariable String nickname) {
         Boolean existsByNickname = memberDataRepository.existsByNickname(nickname);
+        //TODO rest doc 작성시 respons object를 변경할 필요가 있겠다.. ex) "result" : true / "result" : true
         if (existsByNickname) {
             return ResponseEntity.ok(false);
         } else {
@@ -121,6 +130,7 @@ public class MemberController {
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .data(basicProfileForm)
                 .status(Status.SUCCESS)
+                .message("업데이트 완료")
                 .build();
         // 프로필 이미지 추후 수정 해야 함. 에러시 결과값등
 
@@ -166,10 +176,19 @@ public class MemberController {
             return ResponseEntity.badRequest().body("유효하지 않은 토큰 입니다.");
         }
 
-        memberService.compleateSignup(member);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("email", email);
+        map.put("resetToken", token);
+
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setStatus(Status.SUCCESS);
+        responseDto.setData(map);
+        responseDto.setMessage("이메일 인증이 완료");
 
 
-        return ResponseEntity.ok().body("이메일 인증이 완료 되었습니다.");
+
+        return ResponseEntity.ok(responseDto);
     }
 
     @ApiOperation(value = "프로필 수정")
@@ -187,6 +206,7 @@ public class MemberController {
         // 접근 권한 설정 해야함 시큐리티 설정 할 것
         ProfileForm profileDto = memberService.getProfile(email);
         ResponseDto<Object> responseDto = ResponseDto.builder()
+            .status(Status.SUCCESS)
                 .data(profileDto)
                 .build();
         return ResponseEntity.ok().body(responseDto);
@@ -196,8 +216,15 @@ public class MemberController {
     @GetMapping("/profile/{id}")
     public ResponseEntity<?> getProfile(@PathVariable Long id) {
         // 접근 권한 설정 해야함 시큐리티 설정 할 것
-        ProfileForm profileDto = memberService.getProfile(id);
+        ProfileForm profileDto = new ProfileForm();
+        try {
+             profileDto = memberService.getProfile(id);
+        } catch (NoSuchObjectException e) {
+            return ErrorResponse.getErrorResponse(e, HttpStatus.BAD_REQUEST, e.getMessage());
+
+        }
         ResponseDto<Object> responseDto = ResponseDto.builder()
+                .status(Status.SUCCESS)
                 .data(profileDto)
                 .build();
         return ResponseEntity.ok().body(responseDto);
@@ -205,20 +232,32 @@ public class MemberController {
 
     @ApiOperation(value = "회원 리스트 조회")
     @PostMapping("/search")
-    public ResponseEntity<?> searchMembers(@AuthenticationPrincipal String email, @RequestBody(required = false) MemberSearchCondition condition, Pageable pageable) {
+    public ResponseEntity<?> searchMembers(@AuthenticationPrincipal String email, @RequestBody(required = false) MemberSearchCondition condition,
+                                            @PageableDefault(size = 12) Pageable pageable )
+//                                           @RequestParam(required = false,  defaultValue = "0") int page,
+//                                           @RequestParam(required = false, defaultValue = "12" ) int size)
+    {
         //로그인한 회원이 검색히 북마크 정보도 DTO에 담아서 리턴 해줘야한다. 로그인 유무
+        //로그인한 상태 ( 북마크 정보 포함)
+        //비로그인한 상태( 북마크 정보 x)
+        //컨디션 == null 일때(처음 요청시) 프로필 공개된 멤버만 조회
+
 
         Member member = memberDataRepository.findMemberByEmail(email);
 
-        Page<SearchMemberDto> searchMemberDtos = null;
+        CustomPage<SearchMemberDto> searchMemberDtos = null;
         if (condition != null) {
             searchMemberDtos = memberService.searchMemberDto(member, condition, pageable);
         } else if (condition == null) {
             searchMemberDtos = memberService.searchMemberDto(member, pageable);
         }
-        ResponseDto<Object> responseListDto = ResponseDto.builder().data(searchMemberDtos)
+        ResponseDto<Object> responseListDto = ResponseDto.builder()
+                .data(searchMemberDtos)
+                .status(Status.SUCCESS)
                 .build();
         return ResponseEntity.ok().body(responseListDto);
     }
 
 }
+
+//TODO 회원가입 인증 메일 재발송 method가 없네 .. 만들 것  프로필 공개 여부 수정 부분만 가능한 controller method 만들 것

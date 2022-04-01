@@ -2,6 +2,7 @@ package kr.co.studit.controller;
 
 import io.swagger.annotations.ApiOperation;
 import kr.co.studit.dto.response.ResponseDto;
+import kr.co.studit.dto.search.CustomPage;
 import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.dto.bookmark.BookmarkRes;
 import kr.co.studit.dto.enums.Status;
@@ -59,7 +60,7 @@ public class BookmarkController {
     public ResponseEntity<?> findMemberBookmarkList(@AuthenticationPrincipal String email, @PageableDefault(page = 0, size = 4) Pageable pageable) {
         Member member = memberDataRepository.findMemberByEmail(email);
         Long memberId = member.getId();
-        Page<SearchMemberDto> memberBookmarkList = bookmarkService.findMemberBookmarkList(memberId, pageable);
+        CustomPage<SearchMemberDto> memberBookmarkList = bookmarkService.findMemberBookmarkList(memberId, pageable);
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .status(Status.SUCCESS)
                 .data(memberBookmarkList)

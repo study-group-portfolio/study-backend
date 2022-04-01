@@ -115,7 +115,7 @@ public class Member extends BaseTimeEntity {
 
     public void generatePasswordFindToken() {
         this.passwordFindToken = UUID.randomUUID().toString();
-        this.emailCheckTokenGeneratedAt = LocalDateTime.now();
+        this.passwordFindTokenGeneratedAt = LocalDateTime.now();
     }
 
     public void compleateSignup() {
@@ -131,6 +131,9 @@ public class Member extends BaseTimeEntity {
     }
 
     public boolean isValidPasswordToken(String token) {
+        if (this.getPasswordFindTokenGeneratedAt().isBefore(LocalDateTime.now().minusHours(12))) {
+            return false;
+        }
         return this.passwordFindToken.equals(token);
     }
 
@@ -142,6 +145,7 @@ public class Member extends BaseTimeEntity {
         this.bio = profileForm.getBio();
         this.studyType = profileForm.getStudyType();
         this.onOffStatus = profileForm.getOnOffStatus();
+        this.publicProfile = isPublicProfile();
 
     }
 

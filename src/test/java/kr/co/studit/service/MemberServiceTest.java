@@ -5,6 +5,7 @@ import kr.co.studit.dto.member.ProfileForm;
 import kr.co.studit.dto.member.SearchMemberDto;
 import kr.co.studit.dto.member.SigninDto;
 import kr.co.studit.dto.member.SignupDto;
+import kr.co.studit.dto.search.CustomPage;
 import kr.co.studit.entity.Bookmark;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
@@ -245,7 +246,7 @@ class MemberServiceTest {
 
         //when
 
-        Page<SearchMemberDto> searchMemberDtos = memberService.searchMemberDto(user1, pageable);
+        CustomPage<SearchMemberDto> searchMemberDtos = memberService.searchMemberDto(user1, pageable);
         List<SearchMemberDto> content = searchMemberDtos.getContent();
 
 
