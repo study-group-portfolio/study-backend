@@ -12,4 +12,5 @@ public interface BookmarkCustomRepository {
     Page<Bookmark> findMemberBookmarkList(Long loginMemberId, Pageable pageable);
 
     Page<Bookmark> findStudyBookmarkList(Long loginMemberId, Pageable pageable);
+    Bookmark findMarkeStudy(Long studyId ,Long memberId);
 }

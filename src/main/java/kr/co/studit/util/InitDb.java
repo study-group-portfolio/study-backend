@@ -13,6 +13,8 @@ import kr.co.studit.entity.study.Study;
 import kr.co.studit.repository.RegionDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.repository.member.MemberRegionDataRepository;
+import kr.co.studit.repository.study.StudyDataRepository;
+import kr.co.studit.service.BookmarkService;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.service.StudyService;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,7 @@ public class InitDb {
     private final MemberDataRepository memberDataRepository;
     private final DataSource dataSource;
 
+
     @EventListener(ApplicationReadyEvent.class)
     public void loadData() {
         ResourceDatabasePopulator resourceDatabasePopulator =
@@ -66,6 +69,8 @@ public class InitDb {
         private final StudyService studyService;
         private final RegionDataRepository regionDataRepository;
         private final PasswordEncoder passwordEncoder;
+        private final BookmarkService bookmarkService;
+        private final StudyDataRepository studyDataRepository;
 
         // 메소드 분리
         private Member initMember() {
@@ -303,6 +308,17 @@ public class InitDb {
             em.persist(study);
         }
 
+        private void initBookmarkStudyList() {
+            Member admin = memberDataRepository.findMemberByNickname("admin");
+            Long id = admin.getId();
+            List<Study> studies = studyDataRepository.findAll();
+            for (Study study: studies) {
+                bookmarkService.createStudyBookmark(admin,study);
+            }
+
+
+        }
+
         private void createStudy() {
             memberDataRepository.findMemberByNickname("user1");
         }
@@ -315,6 +331,7 @@ public class InitDb {
             initStudy(member);
             initMembers();
             createStudys();
+            initBookmarkStudyList();
             em.flush();
 //            em.clear();
 //            List<Study> list = member.getStudys();

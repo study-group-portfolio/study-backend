@@ -12,4 +12,5 @@ public interface BookmarkDataRepository extends JpaRepository<Bookmark, Long>, B
 
     @Override
     void deleteById(Long bookmarkId);
+
 }

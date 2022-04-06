@@ -112,6 +112,8 @@ public class BookmarkService {
     }
 
 
+
+
     private <T> Stream<T> getStream(List<T> list) {
         return Optional.ofNullable(list).map(List::stream).orElseGet(Stream::empty);
     }

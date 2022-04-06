@@ -1,6 +1,7 @@
 package kr.co.studit.service;
 
 import kr.co.studit.dto.*;
+import kr.co.studit.dto.bookmark.BookmarkRes;
 import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.position.PositionApplyDto;
@@ -15,6 +16,7 @@ import kr.co.studit.entity.member.MemberInvitation;
 import kr.co.studit.entity.position.Position;
 import kr.co.studit.entity.study.*;
 import kr.co.studit.error.ErrorResponse;
+import kr.co.studit.repository.bookmark.BookmarkDataRepository;
 import kr.co.studit.repository.study.StudyRepository;
 import kr.co.studit.repository.study.*;
 import kr.co.studit.repository.member.MemberDataRepository;
@@ -39,6 +41,7 @@ public class StudyService {
     private final StudyDataRepository studyDataRepository;
     private final StudyRepository studyRepository;
     private final MemberDataRepository memberDataRepository;
+    private final BookmarkDataRepository bookmarkDataRepository;
 
     public ResponseEntity<?> createStudy(StudyDto studyDto, String email) {
         ResponseDto<StudyDto> response = new ResponseDto<>();
@@ -60,6 +63,7 @@ public class StudyService {
 
     public ResponseEntity<?> findStudies(Pageable pageable) {
         ResponseDto<Page> response = new ResponseDto<>();
+
         try {
             Page<Study> studyPage = studyRepository.findStudy(pageable);
             List<StudyDto> result = studyPage.getContent().stream()
@@ -72,9 +76,45 @@ public class StudyService {
         } catch (Exception e) {
             return ErrorResponse.getErrorResponse(e);
         }
+    }
+
+    public ResponseEntity<?> findStudiesWithBookmark(Pageable pageable, Long loginMemberId) {
+        ResponseDto<Page> response = new ResponseDto<>();
+        try {
+            Page<Study> studyPage = studyRepository.findStudy(pageable);
+            List<Study> studyList = studyPage.getContent();
+            List<StudyDto> studyDtos = new ArrayList<>();
+
+            for (Study study : studyList) {
+                BookmarkRes bookmarkRes = getStudyBookmark(study, loginMemberId);
+                StudyDto studyDto = getStudyDto(study);
+                studyDto.setBookmarkId(bookmarkRes.getBookmarkId());
+                studyDto.setBookmarkState(bookmarkRes.getBookmarkState());
+                studyDtos.add(studyDto);
+            }
+            response.setData(new PageImpl<>(studyDtos, pageable, studyPage.getTotalElements()));
+            response.setStatus(Status.SUCCESS);
+
+        } catch (Exception e) {
+            return ErrorResponse.getErrorResponse(e);
+        }
 
 
+        return ResponseEntity.ok(response);
 
+    }
+
+    public BookmarkRes getStudyBookmark(Study study, Long loginMemberId) {
+        Bookmark markeStudy = bookmarkDataRepository.findMarkeStudy(study.getId(), loginMemberId);
+        BookmarkRes bookmarkRes = new BookmarkRes();
+        if (markeStudy != null) {
+
+            bookmarkRes.setBookmarkId(markeStudy.getId());
+            bookmarkRes.setBookmarkState(true);
+            return bookmarkRes;
+        }
+
+        return bookmarkRes;
     }
     private ResponseEntity<ResponseDto<String>> getResponseDtoToStudyAllow(StudyAllowDto studyAllowDto,Position position, ResponseDto<String> response) {
 //        StudyApplication studyApplication = studyRepository.findStudyApplicationById(studyAllowDto.getId());
@@ -389,6 +429,7 @@ public class StudyService {
 
     public StudyDto getStudyDto(Study study) {
         StudyDto studyDto = study.toStudyDto();
+
         List<StudyPosition> studyPositions = study.getStudyPosition();
         for (StudyPosition studyPosition : studyPositions) {
             PositionDto positionDto = new PositionDto();
@@ -406,6 +447,8 @@ public class StudyService {
         }
         return studyDto;
     }
+
+
 
 
     private Study studyMapper(StudyForm studyDto, String email) {

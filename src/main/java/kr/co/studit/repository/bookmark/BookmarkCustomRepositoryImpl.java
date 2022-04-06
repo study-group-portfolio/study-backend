@@ -3,7 +3,9 @@ package kr.co.studit.repository.bookmark;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.entity.Bookmark;
+import kr.co.studit.entity.QBookmark;
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.study.QStudy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -57,5 +59,20 @@ public class BookmarkCustomRepositoryImpl implements BookmarkCustomRepository {
         long total = results.getTotal();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+
+
+    @Override
+    public Bookmark findMarkeStudy(Long studyId, Long memberId) {
+        Bookmark bookmark = queryFactory
+                .selectFrom(QBookmark.bookmark)
+                .leftJoin(QBookmark.bookmark.markedStudy, QStudy.study)
+                .where(QBookmark.bookmark.markedStudy.id.eq(studyId).and(QBookmark.bookmark.markMember.id.eq(memberId)))
+                .fetchOne();
+        if (bookmark != null) {
+            return bookmark;
+        }
+        return null;
     }
 }

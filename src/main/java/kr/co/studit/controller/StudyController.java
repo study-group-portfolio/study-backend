@@ -1,19 +1,21 @@
 package kr.co.studit.controller;
 
 
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.position.PositionApplyDto;
+import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.dto.search.StudySearchCondition;
-import kr.co.studit.dto.study.StudyAllowDto;
 import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.dto.study.StudyUpdateDto;
+import kr.co.studit.repository.member.MemberDataRepository;
+import kr.co.studit.service.BookmarkService;
 import kr.co.studit.service.StudyService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +26,15 @@ import org.springframework.web.bind.annotation.*;
 public class StudyController {
 
     private final StudyService studyService;
+    private final MemberDataRepository memberDataRepository;
 
     @GetMapping()
     @ApiOperation(value = "스터디 글 리스트 조회", notes ="pageNumber와 pageSize를 통해 페이징 가능, 페이지는 0페이지 부터 시작 ex) ?page=0&size=6 이런식으로 사용용")
-    public ResponseEntity<?> studyList(Pageable pageable) {
+    public ResponseEntity<?> studyList(@AuthenticationPrincipal String email, @PageableDefault(size = 12) Pageable pageable) {
+        if( !email.equals("anonymousUser")){
+            Long id = memberDataRepository.findMemberByEmail(email).getId();
+            return studyService.findStudiesWithBookmark(pageable, id);
+        }
        return studyService.findStudies(pageable);
     }
 

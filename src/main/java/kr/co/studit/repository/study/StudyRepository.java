@@ -47,7 +47,10 @@ public class StudyRepository {
     public List<Skill> findSkill(Study study, Position position) {
         return queryFactory
                 .select(skill)
+                .distinct()
                 .from(studySkill)
+                .leftJoin(studySkill.skill, skill)
+                .leftJoin(studySkill.skill.position, QPosition.position)
                 .where(
                         studySkill.study.id.eq(study.getId())
                                 .and(studySkill.skill.position.positionName.eq(position.getPositionName())))
