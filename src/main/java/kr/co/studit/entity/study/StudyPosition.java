@@ -17,17 +17,17 @@ public class StudyPosition {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
-    Study study;
+    private Study study;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position_id")
-    Position position;
+    private Position position;
 
     // 현재 지원자수
-    Integer count=0;
+    private int count=0;
 
     // 총 지원수
-    Integer totalCount=0;
+    private int totalCount=0;
 
     public void setStudy(Study study) {
         this.study = study;

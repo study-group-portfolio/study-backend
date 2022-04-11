@@ -1,13 +1,21 @@
 -- 활동 지역
 insert into region (region_id, area) values (null, '서울');
 insert into region (region_id, area) values (null, '부산');
+insert into region (region_id, area) values (null, '대구');
 insert into region (region_id, area) values (null, '인천');
-insert into region (region_id, area) values (null, '경기');
+insert into region (region_id, area) values (null, '광주');
+insert into region (region_id, area) values (null, '대전');
+insert into region (region_id, area) values (null, '울산');
+insert into region (region_id, area) values (null, '세종');
 insert into region (region_id, area) values (null, '강원');
-insert into region (region_id, area) values (null, '충청');
-insert into region (region_id, area) values (null, '전라');
-insert into region (region_id, area) values (null, '경상');
+insert into region (region_id, area) values (null, '충북');
+insert into region (region_id, area) values (null, '충남');
+insert into region (region_id, area) values (null, '전북');
+insert into region (region_id, area) values (null, '전남');
+insert into region (region_id, area) values (null, '경북');
+insert into region (region_id, area) values (null, '경남');
 insert into region (region_id, area) values (null, '제주');
+
 -- 포지션 타입
 insert into position_type (position_type_name, position_type_id) values ('기획', 1);
 insert into position_type (position_type_name, position_type_id) values ('디자인', 2);
