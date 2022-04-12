@@ -4,7 +4,9 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.studit.dto.search.StudySearchCondition;
-import kr.co.studit.entity.*;
+import kr.co.studit.entity.Region;
+import kr.co.studit.entity.Skill;
+import kr.co.studit.entity.Tool;
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.position.Position;
 import kr.co.studit.entity.position.QPosition;
@@ -17,14 +19,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 import static kr.co.studit.entity.QRegion.region;
 import static kr.co.studit.entity.QSkill.skill;
+import static kr.co.studit.entity.QTool.tool;
+import static kr.co.studit.entity.member.QMember.member;
 import static kr.co.studit.entity.position.QPosition.position;
 import static kr.co.studit.entity.study.QStudy.study;
 import static kr.co.studit.entity.study.QStudyApplication.studyApplication;
@@ -32,8 +34,6 @@ import static kr.co.studit.entity.study.QStudyParticipation.studyParticipation;
 import static kr.co.studit.entity.study.QStudyPosition.studyPosition;
 import static kr.co.studit.entity.study.QStudySkill.studySkill;
 import static kr.co.studit.entity.study.QStudyTool.studyTool;
-import static kr.co.studit.entity.QTool.tool;
-import static kr.co.studit.entity.member.QMember.member;
 
 @Repository
 @RequiredArgsConstructor

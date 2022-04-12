@@ -145,7 +145,7 @@ class MemberServiceTest {
 
 
         ProfileForm profileForm = new ProfileForm();
-        profileForm.setNickname("user00");
+        profileForm.setNickname(member.getNickname());
         profileForm.setBio("안녕하세요 백엔드 개발자 스터디왕 입니다");
         profileForm.setStudyType(StudyType.SHARE);
         profileForm.setOnOffStatus(OnOffStatus.ON);
@@ -179,7 +179,7 @@ class MemberServiceTest {
 //        }
         memberService.updateMemberRegion(profileForm.getRegions(), member);
         //then
-        Member findMember = memberDataRepository.findMemberByNickname("스터디왕");
+        Member findMember = memberDataRepository.findMemberByNickname("user0");
         assertThat(findMember.getRegions().get(0).getRegion().getArea().equals("대구")).isTrue();
         assertThat(findMember.getRegions().size()).isEqualTo(1);
     }

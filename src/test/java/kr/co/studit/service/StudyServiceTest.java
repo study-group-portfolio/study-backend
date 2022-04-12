@@ -47,10 +47,9 @@ class StudyServiceTest {
     EntityManager em;
 
     @Test
-
     public void 스터디생성() throws Exception {
         //given
-        String user = "test@test.com";
+        String user = "studit0@studit.co.kr";
         Member findMember = memberDataRepository.findMemberByEmail(user);
         assertThat(findMember.getEmail()).isEqualTo(user);
         StudyDto studyDto = createStudyDto(user);
