@@ -438,6 +438,7 @@ public class StudyService {
             positionDto.setPosition(position.getPositionName());
             positionDto.setCount(studyPosition.getCount());
             positionDto.setTotalCount(studyPosition.getTotalCount());
+            positionDto.setRecruited(studyPosition.isRecruited());
 
             List<Skill> skills = studyRepository.findSkill(study, position);
             for (Skill skill : skills) {

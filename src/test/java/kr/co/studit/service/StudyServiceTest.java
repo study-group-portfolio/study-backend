@@ -22,7 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional(readOnly = true)
@@ -48,7 +52,7 @@ class StudyServiceTest {
         //given
         String user = "test@test.com";
         Member findMember = memberDataRepository.findMemberByEmail(user);
-        Assertions.assertThat(findMember.getEmail()).isEqualTo(user);
+        assertThat(findMember.getEmail()).isEqualTo(user);
         StudyDto studyDto = createStudyDto(user);
         // 만들어줘야하는 엔티티
         // Study
@@ -172,8 +176,8 @@ class StudyServiceTest {
         studyDto.getPositions().add(position1);
         studyDto.getPositions().add(position2);
 
-        studyDto.setReceptionStart("11월");
-        studyDto.setReceptionEnd("12월");
+        studyDto.setReceptionStart(LocalDate.now());
+        studyDto.setReceptionEnd(LocalDate.now().plusDays(7));
 
         ArrayList<String> tools = new ArrayList<>();
         tools.add("Git");
@@ -182,6 +186,73 @@ class StudyServiceTest {
         studyDto.setTools(tools);
 
         return studyDto;
+    }
+
+    @Test
+    public void positionRecruitedState() throws Exception {
+        //given
+        Member member = memberDataRepository.findMemberByNickname("user0");
+
+        List<Study> studyList = studyDataRepository.findStudyByMember(member);
+        Study study = studyList.get(0);
+        List<StudyPosition> studyPosition = study.getStudyPosition();
+        for (StudyPosition position : studyPosition) {
+            System.out.println("position.getCount() = " + position.getCount());
+            System.out.println("position.getTotalCount() = " + position.getTotalCount());
+            System.out.println("position.isRecruited() = " + position.isRecruited());
+        }
+
+    }
+
+    @Test
+    public void positionRecruitedStateTrue() throws Exception {
+        //given
+        Member member = memberDataRepository.findMemberByNickname("user0");
+
+        List<Study> studyList = studyDataRepository.findStudyByMember(member);
+        Study study = studyList.get(0);
+        List<StudyPosition> studyPosition = study.getStudyPosition();
+        for (StudyPosition position : studyPosition) {
+            if (position.isRecruited()) {
+                System.out.println("해당 포지션에 모집이 완료 되었습니다.");
+            }else {
+                int addCount = 0;
+                for (int i = position.getCount(); i <= position.getTotalCount(); i++) {
+                    addCount = i;
+                }
+                position.setCount(addCount);
+
+            }
+            System.out.println("position.getStudy().getId() = " + position.getStudy().getId());
+            System.out.println("position.getCount() = " + position.getCount());
+            System.out.println("position.getTotalCount() = " + position.getTotalCount());
+            System.out.println("position.isRecruited() = " + position.isRecruited());
+        }
+
+        List<Study> studyList2 = studyDataRepository.findStudyByMember(member);
+        Study stud2 = studyList.get(0);
+        List<StudyPosition> studyPosition2 = study.getStudyPosition();
+        for (StudyPosition position : studyPosition2) {
+            System.out.println("2===========================2");
+            System.out.println("position.getCount() = " + position.getCount());
+            System.out.println("position.getTotalCount() = " + position.getTotalCount());
+            System.out.println("position.isRecruited() = " + position.isRecruited());
+        }
+
+
+        assertThat( studyDataRepository.findStudyByMember(member).get(0).getStudyPosition().get(0).isRecruited()).isTrue();
+    }
+
+    @Test
+    public void applyStudy() throws Exception {
+        //given 17
+        Long studyId = 17L;
+
+
+        //when
+
+        //then
+
     }
 
 }

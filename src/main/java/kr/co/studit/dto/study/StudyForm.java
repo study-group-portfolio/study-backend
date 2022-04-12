@@ -7,6 +7,7 @@ import kr.co.studit.entity.enums.StudyType;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Getter
@@ -63,11 +64,11 @@ public class StudyForm {
 
     // 모집 기간
     @ApiModelProperty(example = "팀원 모집 기간")
-    private String receptionStart;
+    private LocalDate receptionStart;
 
     // 모집 종료 기간
     @ApiModelProperty(example = "팀원 모집 종료 기간")
-    private String receptionEnd;
+    private LocalDate receptionEnd;
     // 사용 협업 툴
     @ApiModelProperty(example = "[\"Git\"]")
     private ArrayList<String> tools = new ArrayList<>();

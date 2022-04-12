@@ -36,13 +36,13 @@ public class ProfileForm extends BasicProfileForm {
 
     // 업무 포지션
     @ApiModelProperty(example = "[\n" +
-            "\t\"백엔드\",\"프론트\"\n" +
+            "\t\"백엔드 개발자\",\"프론트엔드 개발자\"\n" +
             "  ]")
     private List<String> positions = new ArrayList<>();
 
     //스킬
     @ApiModelProperty(example = " [\n" +
-            "\t\"스프링\"\n" +
+            "\t\"Spring\"\n" +
             "  ]")
     private List<String> skills = new ArrayList<>();
 

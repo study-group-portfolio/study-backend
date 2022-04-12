@@ -47,6 +47,7 @@ public class StudyController {
     @GetMapping("/{id}")
     @ApiOperation(value = "스터디 글 조회")
     public ResponseEntity<?> findStudy(@PathVariable Long id) {
+        //TODO 로그인한 멤버가 조회시 북마크 상태가 나와야한다,
         return studyService.findStudy(id);
     }
 

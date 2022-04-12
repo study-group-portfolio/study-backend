@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PositionTypeDto {
-    @ApiModelProperty(example = "백엔드")
+    @ApiModelProperty(example = "백엔드 개발자")
     public String positionTypeName;
     public List<String> positionNameList = new ArrayList<>();
 
