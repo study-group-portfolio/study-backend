@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -92,10 +93,13 @@ public class InitDb {
                 Member member = memberDataRepository.findMemberByNickname("user" + i);
                 StudyDto studyDto = createStudyDto();
                 if (i < 5) {
+                    studyDto.setTitle(studyDto.getTitle()+i);
                     studyDto.setRegion("서울");
                 } else if (5 <= i && i < 10) {
+                    studyDto.setTitle(studyDto.getTitle()+i);
                     studyDto.setRegion("충북");
                 } else if (10 <= 15) {
+                    studyDto.setTitle(studyDto.getTitle()+i);
                     studyDto.setType(StudyType.SHARE);
                     studyDto.setRegion("강원");
                 }
@@ -127,7 +131,7 @@ public class InitDb {
             PositionDto position1 = new PositionDto();
             position1.setPosition("백엔드 개발자");
             position1.setTotalCount(5);
-            position1.setCount(2);
+            position1.setCount(5);
             position1.getSkills().add("Java");
             position1.getSkills().add("Spring");
 
@@ -142,8 +146,8 @@ public class InitDb {
             studyDto.getPositions().add(position1);
             studyDto.getPositions().add(position2);
 
-            studyDto.setReceptionStart("11월");
-            studyDto.setReceptionEnd("12월");
+            studyDto.setReceptionStart(LocalDate.now());
+            studyDto.setReceptionEnd(LocalDate.now().plusDays(7));
 
             ArrayList<String> tools = new ArrayList<>();
             tools.add("Git");
@@ -327,7 +331,7 @@ public class InitDb {
 //            Region zone = initRegion();
 //            initPositionAndSkill();
 //            initToll();
-            initStudy(member);
+//            initStudy(member);
             initMembers();
             createStudys();
             initBookmarkStudyList();

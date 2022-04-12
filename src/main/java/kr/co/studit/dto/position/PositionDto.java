@@ -17,5 +17,6 @@ public class PositionDto {
     Integer count;
     Integer totalCount;
     ArrayList<String> skills = new ArrayList<>();
+    boolean recruited;
 
 }

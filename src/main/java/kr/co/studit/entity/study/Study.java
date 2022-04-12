@@ -11,7 +11,10 @@ import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.member.MemberInvitation;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,9 +71,11 @@ public class Study extends BaseTimeEntity {
     private String studyDay;
 
     // 모집 기간
-    private String receptionStart;
+    @DateTimeFormat(pattern = "YYYY-MM-DD")
+    private LocalDate receptionStart;
     // 모집 종료 기간
-    private String receptionEnd;
+    @DateTimeFormat(pattern = "YYYY-MM-DD")
+    private LocalDate receptionEnd;
 
 
 
@@ -97,9 +102,8 @@ public class Study extends BaseTimeEntity {
         study.setRegion(region);
         return study;
     }
-
+    // TODO 북마크 상태 줘야함
     public StudyDto toStudyDto() {
-
         StudyDto studyDto = new StudyDto();
         studyDto.setId(this.getId());
         studyDto.setType(this.getType());

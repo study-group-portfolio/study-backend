@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PositionSimpleDto {
-    @ApiModelProperty(example = "백엔드")
+    @ApiModelProperty(example = "백엔드 개발자")
     public String positionName;
 }

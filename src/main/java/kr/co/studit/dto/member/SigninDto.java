@@ -15,11 +15,11 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class SigninDto {
 
-    @ApiModelProperty(example = "test@test.com")
+    @ApiModelProperty(example = "admin@studit.co.kr")
     @Email
     @NotBlank
     private String email;
-    @ApiModelProperty(example = "test")
+    @ApiModelProperty(example = "12345678")
     private String password;
 
 }

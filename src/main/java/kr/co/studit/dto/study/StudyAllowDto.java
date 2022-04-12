@@ -9,7 +9,7 @@ import lombok.Data;
 public class StudyAllowDto {
     @ApiModelProperty(example = "115")
     Long id;
-    @ApiModelProperty(example = "107")
+    @ApiModelProperty(example = "17")
     Long studyId;
     @ApiModelProperty(example = "STUDY")
     InviteType type;

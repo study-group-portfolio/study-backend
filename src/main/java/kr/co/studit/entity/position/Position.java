@@ -25,6 +25,8 @@ public class Position {
     @JoinColumn(name = "position_type_id")
     private PositionType positionType;
 
+
+
     @JsonIgnore
     @OneToMany(mappedBy = "position",cascade = CascadeType.ALL)
     private List<Skill> skills = new ArrayList<>();
