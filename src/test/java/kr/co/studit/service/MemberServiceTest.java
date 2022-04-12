@@ -11,13 +11,10 @@ import kr.co.studit.entity.Region;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
-import kr.co.studit.entity.member.MemberRegion;
 import kr.co.studit.repository.RegionDataRepository;
 import kr.co.studit.repository.bookmark.BookmarkDataRepository;
-import kr.co.studit.repository.member.MemberRegionDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
-import org.h2.tools.RunScript;
-import org.junit.jupiter.api.AfterEach;
+import kr.co.studit.repository.member.MemberRegionDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,8 +27,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

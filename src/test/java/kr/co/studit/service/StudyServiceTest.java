@@ -2,7 +2,9 @@ package kr.co.studit.service;
 
 import kr.co.studit.dto.position.PositionDto;
 import kr.co.studit.dto.study.StudyDto;
-import kr.co.studit.entity.*;
+import kr.co.studit.entity.Region;
+import kr.co.studit.entity.Skill;
+import kr.co.studit.entity.Tool;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
@@ -11,17 +13,15 @@ import kr.co.studit.entity.study.Study;
 import kr.co.studit.entity.study.StudyPosition;
 import kr.co.studit.entity.study.StudySkill;
 import kr.co.studit.entity.study.StudyTool;
-import kr.co.studit.repository.study.StudyRepository;
-import kr.co.studit.repository.study.*;
 import kr.co.studit.repository.member.MemberDataRepository;
-import org.assertj.core.api.Assertions;
+import kr.co.studit.repository.study.StudyDataRepository;
+import kr.co.studit.repository.study.StudyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,8 +111,8 @@ class StudyServiceTest {
         study.setStudyDay(studyDto.getStudyDay());
         study.setContent(studyDto.getContent());
         study.setDuration(studyDto.getDuration());
-        study.setReceptionStart(studyDto.getReceptionStart());
-        study.setReceptionEnd(studyDto.getReceptionEnd());
+        study.setReceptionStart(LocalDate.parse(studyDto.getReceptionStart()));
+        study.setReceptionEnd(LocalDate.parse(studyDto.getReceptionEnd()));
         study.setOnOffStatus(studyDto.getStatus());
         study.setType(studyDto.getType());
 
@@ -176,8 +176,8 @@ class StudyServiceTest {
         studyDto.getPositions().add(position1);
         studyDto.getPositions().add(position2);
 
-        studyDto.setReceptionStart(LocalDate.now());
-        studyDto.setReceptionEnd(LocalDate.now().plusDays(7));
+        studyDto.setReceptionStart(LocalDate.now().toString());
+        studyDto.setReceptionEnd(LocalDate.now().plusDays(7).toString());
 
         ArrayList<String> tools = new ArrayList<>();
         tools.add("Git");

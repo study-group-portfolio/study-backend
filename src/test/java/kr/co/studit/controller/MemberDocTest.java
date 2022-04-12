@@ -1,7 +1,6 @@
 package kr.co.studit.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 import kr.co.studit.dto.member.*;
 import kr.co.studit.dto.response.ResponseDto;
@@ -19,18 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.*;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,8 +38,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -709,7 +702,7 @@ public class MemberDocTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("studyType").type(JsonFieldType.STRING).description("비밀번호 확인").attributes(key("remark").value("SHARE/PROJECT")),
-                                fieldWithPath("onOffStatus").type(JsonFieldType.STRING).description("비밀번호 확인").attributes(key("remark").value("ON/ONOFF/OFF")),
+                                fieldWithPath("onOffStatus").type(JsonFieldType.STRING).description("선호하는 활동 유형").attributes(key("remark").value("ON/ONOFF/OFF")),
                                 subsectionWithPath("regions.[]").type(JsonFieldType.ARRAY).description("활동지역").optional(),
                                 subsectionWithPath("positions.[]").type(JsonFieldType.ARRAY).description("포지션").optional(),
                                 subsectionWithPath("skills.[]").type(JsonFieldType.ARRAY).description("스킬").optional()

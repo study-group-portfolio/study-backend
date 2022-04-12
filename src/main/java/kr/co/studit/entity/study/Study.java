@@ -2,9 +2,9 @@ package kr.co.studit.entity.study;
 
 
 import kr.co.studit.dto.study.StudyDto;
+import kr.co.studit.entity.Region;
 import kr.co.studit.entity.Tool;
 import kr.co.studit.entity.common.BaseTimeEntity;
-import kr.co.studit.entity.Region;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
@@ -118,8 +118,8 @@ public class Study extends BaseTimeEntity {
         studyDto.setDuration(this.getDuration());
         studyDto.setStudyDay(this.getStudyDay());
 
-        studyDto.setReceptionStart(this.getReceptionStart());
-        studyDto.setReceptionEnd(this.getReceptionEnd());
+        studyDto.setReceptionStart(this.getReceptionStart().toString());
+        studyDto.setReceptionEnd(this.getReceptionEnd().toString());
         studyDto.setTools(new ArrayList<>());
         List<StudyTool> studyTools = this.getStudytool();
         for (StudyTool studyTool : studyTools) {

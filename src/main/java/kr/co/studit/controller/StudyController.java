@@ -2,17 +2,13 @@ package kr.co.studit.controller;
 
 
 import io.swagger.annotations.ApiOperation;
-import kr.co.studit.dto.enums.Status;
 import kr.co.studit.dto.position.PositionApplyDto;
-import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.dto.search.StudySearchCondition;
 import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.dto.study.StudyUpdateDto;
 import kr.co.studit.repository.member.MemberDataRepository;
-import kr.co.studit.service.BookmarkService;
 import kr.co.studit.service.StudyService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +37,9 @@ public class StudyController {
     @PostMapping()
     @ApiOperation(value = "스터디 글 생성")
     public ResponseEntity<?> createStudy(@AuthenticationPrincipal String email, @RequestBody StudyDto studyDto){
-        return studyService.createStudy(studyDto,email);
+
+        ResponseEntity<?> study = studyService.createStudy(studyDto, email);
+        return study;
     }
 
     @GetMapping("/{id}")

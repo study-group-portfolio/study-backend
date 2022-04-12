@@ -1,6 +1,6 @@
 package kr.co.studit.service;
 
-import kr.co.studit.dto.*;
+import kr.co.studit.dto.AlarmDto;
 import kr.co.studit.dto.bookmark.BookmarkRes;
 import kr.co.studit.dto.enums.InviteType;
 import kr.co.studit.dto.enums.Status;
@@ -9,7 +9,10 @@ import kr.co.studit.dto.position.PositionDto;
 import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.dto.search.StudySearchCondition;
 import kr.co.studit.dto.study.*;
-import kr.co.studit.entity.*;
+import kr.co.studit.entity.Bookmark;
+import kr.co.studit.entity.Region;
+import kr.co.studit.entity.Skill;
+import kr.co.studit.entity.Tool;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.member.MemberInvitation;
@@ -17,9 +20,9 @@ import kr.co.studit.entity.position.Position;
 import kr.co.studit.entity.study.*;
 import kr.co.studit.error.ErrorResponse;
 import kr.co.studit.repository.bookmark.BookmarkDataRepository;
-import kr.co.studit.repository.study.StudyRepository;
-import kr.co.studit.repository.study.*;
 import kr.co.studit.repository.member.MemberDataRepository;
+import kr.co.studit.repository.study.StudyDataRepository;
+import kr.co.studit.repository.study.StudyRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -481,8 +485,8 @@ public class StudyService {
         study.setStudyDay(studyDto.getStudyDay());
 
 
-        study.setReceptionStart(studyDto.getReceptionStart());
-        study.setReceptionEnd(studyDto.getReceptionEnd());
+        study.setReceptionStart(LocalDate.parse(studyDto.getReceptionStart()) );
+        study.setReceptionEnd(LocalDate.parse(studyDto.getReceptionEnd()));
 
         study.setStudySkill(new ArrayList<StudySkill>());
         study.setStudyPosition(new ArrayList<StudyPosition>());

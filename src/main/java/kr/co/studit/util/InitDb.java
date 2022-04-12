@@ -2,7 +2,9 @@ package kr.co.studit.util;
 
 import kr.co.studit.dto.position.PositionDto;
 import kr.co.studit.dto.study.StudyDto;
-import kr.co.studit.entity.*;
+import kr.co.studit.entity.Region;
+import kr.co.studit.entity.Skill;
+import kr.co.studit.entity.Tool;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.Role;
 import kr.co.studit.entity.enums.StudyType;
@@ -12,15 +14,11 @@ import kr.co.studit.entity.position.PositionType;
 import kr.co.studit.entity.study.Study;
 import kr.co.studit.repository.RegionDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
-import kr.co.studit.repository.member.MemberRegionDataRepository;
 import kr.co.studit.repository.study.StudyDataRepository;
 import kr.co.studit.service.BookmarkService;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.service.StudyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
@@ -31,7 +29,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 import java.time.LocalDate;
@@ -146,8 +143,8 @@ public class InitDb {
             studyDto.getPositions().add(position1);
             studyDto.getPositions().add(position2);
 
-            studyDto.setReceptionStart(LocalDate.now());
-            studyDto.setReceptionEnd(LocalDate.now().plusDays(7));
+            studyDto.setReceptionStart(LocalDate.now().toString());
+            studyDto.setReceptionEnd(LocalDate.now().plusDays(7).toString());
 
             ArrayList<String> tools = new ArrayList<>();
             tools.add("Git");

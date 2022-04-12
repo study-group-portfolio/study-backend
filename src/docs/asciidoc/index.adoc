@@ -247,4 +247,68 @@ include::{snippets}/memberlist-v2/response-body.adoc[]
 
 include::{snippets}/memberlist-v2/response-fields.adoc[]
 
+== StudyController
 
+=== 스터디 글 작성
+
+==== REQUEST
+
+include::{snippets}/create-study/http-request.adoc[]
+
+==== REQUEST FIELDS
+
+include::{snippets}/create-study/request-fields.adoc[]
+
+
+==== RESPONSE
+include::{snippets}/create-study/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/create-study/response-fields.adoc[]
+
+
+=== 스터디 조회
+
+==== REQUEST
+
+include::{snippets}/get-study/http-request.adoc[]
+include::{snippets}/get-study/path-parameters.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/get-study/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/get-study/response-fields.adoc[]
+
+=== 스터디 수정
+
+==== REQUEST
+
+include::{snippets}/update-study/http-request.adoc[]
+include::{snippets}/update-study/path-parameters.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/update-study/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/update-study/response-fields.adoc[]
+
+=== 스터디 삭제
+
+==== REQUEST
+
+include::{snippets}/delete-study/http-request.adoc[]
+include::{snippets}/delete-study/path-parameters.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/delete-study/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/delete-study/response-fields.adoc[]
