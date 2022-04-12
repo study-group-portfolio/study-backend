@@ -94,10 +94,10 @@ public class InitDb {
                 if (i < 5) {
                     studyDto.setRegion("서울");
                 } else if (5 <= i && i < 10) {
-                    studyDto.setRegion("충청");
+                    studyDto.setRegion("충북");
                 } else if (10 <= 15) {
                     studyDto.setType(StudyType.SHARE);
-                    studyDto.setRegion("경상");
+                    studyDto.setRegion("강원");
                 }
                 studyService.createStudy(studyDto,member.getEmail());
 
@@ -183,7 +183,6 @@ public class InitDb {
             }
 
             for (i = 5; i < 10; i++){
-                //오프라인 지역 대전 프론트 리액트 프로젝트
                 Member member = Member.builder()
                         .bio("user"+i+"입니다")
                         .email("studit"+i+"@studit.co.kr")
@@ -202,8 +201,8 @@ public class InitDb {
                 positions.add("프론트엔드 개발자");
                 memberService.updateMemberPosition(positions, member);
                 List<String> regions = new ArrayList<>();
-                regions.add("충청");
-                regions.add("서울");
+                regions.add("대전");
+                regions.add("대구");
                 memberService.updateMemberRegion(regions, member);
                 List<String> skills = new ArrayList<>();
                 skills.add("React");

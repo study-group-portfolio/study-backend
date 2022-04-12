@@ -40,6 +40,7 @@ import org.thymeleaf.context.Context;
 
 import java.rmi.NoSuchObjectException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -363,6 +364,7 @@ public class MemberService {
             searchMemberDto.setNickname(member.getNickname());
             searchMemberDto.setPositionName(getStream(member.getPositions()).map(memberPosition -> memberPosition.getPosition().getPositionName()).collect(toList()));
             searchMemberDto.setSkillName(getStream(member.getSkills()).map(memberSkill -> memberSkill.getSkill().getSkillName()).collect(toList()));
+            member.getRegions().stream().forEach(memberRegion -> System.out.println("memberRegion.getRegion().getArea() = " + memberRegion.getRegion().getArea()));
             searchMemberDto.setArea(getStream(member.getRegions()).map(memberRegion -> memberRegion.getRegion().getArea()).collect(toList()));
             if (loginMember != null) {
                 getStream(loginMember.getBookmarks()).filter(bookmark -> bookmark.getMarkedMember().getId() == member.getId()).forEach(bookmark -> {

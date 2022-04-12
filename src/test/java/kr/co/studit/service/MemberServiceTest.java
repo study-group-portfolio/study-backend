@@ -7,13 +7,17 @@ import kr.co.studit.dto.member.SigninDto;
 import kr.co.studit.dto.member.SignupDto;
 import kr.co.studit.dto.search.CustomPage;
 import kr.co.studit.entity.Bookmark;
+import kr.co.studit.entity.Region;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
 import kr.co.studit.entity.member.Member;
+import kr.co.studit.entity.member.MemberRegion;
 import kr.co.studit.repository.RegionDataRepository;
 import kr.co.studit.repository.bookmark.BookmarkDataRepository;
 import kr.co.studit.repository.member.MemberRegionDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
+import org.h2.tools.RunScript;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +29,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +62,13 @@ class MemberServiceTest {
     @Autowired
     AppProperties appProperties;
 
+    @Autowired
+    DataSource dataSource;
+
     @BeforeEach
     void beforeEach() {
+
+
         SignupDto signupDto = new SignupDto();
         signupDto.setNickname("스터디왕");
         signupDto.setEmail(EMAIL);
@@ -79,6 +91,8 @@ class MemberServiceTest {
 
 
     }
+
+
 
 
     @DisplayName("회원 가입 테스트")
@@ -132,16 +146,16 @@ class MemberServiceTest {
     @DisplayName("프로필 활동 지역 수정")
     public void updateMemberRegion() throws Exception {
         //given
-        Member member = memberDataRepository.findMemberByNickname("스터디왕");
+        Member member = memberDataRepository.findMemberByNickname("user0");
 
 
         ProfileForm profileForm = new ProfileForm();
-        profileForm.setNickname("스터디왕");
+        profileForm.setNickname("user00");
         profileForm.setBio("안녕하세요 백엔드 개발자 스터디왕 입니다");
         profileForm.setStudyType(StudyType.SHARE);
         profileForm.setOnOffStatus(OnOffStatus.ON);
         List<String> regions = new ArrayList<>();
-        regions.add("서울");
+        regions.add("대구");
         profileForm.setRegions(regions);
         List<String> positions = new ArrayList<>();
         positions.add("백엔드 개발자");
@@ -171,7 +185,7 @@ class MemberServiceTest {
         memberService.updateMemberRegion(profileForm.getRegions(), member);
         //then
         Member findMember = memberDataRepository.findMemberByNickname("스터디왕");
-
+        assertThat(findMember.getRegions().get(0).getRegion().getArea().equals("대구")).isTrue();
         assertThat(findMember.getRegions().size()).isEqualTo(1);
     }
 
@@ -206,6 +220,42 @@ class MemberServiceTest {
 
         //then
 //        assertThat(findProfile.getRegions().size()).isEqualTo(2);
+    }
+    @Test
+    public void findArea() throws Exception {
+        //given
+        Member member = memberDataRepository.findMemberByNickname("user0");
+//        String zone = member.getRegions().get(0).getRegion().getArea();
+//        System.out.println("zone = " + zone);
+//        assertThat(zone.equals("서울")).isTrue();
+        memberDataRepository.delateRegions(member);
+        member.getRegions().clear();
+        String area = "서울";
+        Region area1 = regionDataRepository.findRegionByArea(area);
+        System.out.println("area1.getArea() = " + area1.getArea());
+//        System.out.println(area1);
+
+        //when
+
+        //then
+
+    }
+
+    @Test
+    public void createMemberRegion() throws Exception {
+        //given
+        Member member = memberDataRepository.findMemberByNickname("user0");
+        List<String> area = new ArrayList<>();
+
+        area.add("제주");
+        area.add("서울");
+        memberService.updateMemberRegion(area, member);
+        member.getRegions().stream().forEach(memberRegion -> System.out.println("memberRegion.getRegion().getArea() = " + memberRegion.getRegion().getArea()));
+
+        //when
+
+        //then
+
     }
     @Test
     @DisplayName("모든멤버 조회")

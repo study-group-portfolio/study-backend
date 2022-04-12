@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     url: jdbc:h2:mem:test
-#    url: jdbc:h2:tcp://localhost/~/studit
+    #    url: jdbc:h2:tcp://localhost/~/studit
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -16,10 +16,10 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-#        show_sql: true
+        #        show_sql: true
         format_sql: true
         default_batch_fetch_size: 100
-#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     defer-datasource-initialization: true
   sql:
     init:

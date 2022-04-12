@@ -300,7 +300,7 @@ public class MemberDocTest {
         positionNames.add("백엔드 개발자");
         List<String> areas = new ArrayList<>();
         areas.add("서울");
-        areas.add("경기");
+        areas.add("대구");
         List<String> skillNames = new ArrayList<>();
         skillNames.add("Spring");
         skillNames.add("Java");
@@ -315,7 +315,7 @@ public class MemberDocTest {
         profileForm.setNickname(testMember.getNickname());
         profileForm.setBio("자기소개 하는 곳 ~~");
         profileForm.setEmail(testMember.getEmail());
-        profileForm.isPublicProfile();
+        profileForm.setPublicProfile(true);
         profileForm.setStudyType(StudyType.SHARE);
 
         String jsonObj = new Gson().toJson(profileForm);
@@ -325,6 +325,7 @@ public class MemberDocTest {
 
         //then
         result.andExpect(status().isOk())
+                .andDo(print())
                 .andDo(document("update-profile",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
