@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -93,7 +94,7 @@ public class StudyService {
                 BookmarkRes bookmarkRes = getStudyBookmark(study, loginMemberId);
                 StudyDto studyDto = getStudyDto(study);
                 studyDto.setBookmarkId(bookmarkRes.getBookmarkId());
-                studyDto.setBookmarkState(bookmarkRes.getBookmarkState());
+                studyDto.setBookmarkState(Optional.ofNullable(bookmarkRes.getBookmarkState()).isPresent() );
                 studyDtos.add(studyDto);
             }
             response.setData(new PageImpl<>(studyDtos, pageable, studyPage.getTotalElements()));

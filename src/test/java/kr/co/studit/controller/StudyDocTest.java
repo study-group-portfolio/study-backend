@@ -74,8 +74,8 @@ public class StudyDocTest {
     @BeforeEach
     public void beforeTest() throws Exception {
 
-        this.testMember = memberDataRepository.findMemberById(5L);
-//        this.testMember = memberDataRepository.findMemberByEmail("admin@studit.co.kr");
+//        this.testMember = memberDataRepository.findMemberById(5L);
+        this.testMember = memberDataRepository.findMemberByEmail("studit0@studit.co.kr");
         setAccessToken();
     }
 
@@ -438,11 +438,13 @@ public class StudyDocTest {
 
         //when
         ResultActions result = this.mockMvc.perform(get(uri+"?page=0")
+//                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken() )
                 .contentType(APPLICATION_JSON_UTF8)
                 .accept(APPLICATION_JSON_UTF8));
 
         //then
         result.andExpect(status().is2xxSuccessful())
+                .andDo(print())
                 .andDo(document("get-studyList",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),

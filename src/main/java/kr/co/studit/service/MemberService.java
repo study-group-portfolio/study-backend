@@ -461,12 +461,13 @@ public class MemberService {
 
     private void sendFindPassword(Member member) {
         Context context = new Context();
-        context.setVariable("host", appProperties.getBackhost() );
-        context.setVariable("link", "/api/member/checkFindPasswordToken/" + member.getPasswordFindToken() + "/" + member.getEmail());
+        context.setVariable("host", appProperties.getFronthost() );
+        context.setVariable("link", "/users/resetPassword/" + member.getPasswordFindToken() + "/" + member.getEmail());
         context.setVariable("nickname", member.getNickname());
-        context.setVariable("linkName", "비밀번호 재설정");
+//        context.setVariable("linkName", "비밀번호 재설정");
+        context.setVariable("logo", "logo");
         context.setVariable("message", "새로운 비밀호를 설정하시려면 링크를 클릭하세요");
-        String message = templateEngine.process("mail/simple-link", context);
+        String message = templateEngine.process("mail/resetPassword-link", context);
 
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(member.getEmail())

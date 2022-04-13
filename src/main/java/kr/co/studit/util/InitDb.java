@@ -312,9 +312,14 @@ public class InitDb {
             Member admin = memberDataRepository.findMemberByNickname("admin");
             Long id = admin.getId();
             List<Study> studies = studyDataRepository.findAll();
-            for (Study study: studies) {
-                bookmarkService.createStudyBookmark(admin,study);
+            int i =0;
+            while (studies.iterator().hasNext() && i <= 5){
+                bookmarkService.createStudyBookmark(admin,studies.get(i));
+                i++;
             }
+//            for (Study study: studies) {
+//                bookmarkService.createStudyBookmark(admin,study);
+//            }
 
 
         }
