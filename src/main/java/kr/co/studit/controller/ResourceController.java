@@ -20,9 +20,9 @@ public class ResourceController {
         return resourceService.findPositionList();
     }
 
-    @PostMapping("/skill")
+    @GetMapping("/skill/{positionName}")
     @ApiOperation(value = "스킬 리스트")
-    public ResponseEntity<?> skillList(@RequestBody PositionSimpleDto positionSimpleDto) {
-        return resourceService.findSkillList(positionSimpleDto);
+    public ResponseEntity<?> skillList(@PathVariable String positionName) {
+        return resourceService.findSkillList(positionName);
     }
 }

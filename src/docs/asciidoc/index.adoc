@@ -249,7 +249,7 @@ include::{snippets}/memberlist-v2/response-fields.adoc[]
 
 == StudyController
 
-=== 스터디 글 작성
+=== 스터디 생성
 
 ==== REQUEST
 
@@ -312,3 +312,36 @@ include::{snippets}/delete-study/http-response.adoc[]
 ==== RESPONSE FIELDS
 
 include::{snippets}/delete-study/response-fields.adoc[]
+
+== ResouceController
+
+=== 포지션 리스트 조회
+
+==== REQUEST
+
+include::{snippets}/get-positionList/http-request.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/get-positionList/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/get-positionList/response-fields.adoc[]
+
+=== 스킬 리스트 조회
+
+==== REQUEST
+
+include::{snippets}/get-skillList/http-request.adoc[]
+include::{snippets}/get-skillList/path-parameters.adoc[]
+
+
+==== RESPONSE
+
+include::{snippets}/get-skillList/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/get-skillList/response-fields.adoc[]
+
