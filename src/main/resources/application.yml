@@ -63,6 +63,10 @@ spring:
       hibernate:
         default_batch_fetch_size: 100
     defer-datasource-initialization: true
+  sql:
+    init:
+      mode: never
+
 
 app:
   backhost : studit-back.ap-northeast-2.elasticbeanstalk.com
