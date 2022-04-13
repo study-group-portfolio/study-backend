@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/member/checkFindPasswordToken/**",
             "/api/study/search",
             "/api/study/position/*",
-            "/api/resource/*",
+            "/api/resource/**",
             "/docs/*"
 
 

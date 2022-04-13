@@ -50,9 +50,9 @@ public class ResourceService {
             return ErrorResponse.getErrorResponse(e);
         }
     }
-    public ResponseEntity<?> findSkillList(PositionSimpleDto positionSimpleDto) {
+    public ResponseEntity<?> findSkillList(String positionName) {
         try {
-            List<Skill> skillList = resourceRepository.findSkillByPositionName(positionSimpleDto.getPositionName());
+            List<Skill> skillList = resourceRepository.findSkillByPositionName(positionName);
             List<SkillDto> result = skillList
                     .stream()
                     .map(skill -> new SkillDto(skill.getSkillName()))
