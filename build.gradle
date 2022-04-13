@@ -17,6 +17,19 @@ configurations {
 	}
 }
 
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'BOOT-INF/classes/static/docs'
+	}
+}
+
 repositories {
 	mavenCentral()
 }
@@ -60,9 +73,8 @@ dependencies {
 
 
 }
-ext {
-	snippetsDir = file('build/generated-snippets')
-}
+
+
 
 test {
 	useJUnitPlatform()
@@ -73,19 +85,14 @@ asciidoctor {
 	dependsOn test
 	inputs.dir snippetsDir
 }
+
 asciidoctor.doFirst {
 	delete file('src/main/resources/static/docs')
 }
 
 
 
-bootJar {
-	dependsOn asciidoctor
-	copy {
-		from "${asciidoctor.outputDir}"
-		into 'BOOT-INF/classes/static/docs'
-	}
-}
+
 
 task copyDocument(type: Copy) {
 	dependsOn asciidoctor
