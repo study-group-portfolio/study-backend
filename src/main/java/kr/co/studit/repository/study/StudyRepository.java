@@ -151,11 +151,11 @@ public class StudyRepository {
 
     }
 
-    private BooleanExpression positionEmpty(ArrayList<String> positionNames) {
+    private BooleanExpression positionEmpty(List<String> positionNames) {
         if (positionNames == null || positionNames.isEmpty()) return null;
         return position.positionName.in(positionNames);
     }
-    private BooleanExpression skillEmpty(ArrayList<String> skillNames) {
+    private BooleanExpression skillEmpty(List<String> skillNames) {
         if (skillNames == null || skillNames.isEmpty()) return null;
         return skill.skillName.in(skillNames);
     }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,9 +21,9 @@ public class StudySearchCondition {
     @ApiModelProperty(example = "서울")
     private String region;
 
-    @ApiModelProperty(example = "[\"백엔드\",\"프론트\"]")
-    private ArrayList<String> positions = new ArrayList<>();
+    @ApiModelProperty(example = "[\"백엔드 개발자\",\"프론트엔드 개발자\"]")
+    private List<String> positions = new ArrayList<>();
 
-    @ApiModelProperty(example = "[\"리엑트\"]")
-    private ArrayList<String> skills = new ArrayList<>();
+    @ApiModelProperty(example = "[\"React\"]")
+    private List<String> skills = new ArrayList<>();
 }

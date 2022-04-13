@@ -63,7 +63,7 @@ public class StudyController {
 
     @PostMapping("/search")
     @ApiOperation(value = "스터디 글 검색", notes ="pageNumber와 pageSize를 통해 페이징 가능, 페이지는 0페이지 부터 시작")
-    public ResponseEntity<?> searchStudy(@RequestBody StudySearchCondition studySearchCondition,Pageable pageable) {
+    public ResponseEntity<?> searchStudy(@RequestBody StudySearchCondition studySearchCondition,@PageableDefault(size = 12, page = 0) Pageable pageable) {
         return studyService.searchStudy(studySearchCondition,pageable);
     }
 
@@ -82,7 +82,7 @@ public class StudyController {
 
     @GetMapping("/participated")
     @ApiOperation(value = "내가 참여한 스터디", notes ="pageNumber와 pageSize를 통해 페이징 가능, 페이지는 0페이지 부터 시작")
-    public ResponseEntity<?> participatedStudy(@AuthenticationPrincipal String email,Pageable pageable) {
+    public ResponseEntity<?> participatedStudy(@AuthenticationPrincipal String email,@PageableDefault(size = 4, page = 0) Pageable pageable) {
         return studyService.findParticipatedStudy(email,pageable);
     }
 

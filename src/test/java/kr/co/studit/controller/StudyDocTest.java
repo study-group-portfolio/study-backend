@@ -5,6 +5,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import kr.co.studit.dto.member.SigninDto;
 import kr.co.studit.dto.position.PositionDto;
 import kr.co.studit.dto.response.ResponseDto;
+import kr.co.studit.dto.search.StudySearchCondition;
 import kr.co.studit.dto.study.StudyForm;
 import kr.co.studit.entity.enums.OnOffStatus;
 import kr.co.studit.entity.enums.StudyType;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -73,6 +75,7 @@ public class StudyDocTest {
     public void beforeTest() throws Exception {
 
         this.testMember = memberDataRepository.findMemberById(5L);
+//        this.testMember = memberDataRepository.findMemberByEmail("admin@studit.co.kr");
         setAccessToken();
     }
 
@@ -287,11 +290,11 @@ public class StudyDocTest {
                                 fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지").ignored(),
                                 fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("스터디 id"),
-                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("스터디 타입"),
+                                fieldWithPath("data.type").type(JsonFieldType.STRING).description("스터디 타입").attributes(key("remark").value("SHARE/PROJECT")),
                                 fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("data.profileShare").type(JsonFieldType.BOOLEAN).description("프로필 공개여부"),
                                 fieldWithPath("data.content").type(JsonFieldType.STRING).description("스터디 내용"),
-                                fieldWithPath("data.status").type(JsonFieldType.STRING).description("온오프라인"),
+                                fieldWithPath("data.status").type(JsonFieldType.STRING).description("진행 방식").attributes(key("remark").value("ON/OFF/ONOFF")),
                                 fieldWithPath("data.region").type(JsonFieldType.STRING).description("활동 지역"),
                                 fieldWithPath("data.duration").type(JsonFieldType.STRING).description("활동 기간"),
                                 fieldWithPath("data.studyDay").type(JsonFieldType.STRING).description("스터디 날짜"),
@@ -303,9 +306,9 @@ public class StudyDocTest {
                                 fieldWithPath("data.positions.[]").type(JsonFieldType.ARRAY).description("포지션"),
                                 fieldWithPath("data.positions.[].position").type(JsonFieldType.STRING).description("포지션"),
                                 fieldWithPath("data.positions.[].count").type(JsonFieldType.NUMBER).description("모집된 인원"),
-                                fieldWithPath("data.positions.[].totalCount").type(JsonFieldType.NUMBER).description("포지션 총 모집 인원"),
+                                fieldWithPath("data.positions.[].totalCount").type(JsonFieldType.NUMBER).description("모집 인원"),
                                 fieldWithPath("data.positions.[].skills.[]").type(JsonFieldType.ARRAY).description("스킬"),
-                                fieldWithPath("data.positions.[].recruited").type(JsonFieldType.BOOLEAN).description("false: 모집중"),
+                                fieldWithPath("data.positions.[].recruited").type(JsonFieldType.BOOLEAN).description("모집 완료 여부").attributes(key("remark").value("fasle : 모집중")),
                                 fieldWithPath("data.bookmarkId").type(JsonFieldType.NUMBER).description("북마크아이디").ignored(),
                                 fieldWithPath("data.bookmarkState").type(JsonFieldType.BOOLEAN).description("북마크상태").ignored()
                         )
@@ -440,7 +443,139 @@ public class StudyDocTest {
 
         //then
         result.andExpect(status().is2xxSuccessful())
-                .andDo(print());
+                .andDo(document("get-studyList",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지").ignored(),
+                                fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER).description("스터디 id"),
+                                fieldWithPath("data.content[].title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("data.content[].type").type(JsonFieldType.STRING).description("스터디 타입").attributes(key("remark").value("SHARE/PROJECT")),
+                                fieldWithPath("data.content[].profileShare").type(JsonFieldType.BOOLEAN).description("게시자 프로필 공개여부"),
+                                fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("내용"),
+                                fieldWithPath("data.content[].status").type(JsonFieldType.STRING).description("진행 방식"),
+                                fieldWithPath("data.content[].region").type(JsonFieldType.STRING).description("활동 지역"),
+                                fieldWithPath("data.content[].duration").type(JsonFieldType.STRING).description("예상 진행 기간"),
+                                fieldWithPath("data.content[].studyDay").type(JsonFieldType.STRING).description("예상 진행 기간"),
+                                fieldWithPath("data.content[].positions[].position").type(JsonFieldType.STRING).description("포지션"),
+                                fieldWithPath("data.content[].positions[].count").type(JsonFieldType.NUMBER).description("모집된 인원"),
+                                fieldWithPath("data.content[].positions[].totalCount").type(JsonFieldType.NUMBER).description("모집 인원"),
+                                fieldWithPath("data.content[].positions[].recruited").type(JsonFieldType.BOOLEAN).description("모집 종료 여부").attributes(key("remark").value("false : 모집 중")),
+                                fieldWithPath("data.content[].positions[].skills.[]").type(JsonFieldType.ARRAY).description("스킬"),
+                                fieldWithPath("data.content[].tools.[]").type(JsonFieldType.ARRAY).description("툴"),
+                                fieldWithPath("data.content[].receptionStart").type(JsonFieldType.STRING).description("모집 시작 날짜").attributes(key("remark").value("yyyy-mm-dd")),
+                                fieldWithPath("data.content[].receptionEnd").type(JsonFieldType.STRING).description("모집 종료 날짜").attributes(key("remark").value("yyyy-mm-dd")),
+                                fieldWithPath("data.content[].createDate").type(JsonFieldType.STRING).description("작성 시간"),
+                                fieldWithPath("data.content[].modifiedDate").type(JsonFieldType.STRING).description("수정 시간"),
+                                fieldWithPath("data.content[].bookmarkId").type(JsonFieldType.NUMBER).description("북마크아이디").optional(),
+                                fieldWithPath("data.content[].bookmarkState").type(JsonFieldType.BOOLEAN).description("북마크상태").optional(),
+                                fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER).description("요소의 수, 페이지 수에 따라 결정").ignored(),
+                                fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description("한 페이지의 요소의 수"),
+                                fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description("현재 페이지"),
+                                fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN).description("페이징 여부").ignored(),
+                                fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN).description("페이징 여부").ignored(),
+                                fieldWithPath("data.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지 여부"),
+                                fieldWithPath("data.first").type(JsonFieldType.BOOLEAN).description("첫 페이지 여부"),
+                                fieldWithPath("data.totalElements").type(JsonFieldType.NUMBER).description("총 요소의 수"),
+                                fieldWithPath("data.totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
+                                fieldWithPath("data.size").type(JsonFieldType.NUMBER).description("요소 의 수"),
+                                fieldWithPath("data.number").type(JsonFieldType.NUMBER).description("현재 페이지"),
+                                fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER).description("현재 페이지의 요소의 수"),
+                                fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN).description("요소의 유무"),
+                                fieldWithPath("data.pageable.sort.empty").ignored(),
+                                fieldWithPath("data.pageable.sort.sorted").ignored(),
+                                fieldWithPath("data.pageable.sort.unsorted").ignored(),
+                                fieldWithPath("data.sort.empty").ignored(),
+                                fieldWithPath("data.sort.sorted").ignored(),
+                                fieldWithPath("data.sort.unsorted").ignored()
+                        )
+                ));
+    }
+
+    @Test
+    public void getStudyListWithCondition() throws Exception {
+        //given
+        String uri = BASE_URI + "/search";
+        StudySearchCondition condition = new StudySearchCondition();
+        condition.setRegion("서울");
+        condition.setType(StudyType.PROJECT);
+        condition.setStatus(OnOffStatus.ON);
+        List<String> skills = new ArrayList<>();
+        skills.add("Vue");
+//        skills.add("Java");
+//        skills.add("Spring");
+        condition.setSkills(skills);
+        List<String> position = new ArrayList<>();
+        position.add("백엔드 개발자");
+        condition.setPositions(position);
+
+        String json = new Gson().toJson(condition);
+        //when
+        ResultActions result = this.mockMvc.perform(post(uri+"?page=0&size=5")
+                .content(json)
+                .contentType(APPLICATION_JSON_UTF8)
+                .accept(APPLICATION_JSON_UTF8));
+
+        //then
+        result.andExpect(status().is2xxSuccessful())
+                .andDo(document("get-studyList-with-condition",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("type").type(JsonFieldType.STRING).description("스터디 타입").attributes(key("remark").value("SHARE/PROJECT")),
+                                        fieldWithPath("status").type(JsonFieldType.STRING).description("진행 방식").attributes(key("remark").value("ON/OFF/ONOFF")),
+                                        fieldWithPath("region").type(JsonFieldType.STRING).description("활동 지역"),
+                                        fieldWithPath("positions.[]").type(JsonFieldType.ARRAY).description("포지션"),
+                                        fieldWithPath("skills.[]").type(JsonFieldType.ARRAY).description("스킬")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지").ignored(),
+                                        fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER).description("스터디 id"),
+                                        fieldWithPath("data.content[].title").type(JsonFieldType.STRING).description("제목"),
+                                        fieldWithPath("data.content[].type").type(JsonFieldType.STRING).description("스터디 타입").attributes(key("remark").value("SHARE/PROJECT")),
+                                        fieldWithPath("data.content[].profileShare").type(JsonFieldType.BOOLEAN).description("게시자 프로필 공개여부"),
+                                        fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("내용"),
+                                        fieldWithPath("data.content[].status").type(JsonFieldType.STRING).description("진행 방식"),
+                                        fieldWithPath("data.content[].region").type(JsonFieldType.STRING).description("활동 지역"),
+                                        fieldWithPath("data.content[].duration").type(JsonFieldType.STRING).description("예상 진행 기간"),
+                                        fieldWithPath("data.content[].studyDay").type(JsonFieldType.STRING).description("예상 진행 기간"),
+                                        fieldWithPath("data.content[].positions[].position").type(JsonFieldType.STRING).description("포지션"),
+                                        fieldWithPath("data.content[].positions[].count").type(JsonFieldType.NUMBER).description("모집된 인원"),
+                                        fieldWithPath("data.content[].positions[].totalCount").type(JsonFieldType.NUMBER).description("모집 인원"),
+                                        fieldWithPath("data.content[].positions[].recruited").type(JsonFieldType.BOOLEAN).description("모집 종료 여부").attributes(key("remark").value("false : 모집 중")),
+                                        fieldWithPath("data.content[].positions[].skills.[]").type(JsonFieldType.ARRAY).description("스킬"),
+                                        fieldWithPath("data.content[].tools.[]").type(JsonFieldType.ARRAY).description("툴"),
+                                        fieldWithPath("data.content[].receptionStart").type(JsonFieldType.STRING).description("모집 시작 날짜").attributes(key("remark").value("yyyy-mm-dd")),
+                                        fieldWithPath("data.content[].receptionEnd").type(JsonFieldType.STRING).description("모집 종료 날짜").attributes(key("remark").value("yyyy-mm-dd")),
+                                        fieldWithPath("data.content[].createDate").type(JsonFieldType.STRING).description("작성 시간"),
+                                        fieldWithPath("data.content[].modifiedDate").type(JsonFieldType.STRING).description("수정 시간"),
+                                        fieldWithPath("data.content[].bookmarkId").type(JsonFieldType.NUMBER).description("북마크아이디").optional(),
+                                        fieldWithPath("data.content[].bookmarkState").type(JsonFieldType.BOOLEAN).description("북마크상태").optional(),
+                                        fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER).description("요소의 수, 페이지 수에 따라 결정").ignored(),
+                                        fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description("한 페이지의 요소의 수"),
+                                        fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description("현재 페이지"),
+                                        fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN).description("페이징 여부").ignored(),
+                                        fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN).description("페이징 여부").ignored(),
+                                        fieldWithPath("data.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지 여부"),
+                                        fieldWithPath("data.first").type(JsonFieldType.BOOLEAN).description("첫 페이지 여부"),
+                                        fieldWithPath("data.totalElements").type(JsonFieldType.NUMBER).description("총 요소의 수"),
+                                        fieldWithPath("data.totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
+                                        fieldWithPath("data.size").type(JsonFieldType.NUMBER).description("요소 의 수"),
+                                        fieldWithPath("data.number").type(JsonFieldType.NUMBER).description("현재 페이지"),
+                                        fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER).description("현재 페이지의 요소의 수"),
+                                        fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN).description("요소의 유무"),
+                                        fieldWithPath("data.pageable.sort.empty").ignored(),
+                                        fieldWithPath("data.pageable.sort.sorted").ignored(),
+                                        fieldWithPath("data.pageable.sort.unsorted").ignored(),
+                                        fieldWithPath("data.sort.empty").ignored(),
+                                        fieldWithPath("data.sort.sorted").ignored(),
+                                        fieldWithPath("data.sort.unsorted").ignored()
+                                )
+
+
+                                        ));
 
 
     }

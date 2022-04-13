@@ -209,7 +209,7 @@ include::{snippets}/email-verife-reset/path-parameters.adoc[]
 include::{snippets}/email-verife-reset/http-response.adoc[]
 
 [%collapsible]
-=== 멤버조회
+=== 멤버 리스트 조회
 search-condition == null인 경우
 
 ==== REQUEST
@@ -234,7 +234,7 @@ include::{snippets}/memberlist-v1/response-fields.adoc[]
 include::{snippets}/memberlist-v2/http-request.adoc[]
 
 
-==== RESPONSE FIELDS
+==== REQUEST FIELDS
 
 include::{snippets}/memberlist-v2/request-fields.adoc[]
 
@@ -283,6 +283,7 @@ include::{snippets}/get-study/http-response.adoc[]
 
 include::{snippets}/get-study/response-fields.adoc[]
 
+
 === 스터디 수정
 
 ==== REQUEST
@@ -312,6 +313,44 @@ include::{snippets}/delete-study/http-response.adoc[]
 ==== RESPONSE FIELDS
 
 include::{snippets}/delete-study/response-fields.adoc[]
+
+=== 스터디 리스트 조회
+
+==== REQUEST
+default page == 0, default size == 12
+
+include::{snippets}/get-studyList/http-request.adoc[]
+
+
+==== RESPONSE
+
+include::{snippets}/get-studyList/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/get-studyList/response-fields.adoc[]
+
+=== 스터디 리스트 조건 조회
+
+==== REQUEST
+default page == 0, default size == 12
+
+include::{snippets}/get-studyList-with-condition/http-request.adoc[]
+
+==== REQUEST FIELDS
+
+include::{snippets}/get-studyList-with-condition/request-fields.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/get-studyList-with-condition/http-response.adoc[]
+
+==== RESPONSE FIELDS
+
+include::{snippets}/get-studyList-with-condition/response-fields.adoc[]
+
+
+
 
 == ResouceController
 

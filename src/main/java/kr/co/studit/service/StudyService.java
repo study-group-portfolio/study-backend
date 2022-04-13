@@ -379,6 +379,7 @@ public class StudyService {
                         positionDto.setPosition(studyPosition.getPosition().getPositionName());
                         positionDto.setTotalCount(studyPosition.getTotalCount());
                         positionDto.setCount(studyPosition.getCount());
+                        positionDto.setRecruited(studyPosition.isRecruited());
                         return positionDto;
                     })
                     .collect(Collectors.toList());
