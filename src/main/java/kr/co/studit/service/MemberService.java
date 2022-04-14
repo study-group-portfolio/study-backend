@@ -434,6 +434,10 @@ public class MemberService {
     public Member editBasicProfile(String email, BasicProfileForm basicProfileForm) {
         //TODO 추후 img 업데이트
         Member member = memberDataRepository.findMemberByEmail(email);
+        if(memberDataRepository.existsByNickname(basicProfileForm.getNickname()) && !member.getNickname().equals(basicProfileForm.getNickname()) ){
+            throw new RuntimeException("이미 사용중인 닉네임 입니다.");
+        }
+
         member.setNickname(basicProfileForm.getNickname());
         return member;
     }

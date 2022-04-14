@@ -23,11 +23,11 @@ import java.util.UUID;
 @Getter
 
 @Table(
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        columnNames = {"email","nickname"}
-                )
-        }
+//        uniqueConstraints = {
+//                @UniqueConstraint(
+//                        columnNames = {"email","nickname"}
+//                )
+//        }
 )
 @Builder
 @NoArgsConstructor
@@ -37,7 +37,10 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
+
+    @Column(name = "nickname", unique = true)
     private String nickname;
+    @Column(name = "email", unique = true)
     private String email;
     private String password;
     private String profileImg;

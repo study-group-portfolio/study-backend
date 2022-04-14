@@ -125,8 +125,12 @@ public class MemberController {
     @ApiOperation(value = "프로필 기본 정보 수정")
     @PutMapping("/profile/basic")
     public ResponseEntity<?> editBasicProfile(@AuthenticationPrincipal String email, @RequestBody BasicProfileForm basicProfileForm) {
+        try {
+            Member member = memberService.editBasicProfile(email, basicProfileForm);
+        } catch (Exception e) {
+           return ErrorResponse.getErrorResponse(e, HttpStatus.BAD_REQUEST, e.getMessage());
+        }
 
-        Member member = memberService.editBasicProfile(email, basicProfileForm);
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .data(basicProfileForm)
                 .status(Status.SUCCESS)
