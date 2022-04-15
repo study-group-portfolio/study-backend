@@ -299,5 +299,14 @@ class MemberServiceTest {
 
     }
 
+    @Test
+    public void deleteMember() throws Exception {
+        //given
+        memberService.deleteMember("studit0@studit.co.kr");
+        //when
+
+        //then
+
+    }
 
 }

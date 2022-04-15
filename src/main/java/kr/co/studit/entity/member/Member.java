@@ -63,17 +63,17 @@ public class Member extends BaseTimeEntity {
     private OnOffStatus onOffStatus;
 
     @Builder.Default
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberRegion> regions = new ArrayList<>();
 
     // 업무 포지션
     @Builder.Default
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberPosition> positions = new ArrayList<>();
 
     //스킬
     @Builder.Default
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberSkill> skills = new ArrayList<>();
 
     // 이에일 인증 여부
@@ -92,17 +92,16 @@ public class Member extends BaseTimeEntity {
     private LocalDateTime passwordFindTokenGeneratedAt;
     // 읽기 전용
     @JsonIgnore
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private final List<Study> studys = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Portfolio> portfolios = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "markMember",
-    cascade = CascadeType.ALL,
-    orphanRemoval = true)
+    cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
     public static Member createMember(String email) {

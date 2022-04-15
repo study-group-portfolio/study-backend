@@ -75,7 +75,6 @@ public class MemberDocTest {
         setAccessToken();
     }
 
-
     public void setAccessToken() throws Exception {
         String uri = BASE_URI + "/signin";
         String email = testMember.getEmail();
@@ -102,7 +101,6 @@ public class MemberDocTest {
         return this.accessToken;
     }
 
-
 ////    @BeforeEach
 //    public void setUp(WebApplicationContext webApplicationContext,
 //                      RestDocumentationContextProvider restDocumentation) {
@@ -113,7 +111,6 @@ public class MemberDocTest {
 //    }
 
 
-
     private ResultActions putPerformWithAuthenticated(String uri, String json) throws Exception {
         return this.mockMvc.perform(
                 put(uri).header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken() )
@@ -122,6 +119,7 @@ public class MemberDocTest {
                         .content(json)
         );
     }
+
     private ResultActions putPerform(String uri, String json) throws Exception {
         return this.mockMvc.perform(
                 put(uri)
@@ -130,7 +128,6 @@ public class MemberDocTest {
                         .content(json)
         );
     }
-
 
     private ResultActions postPerform(String uri, String json) throws Exception {
         return this.mockMvc.perform(
@@ -166,8 +163,6 @@ public class MemberDocTest {
         );
         return result;
     }
-
-
 
     @Test
     public void signUp() throws Exception {
@@ -248,7 +243,6 @@ public class MemberDocTest {
                 ));
         
     }
-   
 
     @Test
     public void login() throws Exception {
@@ -284,6 +278,7 @@ public class MemberDocTest {
                         )
                 ));
     }
+
     @Test
     public void updateProfile() throws Exception {
         //given
@@ -623,8 +618,6 @@ public class MemberDocTest {
 
     }
 
-
-
     @Test
     public void getDefaultMemberList() throws Exception {
         //given
@@ -664,9 +657,6 @@ public class MemberDocTest {
                 ));
     }
 
-
-
-
     @Test
     public void getMemberListWithAthenticated() throws Exception {
         //given
@@ -691,7 +681,8 @@ public class MemberDocTest {
         String json = new Gson().toJson(condition);
 
         //when
-        ResultActions result = this.mockMvc.perform(post(uri).header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+        ResultActions result = this.mockMvc.perform(post(uri).
+                header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .contentType(APPLICATION_JSON_UTF8)
                 .accept(APPLICATION_JSON_UTF8)
                 .content(json));
@@ -731,7 +722,33 @@ public class MemberDocTest {
                         )
 
                 ));
-        //TODO 인증된 회원이 아닐경우 북마크 x
+
+    }
+
+    @Test
+    public void withdrawal() throws Exception {
+        //given
+        String uri = BASE_URI + "/withdrawal";
+
+        //when
+        ResultActions result = this.mockMvc.perform(delete(uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .contentType(APPLICATION_JSON_UTF8)
+                .accept(APPLICATION_JSON_UTF8));
+        //then
+        result.andExpect(status().isOk())
+                .andDo(print())
+                .andDo((document("withdrawal",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                fieldWithPath("data").type(JsonFieldType.STRING).description("결과메시지").ignored()
+
+                        )
+
+                        )));
 
     }
 }

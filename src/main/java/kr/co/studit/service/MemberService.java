@@ -296,11 +296,21 @@ public class MemberService {
 
     }
 
+    public Member editBasicProfile(String email, BasicProfileForm basicProfileForm) {
+        //TODO 추후 img 업데이트
+        Member member = memberDataRepository.findMemberByEmail(email);
+        if(memberDataRepository.existsByNickname(basicProfileForm.getNickname()) && !member.getNickname().equals(basicProfileForm.getNickname()) ){
+            throw new RuntimeException("이미 사용중인 닉네임 입니다.");
+        }
+
+        member.setNickname(basicProfileForm.getNickname());
+        return member;
+    }
+
     private void deleteRegion(Member member) {
         memberDataRepository.delateRegions(member);
         member.getRegions().clear();
     }
-
 
     private void createMemberRegion(List<String> regions, Member member) {
         for (String area : regions) {
@@ -308,6 +318,14 @@ public class MemberService {
             MemberRegion newMemberRegion = MemberRegion.createMemberRegion(member, region);
             memberDataRepository.saveMemberRegion(newMemberRegion);
         }
+    }
+
+    public void deleteMember(String email) throws NotFoundException {
+        Member member = memberDataRepository.findMemberByEmail(email);
+        if (member == null) {
+            throw new NotFoundException("존재 하지 않는 회원 입니다.");
+        }
+        memberDataRepository.delete(member);
     }
 
     public ProfileForm getProfile(String email) {
@@ -381,7 +399,6 @@ public class MemberService {
         return page;
     }
 
-
     public ResponseEntity<?> inviteMember(InvitationDto invitationDto ,String email) {
         try {
             Optional<Study> findOpStudy = studyRepository.findStudyByEmailAndId(invitationDto.getStudyId(), email);
@@ -430,18 +447,6 @@ public class MemberService {
         }).collect(toList());
         return result;
     }
-
-    public Member editBasicProfile(String email, BasicProfileForm basicProfileForm) {
-        //TODO 추후 img 업데이트
-        Member member = memberDataRepository.findMemberByEmail(email);
-        if(memberDataRepository.existsByNickname(basicProfileForm.getNickname()) && !member.getNickname().equals(basicProfileForm.getNickname()) ){
-            throw new RuntimeException("이미 사용중인 닉네임 입니다.");
-        }
-
-        member.setNickname(basicProfileForm.getNickname());
-        return member;
-    }
-
 
     public ResponseEntity<?> findPassword(String email) {
         try {

@@ -3,6 +3,7 @@ package kr.co.studit.controller;
 import com.google.gson.Gson;
 import kr.co.studit.dto.member.SigninDto;
 import kr.co.studit.dto.member.SignupDto;
+import kr.co.studit.entity.member.Member;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.Charset;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

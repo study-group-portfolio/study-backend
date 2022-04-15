@@ -247,6 +247,19 @@ include::{snippets}/memberlist-v2/response-body.adoc[]
 
 include::{snippets}/memberlist-v2/response-fields.adoc[]
 
+=== 회원 탈퇴
+
+==== REQUEST
+
+include::{snippets}/withdrawal/http-request.adoc[]
+
+==== RESPONSE
+
+include::{snippets}/withdrawal/response-body.adoc[]
+
+
+
+
 == StudyController
 
 === 스터디 생성

@@ -3,6 +3,8 @@ package kr.co.studit.entity;
 import kr.co.studit.entity.member.Member;
 import kr.co.studit.entity.study.Study;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -28,10 +30,12 @@ public class Bookmark {
     @JoinColumn(name = "mark_member_id")
     private Member markMember;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Member markedMember;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "study_id")
     private Study markedStudy;
 
     @CreatedDate

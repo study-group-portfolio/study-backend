@@ -262,6 +262,22 @@ public class MemberController {
         return ResponseEntity.ok().body(responseListDto);
     }
 
+    @ApiOperation(value = "회원 탈퇴")
+    @DeleteMapping("/withdrawal")
+    public ResponseEntity<?> withdrawal(@AuthenticationPrincipal String email) {
+        try {
+            memberService.deleteMember(email);
+        } catch (Exception e) {
+            return ErrorResponse.getErrorResponse(e);
+        }
+        ResponseDto<Object> responseDto = ResponseDto.builder()
+                .status(Status.SUCCESS)
+                .message("삭제가 완료 되었습니다")
+                .build();
+
+        return ResponseEntity.ok().body(responseDto);
+    }
+
 }
 
 //TODO 회원가입 인증 메일 재발송 method가 없네 .. 만들 것  프로필 공개 여부 수정 부분만 가능한 controller method 만들 것
