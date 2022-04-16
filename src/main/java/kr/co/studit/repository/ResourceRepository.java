@@ -1,6 +1,7 @@
 package kr.co.studit.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.studit.dto.SkillDto;
 import kr.co.studit.entity.position.Position;
 import kr.co.studit.entity.Skill;
 import kr.co.studit.entity.position.PositionType;
@@ -34,4 +35,14 @@ public class ResourceRepository {
                         .where(skill.position.positionName.eq(positionName))
                         .fetch();
     }
+
+    public List<String> findAllSkills() {
+        return
+                queryFactory
+                    .select(skill.skillName)
+                    .from(skill)
+                    .fetch();
+    }
+
+
 }

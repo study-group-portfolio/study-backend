@@ -174,7 +174,7 @@ public class StudyDocTest {
         studyForm.setContent("스터디에 대한 내용");
         studyForm.setDuration("3달");
         PositionDto positionDto1 = new PositionDto();
-        positionDto1.setPosition("백엔드 개발자");
+        positionDto1.setPositionName("백엔드 개발자");
         ArrayList<String> skills1 = new ArrayList<>();
         skills1.add("Java");
         skills1.add("Spring");
@@ -182,7 +182,7 @@ public class StudyDocTest {
         positionDto1.setCount(0);
         positionDto1.setTotalCount(3);
         PositionDto positionDto2 = new PositionDto();
-        positionDto2.setPosition("프론트엔드 개발자");
+        positionDto2.setPositionName("프론트엔드 개발자");
 
         positionDto2.setCount(0);
         positionDto2.setTotalCount(3);
@@ -234,7 +234,7 @@ public class StudyDocTest {
                                 fieldWithPath("receptionStart").type(JsonFieldType.STRING).description("모집 시작 날짜"),
                                 fieldWithPath("receptionEnd").type(JsonFieldType.STRING).description("모집 종료 날짜"),
                                 subsectionWithPath("tools.[]").type(JsonFieldType.ARRAY).description("협업 툴").optional(),
-                                subsectionWithPath("positions.[].position").type(JsonFieldType.STRING).description("포지션"),
+                                subsectionWithPath("positions.[].positionName").type(JsonFieldType.STRING).description("포지션"),
                                 subsectionWithPath("positions.[].count").type(JsonFieldType.NUMBER).description("모집된 인원"),
                                 subsectionWithPath("positions.[].totalCount").type(JsonFieldType.NUMBER).description("포지션 총 모집 인원"),
                                 subsectionWithPath("positions.[].skills.[]").type(JsonFieldType.ARRAY).description("스킬"),
@@ -257,7 +257,7 @@ public class StudyDocTest {
                                 fieldWithPath("data.createDate").type(JsonFieldType.STRING).description("작성 날짜"),
                                 fieldWithPath("data.modifiedDate").type(JsonFieldType.STRING).description("수정 날짜"),
                                 fieldWithPath("data.tools.[]").type(JsonFieldType.ARRAY).description("협업 툴"),
-                                fieldWithPath("data.positions.[].position").type(JsonFieldType.STRING).description("포지션"),
+                                fieldWithPath("data.positions.[].positionName").type(JsonFieldType.STRING).description("포지션"),
                                 fieldWithPath("data.positions.[].count").type(JsonFieldType.NUMBER).description("모집된 인원"),
                                 fieldWithPath("data.positions.[].totalCount").type(JsonFieldType.NUMBER).description("포지션 총 모집 인원"),
                                 fieldWithPath("data.positions.[].recruited").type(JsonFieldType.BOOLEAN).description("false : 모집중"),
@@ -304,7 +304,7 @@ public class StudyDocTest {
                                 fieldWithPath("data.modifiedDate").type(JsonFieldType.STRING).description("수정 날짜"),
                                 fieldWithPath("data.tools.[]").type(JsonFieldType.ARRAY).description("협업 툴"),
                                 fieldWithPath("data.positions.[]").type(JsonFieldType.ARRAY).description("포지션"),
-                                fieldWithPath("data.positions.[].position").type(JsonFieldType.STRING).description("포지션"),
+                                fieldWithPath("data.positions.[].positionName").type(JsonFieldType.STRING).description("포지션"),
                                 fieldWithPath("data.positions.[].count").type(JsonFieldType.NUMBER).description("모집된 인원"),
                                 fieldWithPath("data.positions.[].totalCount").type(JsonFieldType.NUMBER).description("모집 인원"),
                                 fieldWithPath("data.positions.[].skills.[]").type(JsonFieldType.ARRAY).description("스킬"),
@@ -331,7 +331,7 @@ public class StudyDocTest {
         studyForm.setContent("스터디에 대한 내용");
         studyForm.setDuration("3달");
         PositionDto positionDto1 = new PositionDto();
-        positionDto1.setPosition("백엔드 개발자");
+        positionDto1.setPositionName("백엔드 개발자");
         ArrayList<String> skills1 = new ArrayList<>();
         skills1.add("Java");
         skills1.add("Spring");
@@ -339,7 +339,7 @@ public class StudyDocTest {
         positionDto1.setCount(0);
         positionDto1.setTotalCount(3);
         PositionDto positionDto2 = new PositionDto();
-        positionDto2.setPosition("프론트엔드 개발자");
+        positionDto2.setPositionName("프론트엔드 개발자");
         //TODO 포지션 카운트 업데이트는 유효성 체크가 필요할듯 현재 스터디 포지션 인원이 고려 되야함
         positionDto2.setCount(0);
         positionDto2.setTotalCount(3);
@@ -387,7 +387,7 @@ public class StudyDocTest {
                                 fieldWithPath("receptionStart").type(JsonFieldType.STRING).description("모집 시작 날짜"),
                                 fieldWithPath("receptionEnd").type(JsonFieldType.STRING).description("모집 종료 날짜"),
                                 subsectionWithPath("tools.[]").type(JsonFieldType.ARRAY).description("협업 툴").optional(),
-                                subsectionWithPath("positions.[].position").type(JsonFieldType.STRING).description("포지션"),
+                                subsectionWithPath("positions.[].positionName").type(JsonFieldType.STRING).description("포지션"),
                                 subsectionWithPath("positions.[].count").type(JsonFieldType.NUMBER).description("모집된 인원"),
                                 subsectionWithPath("positions.[].totalCount").type(JsonFieldType.NUMBER).description("포지션 총 모집 인원"),
                                 subsectionWithPath("positions.[].skills.[]").type(JsonFieldType.ARRAY).description("스킬"),
@@ -460,7 +460,7 @@ public class StudyDocTest {
                                 fieldWithPath("data.content[].region").type(JsonFieldType.STRING).description("활동 지역"),
                                 fieldWithPath("data.content[].duration").type(JsonFieldType.STRING).description("예상 진행 기간"),
                                 fieldWithPath("data.content[].studyDay").type(JsonFieldType.STRING).description("예상 진행 기간"),
-                                fieldWithPath("data.content[].positions[].position").type(JsonFieldType.STRING).description("포지션"),
+                                fieldWithPath("data.content[].positions[].positionName").type(JsonFieldType.STRING).description("포지션"),
                                 fieldWithPath("data.content[].positions[].count").type(JsonFieldType.NUMBER).description("모집된 인원"),
                                 fieldWithPath("data.content[].positions[].totalCount").type(JsonFieldType.NUMBER).description("모집 인원"),
                                 fieldWithPath("data.content[].positions[].recruited").type(JsonFieldType.BOOLEAN).description("모집 종료 여부").attributes(key("remark").value("false : 모집 중")),
@@ -543,7 +543,7 @@ public class StudyDocTest {
                                         fieldWithPath("data.content[].region").type(JsonFieldType.STRING).description("활동 지역"),
                                         fieldWithPath("data.content[].duration").type(JsonFieldType.STRING).description("예상 진행 기간"),
                                         fieldWithPath("data.content[].studyDay").type(JsonFieldType.STRING).description("예상 진행 기간"),
-                                        fieldWithPath("data.content[].positions[].position").type(JsonFieldType.STRING).description("포지션"),
+                                        fieldWithPath("data.content[].positions[].positionName").type(JsonFieldType.STRING).description("포지션"),
                                         fieldWithPath("data.content[].positions[].count").type(JsonFieldType.NUMBER).description("모집된 인원"),
                                         fieldWithPath("data.content[].positions[].totalCount").type(JsonFieldType.NUMBER).description("모집 인원"),
                                         fieldWithPath("data.content[].positions[].recruited").type(JsonFieldType.BOOLEAN).description("모집 종료 여부").attributes(key("remark").value("false : 모집 중")),

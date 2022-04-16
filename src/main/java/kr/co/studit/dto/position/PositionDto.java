@@ -13,7 +13,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PositionDto {
-    String position;
+    String positionName;
     Integer count;
     Integer totalCount;
     ArrayList<String> skills = new ArrayList<>();

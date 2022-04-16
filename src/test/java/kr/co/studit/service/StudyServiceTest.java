@@ -83,7 +83,7 @@ class StudyServiceTest {
     private void createPositionSkill(Study study, ArrayList<PositionDto> positions) {
         for (PositionDto positionDto : positions) {
 
-            Position position = studyRepository.findPositionByPositionName(positionDto.getPosition());
+            Position position = studyRepository.findPositionByPositionName(positionDto.getPositionName());
 
             StudyPosition studyPosition = new StudyPosition();
             studyPosition.setPosition(position);
@@ -160,13 +160,13 @@ class StudyServiceTest {
         studyDto.setStudyDay("주말");
 
         PositionDto position1 = new PositionDto();
-        position1.setPosition("백엔드 개발자");
+        position1.setPositionName("백엔드 개발자");
         position1.setCount(5);
         position1.getSkills().add("Spring");
         position1.getSkills().add("Java");
 
         PositionDto position2 = new PositionDto();
-        position2.setPosition("프론트엔드 개발자");
+        position2.setPositionName("프론트엔드 개발자");
         position2.setCount(4);
         position2.getSkills().add("React");
         position2.getSkills().add("Vue");

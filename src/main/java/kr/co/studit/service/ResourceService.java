@@ -63,4 +63,8 @@ public class ResourceService {
             return ErrorResponse.getErrorResponse(e);
         }
     }
+
+    public List<String> findAllSkillList() {
+        return resourceRepository.findAllSkills();
+    }
 }

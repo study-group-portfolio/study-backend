@@ -126,14 +126,14 @@ public class InitDb {
             studyDto.setStudyDay("주말");
 
             PositionDto position1 = new PositionDto();
-            position1.setPosition("백엔드 개발자");
+            position1.setPositionName("백엔드 개발자");
             position1.setTotalCount(5);
             position1.setCount(5);
             position1.getSkills().add("Java");
             position1.getSkills().add("Spring");
 
             PositionDto position2 = new PositionDto();
-            position2.setPosition("프론트엔드 개발자");
+            position2.setPositionName("프론트엔드 개발자");
             position2.setTotalCount(6);
             position2.setCount(3);
             position2.getSkills().add("React");

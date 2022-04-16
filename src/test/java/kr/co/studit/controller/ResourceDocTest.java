@@ -99,4 +99,20 @@ public class ResourceDocTest {
 
     }
 
+    @Test
+    public void getAllSkillList() throws Exception {
+        //given
+        String uri = BASE_URI + "/skills";
+        //when
+        ResultActions result = this.mockMvc.perform(get(uri)
+                .accept(APPLICATION_JSON_UTF8)
+                .contentType(APPLICATION_JSON_UTF8)
+        );
+
+        //then
+        result.andExpect(status().isOk())
+                .andDo(print());
+
+    }
+
 }

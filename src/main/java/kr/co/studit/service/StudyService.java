@@ -377,7 +377,7 @@ public class StudyService {
                     .stream()
                     .map(studyPosition -> {
                         PositionDto positionDto = new PositionDto();
-                        positionDto.setPosition(studyPosition.getPosition().getPositionName());
+                        positionDto.setPositionName(studyPosition.getPosition().getPositionName());
                         positionDto.setTotalCount(studyPosition.getTotalCount());
                         positionDto.setCount(studyPosition.getCount());
                         positionDto.setRecruited(studyPosition.isRecruited());
@@ -400,7 +400,7 @@ public class StudyService {
     private void createPositionSkill(Study study, ArrayList<PositionDto> positions) {
         for (PositionDto positionDto : positions) {
 
-            Position position = studyRepository.findPositionByPositionName(positionDto.getPosition());
+            Position position = studyRepository.findPositionByPositionName(positionDto.getPositionName());
 
             StudyPosition studyPosition = new StudyPosition();
             studyPosition.setPosition(position);
@@ -441,7 +441,7 @@ public class StudyService {
             PositionDto positionDto = new PositionDto();
 
             Position position = studyPosition.getPosition();
-            positionDto.setPosition(position.getPositionName());
+            positionDto.setPositionName(position.getPositionName());
             positionDto.setCount(studyPosition.getCount());
             positionDto.setTotalCount(studyPosition.getTotalCount());
             positionDto.setRecruited(studyPosition.isRecruited());
