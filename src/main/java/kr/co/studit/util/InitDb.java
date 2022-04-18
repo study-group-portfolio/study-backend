@@ -19,6 +19,7 @@ import kr.co.studit.service.BookmarkService;
 import kr.co.studit.service.MemberService;
 import kr.co.studit.service.StudyService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE)
 @RequiredArgsConstructor
+@Slf4j
 public class InitDb {
 
 
@@ -50,10 +52,18 @@ public class InitDb {
 
     @EventListener(ApplicationReadyEvent.class)
     public void loadData() throws Exception {
-        ResourceDatabasePopulator resourceDatabasePopulator =
-                new ResourceDatabasePopulator(false, false, "UTF-8", new ClassPathResource("data.sql") );
-        resourceDatabasePopulator.execute(dataSource);
+        List<Member> members = memberDataRepository.findAll();
+
+        if(members.isEmpty()){
+            log.info("DB is empty run DB init.");
+            ResourceDatabasePopulator resourceDatabasePopulator =
+                    new ResourceDatabasePopulator(false, false, "UTF-8", new ClassPathResource("data.sql") );
+            resourceDatabasePopulator.execute(dataSource);
             initService.dbInit1();
+        }else {
+            log.info("DB is not empty");
+        }
+
     }
 
 
