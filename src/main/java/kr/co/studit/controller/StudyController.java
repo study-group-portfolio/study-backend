@@ -6,6 +6,7 @@ import kr.co.studit.dto.position.PositionApplyDto;
 import kr.co.studit.dto.search.StudySearchCondition;
 import kr.co.studit.dto.study.StudyDto;
 import kr.co.studit.dto.study.StudyUpdateDto;
+import kr.co.studit.error.ErrorResponse;
 import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.service.StudyService;
 import lombok.AllArgsConstructor;
@@ -38,8 +39,14 @@ public class StudyController {
     @ApiOperation(value = "스터디 글 생성")
     public ResponseEntity<?> createStudy(@AuthenticationPrincipal String email, @RequestBody StudyDto studyDto){
 
-        ResponseEntity<?> study = studyService.createStudy(studyDto, email);
-        return study;
+        try {
+            ResponseEntity<?> study = studyService.createStudy(studyDto, email);
+            return study;
+        } catch (Exception e) {
+           return   ErrorResponse.getErrorResponse(e);
+        }
+
+//        return study;
     }
 
     @GetMapping("/{id}")

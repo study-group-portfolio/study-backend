@@ -14,8 +14,8 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class PositionDto {
     String positionName;
-    Integer count;
-    Integer totalCount;
+    Integer count = 0;
+    Integer totalCount = 0;
     ArrayList<String> skills = new ArrayList<>();
     boolean recruited;
 

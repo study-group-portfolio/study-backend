@@ -24,6 +24,7 @@ import kr.co.studit.repository.member.MemberDataRepository;
 import kr.co.studit.repository.study.StudyDataRepository;
 import kr.co.studit.repository.study.StudyRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @AllArgsConstructor
+@Slf4j
 public class StudyService {
 
     private final StudyDataRepository studyDataRepository;
@@ -48,7 +50,7 @@ public class StudyService {
     private final MemberDataRepository memberDataRepository;
     private final BookmarkDataRepository bookmarkDataRepository;
 
-    public ResponseEntity<?> createStudy(StudyDto studyDto, String email) {
+    public ResponseEntity<?> createStudy(StudyDto studyDto, String email)  {
         ResponseDto<StudyDto> response = new ResponseDto<>();
         try {
             Study study = studyMapper(studyDto,email);
@@ -60,7 +62,9 @@ public class StudyService {
             return new ResponseEntity<ResponseDto>(response, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            return ErrorResponse.getErrorResponse(e);
+            log.error("ERROR", e);
+            throw new IllegalArgumentException("잘못된 입력 값 입니다.");
+//            return ErrorResponse.getErrorResponse(e);
         }
     }
 

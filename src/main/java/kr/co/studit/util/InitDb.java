@@ -49,7 +49,7 @@ public class InitDb {
 
 
     @EventListener(ApplicationReadyEvent.class)
-    public void loadData() {
+    public void loadData() throws Exception {
         ResourceDatabasePopulator resourceDatabasePopulator =
                 new ResourceDatabasePopulator(false, false, "UTF-8", new ClassPathResource("data.sql") );
         resourceDatabasePopulator.execute(dataSource);
@@ -85,7 +85,7 @@ public class InitDb {
             return member1;
         }
 
-        private void createStudys() {
+        private void createStudys() throws Exception {
             for (int i = 0; i < 15; i++) {
                 Member member = memberDataRepository.findMemberByNickname("user" + i);
                 StudyDto studyDto = createStudyDto();
@@ -328,7 +328,7 @@ public class InitDb {
             memberDataRepository.findMemberByNickname("user1");
         }
 
-        public void dbInit1() {
+        public void dbInit1() throws Exception {
             Member member = initMember();
 //            Region zone = initRegion();
 //            initPositionAndSkill();

@@ -133,6 +133,7 @@ public class StudyRepository {
 
                 ).offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(study.modifiedDate.desc())
                 .fetchResults();
         List<Study> content = results.getResults();
         long total = results.getTotal();
@@ -236,6 +237,7 @@ public class StudyRepository {
                 .selectFrom(study)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(study.modifiedDate.desc())
                 .fetchResults();
         List<Study> content = results.getResults();
         long total = results.getTotal();
