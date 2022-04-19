@@ -40,4 +40,5 @@ out/
 /src/main/resources/application-email.yml
 /spy.log
 /src/test/resources/application-email.yml
+/src/test/resources/application-aws.yml
 

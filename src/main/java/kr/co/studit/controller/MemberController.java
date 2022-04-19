@@ -1,5 +1,7 @@
 package kr.co.studit.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.swagger.annotations.ApiOperation;
@@ -16,16 +18,19 @@ import kr.co.studit.service.MemberService;
 import kr.co.studit.validator.SignupValidator;
 import kr.co.studit.validator.UpdatePasswordValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.rmi.NoSuchObjectException;
@@ -35,6 +40,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
 
@@ -123,22 +129,29 @@ public class MemberController {
     }
 
     @ApiOperation(value = "프로필 기본 정보 수정")
-    @PutMapping("/profile/basic")
-    public ResponseEntity<?> editBasicProfile(@AuthenticationPrincipal String email, @RequestBody BasicProfileForm basicProfileForm) {
+    @PutMapping(value = "/profile/basic")
+    public ResponseEntity<?> editBasicProfile(@AuthenticationPrincipal String email,
+                                              @RequestPart String basicProfile, @RequestPart MultipartFile imageFile) throws JsonProcessingException {
         try {
-            Member member = memberService.editBasicProfile(email, basicProfileForm);
+            BasicProfileForm basicProfileForm = new ObjectMapper().readValue(basicProfile, BasicProfileForm.class);
+            Member member = memberService.editBasicProfile(email, basicProfileForm, imageFile);
+            basicProfileForm.setNickname(member.getNickname());
+            basicProfileForm.setImg(member.getProfileImg());
+            basicProfileForm.setEmail(member.getEmail());
+
+            ResponseDto<Object> responseDto = ResponseDto.builder()
+                    .data(basicProfileForm)
+                    .status(Status.SUCCESS)
+                    .message("업데이트 완료")
+                    .build();
+
+
+            return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
            return ErrorResponse.getErrorResponse(e, HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
-        ResponseDto<Object> responseDto = ResponseDto.builder()
-                .data(basicProfileForm)
-                .status(Status.SUCCESS)
-                .message("업데이트 완료")
-                .build();
-        // 프로필 이미지 추후 수정 해야 함. 에러시 결과값등
 
-        return ResponseEntity.ok(responseDto);
     }
 
     @ApiOperation(value = "비밀번호 변경")

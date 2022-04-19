@@ -1,6 +1,7 @@
 package kr.co.studit.entity.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import kr.co.studit.dto.member.BasicProfileForm;
 import kr.co.studit.entity.Portfolio;
 import kr.co.studit.entity.study.Study;
 import kr.co.studit.dto.member.ProfileForm;
@@ -175,5 +176,12 @@ public class Member extends BaseTimeEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public Member editBasicProfile(BasicProfileForm basicProfileForm) {
+        this.nickname = basicProfileForm.getNickname();
+        this.email = basicProfileForm.getEmail();
+        this.profileImg = basicProfileForm.getImg();
+        return this;
     }
 }
