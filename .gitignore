@@ -41,3 +41,4 @@ out/
 /spy.log
 /src/test/resources/application-email.yml
 
+/BOOT-INF/classes/static/docs/index.html

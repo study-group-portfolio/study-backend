@@ -112,7 +112,7 @@ public class Study extends BaseTimeEntity {
         studyDto.setStatus(this.getOnOffStatus());
         studyDto.setCreateDate(this.getCreatedDate());
         studyDto.setModifiedDate(this.getModifiedDate());
-        if (this.getOnOffStatus() != OnOffStatus.OFF) {
+        if (this.getOnOffStatus() != OnOffStatus.ON) {
             studyDto.setRegion(this.getRegion().getArea());
         }
         studyDto.setDuration(this.getDuration());

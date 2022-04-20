@@ -33,7 +33,7 @@ public class Bookmark {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Member markedMember;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "study_id")
     private Study markedStudy;
