@@ -1,9 +1,16 @@
 server:
   port: 8080
 
-
-
 spring:
+  config:
+    activate:
+      on-profile: default
+    import:
+      - application-aws.yml
+      - application-email.yml
+  servlet:
+    multipart:
+      max-file-size: 3MB
   datasource:
     url: jdbc:h2:mem:test
     #    url: jdbc:h2:tcp://localhost/~/studit
@@ -17,7 +24,7 @@ spring:
     properties:
       hibernate:
         show_sql: true
-#        format_sql: true
+        format_sql: true
         default_batch_fetch_size: 100
     #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     defer-datasource-initialization: true
@@ -30,14 +37,59 @@ spring:
         default-page-size: 12
         max-page-size: 100
 
+
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
 
 app:
   backhost : http://localhost:8080
+  fronthost : http://localhost:3000
+  imageDir : static
 ---
 
 spring:
   config:
-    import: application-email.yml
+    activate:
+      on-profile: "dev"
+    import:
+      - application-aws-prod.yml
+      - application-email-prod.yml
+  servlet:
+    multipart:
+      max-file-size: 3MB
+  datasource:
+    url: jdbc:h2:mem:test
+    #    url: jdbc:h2:tcp://localhost/~/studit
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: true
+        #        format_sql: true
+        default_batch_fetch_size: 100
+    #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: never
+  data:
+    web:
+      pageable:
+        default-page-size: 12
+        max-page-size: 100
+
+
+logging.level:
+  org.hibernate.SQL: debug
+
+app:
+  backhost : http://localhost:8080
+  fronthost : http://localhost:3000
+  imageDir : static
+

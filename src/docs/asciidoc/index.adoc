@@ -88,11 +88,11 @@ true : 사용가능 / false : 사용 불가능
 
 ==== REQUEST
 
-include::{snippets}/update-profile-basic/http-request.adoc[]
+include::{snippets}/update-profile-basic/curl-request.adoc[]
 
-==== REQUEST FIELDS
+==== REQUEST PART
 
-include::{snippets}/update-profile-basic/request-fields.adoc[]
+include::{snippets}/update-profile-basic/request-parts.adoc[]
 
 ==== RESPONSE
 

@@ -4,10 +4,10 @@ name: Java CI with Gradle
 on:
   push:
 #    branches: [ master ]
-    branches: [ dev ]
-  pull_request:
-#    branches: [ master ]
-    branches: [ dev ]
+    branches: [ github_env_test ]
+#  pull_request:
+##    branches: [ master ]
+#    branches: [ dev ]
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: SPRING_PROFILES_ACTIVE=[dev] ./gradlew clean build
         shell: bash
 
       - name: Get current time
@@ -48,7 +48,7 @@ jobs:
 
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v20
-        with:
+      with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: studit-back

@@ -18,14 +18,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,6 +51,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -352,25 +366,48 @@ public class MemberDocTest {
     public void updateBasicProfile() throws Exception {
         //given
         String uri = BASE_URI + "/profile/basic";
-        BasicProfileForm basicProfileForm = new BasicProfileForm();
+
+        InputStream input = new ClassPathResource("static/image/logo_studit_logotype.png").getInputStream();
+
+
+        BasicProfileForm basicProfile = new BasicProfileForm();
         String email = testMember.getEmail();
         String nickname = "newNickname";
-        basicProfileForm.setEmail(email);
-        basicProfileForm.setNickname(nickname);
-        String jsonObj = new Gson().toJson(basicProfileForm);
+        basicProfile.setEmail(email);
+        basicProfile.setNickname(nickname);
+        basicProfile.setImg(testMember.getProfileImg());
+        String jsonObj = new Gson().toJson(basicProfile);
+        MockMultipartFile imageFile = new MockMultipartFile("imageFile", "logo_studit_logotype.png", "image/png", input);
+        MockMultipartFile json = new MockMultipartFile("json", "", "application/json", jsonObj.getBytes());
+
+        MockMultipartHttpServletRequestBuilder builder =
+                multipart(uri);
+        builder.with(new RequestPostProcessor() {
+            @Override
+            public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+                request.setMethod("PUT");
+                return request;
+            }
+        });
+
 
         //when
-        ResultActions result = putPerformWithAuthenticated(uri, jsonObj);
+        ResultActions result = this.mockMvc.perform(builder
+                .file(imageFile)
+                .file("basicProfile", jsonObj.getBytes())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(APPLICATION_JSON_UTF8));
+
 
         //then
         result.andExpect(status().isOk())
                 .andDo(document("update-profile-basic",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("img").type(JsonFieldType.STRING).description("프로필 이미지").optional(),
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임")
+                        requestParts(
+                                partWithName("imageFile").description("수정할 이미지 파일 파일").optional(),
+                                partWithName("basicProfile").description("{\"nickname\" : \"newNickname\", \"email\" : \"studit@studit.co.kr\", \"img\" : \"\"}")
 
                         )
                         ,responseFields(
