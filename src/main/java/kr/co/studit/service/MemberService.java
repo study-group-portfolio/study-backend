@@ -22,6 +22,7 @@ import kr.co.studit.repository.RegionDataRepository;
 import kr.co.studit.repository.study.StudyRepository;
 import kr.co.studit.repository.study.StudyDataRepository;
 import kr.co.studit.repository.member.MemberDataRepository;
+import kr.co.studit.util.fileupload.S3Uploader;
 import kr.co.studit.util.mail.EmailMessage;
 import kr.co.studit.util.mail.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +36,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.io.IOException;
 import java.rmi.NoSuchObjectException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,6 +66,8 @@ public class MemberService {
     private final TokenProvider tokenProvider;
     private final EmailService emailService;
     private final TemplateEngine templateEngine;
+    private final S3Uploader s3Uploader;
+
 
     public ResponseEntity<?> processCreateMember(SignupDto signupDto) {
         Member newMember = createMember(signupDto);
@@ -296,14 +301,23 @@ public class MemberService {
 
     }
 
-    public Member editBasicProfile(String email, BasicProfileForm basicProfileForm) {
-        //TODO 추후 img 업데이트
+    public Member editBasicProfile(String email, BasicProfileForm basicProfileForm, MultipartFile file) throws IOException {
+        //db 업로드 후, 파일 업로드 => 에러 발생시 롤백 form validation
         Member member = memberDataRepository.findMemberByEmail(email);
         if(memberDataRepository.existsByNickname(basicProfileForm.getNickname()) && !member.getNickname().equals(basicProfileForm.getNickname()) ){
             throw new RuntimeException("이미 사용중인 닉네임 입니다.");
         }
+        if ( !file.isEmpty() ) {
+            String oldImgUrl = member.getProfileImg();
+            String imgUrl = s3Uploader.upload(file, appProperties.getImageDir());
+//            s3Uploader.removeS3(oldImgUrl);
+            basicProfileForm.setImg(imgUrl);
+            member = member.editBasicProfile(basicProfileForm);
+        }else {
+            member.editBasicProfile(basicProfileForm);
+        }
 
-        member.setNickname(basicProfileForm.getNickname());
+
         return member;
     }
 

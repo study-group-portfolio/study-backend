@@ -1,0 +1,12 @@
+cloud:
+  aws:
+    s3:
+      bucket: elasticbeanstalk-ap-northeast-2-075443352844
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      access-key: AKIARDEGGGUGEWHJ6WPD
+      secret-key: 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
+
