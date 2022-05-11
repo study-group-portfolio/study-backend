@@ -1,6 +1,6 @@
 package kr.co.studit.entity;
 
-import kr.co.studit.entity.study.StudyTool;
+import kr.co.studit.study.domain.StudyTool;
 import lombok.Getter;
 import lombok.Setter;
 

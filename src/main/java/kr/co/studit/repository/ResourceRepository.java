@@ -1,20 +1,15 @@
 package kr.co.studit.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.studit.dto.SkillDto;
-import kr.co.studit.entity.position.Position;
-import kr.co.studit.entity.Skill;
-import kr.co.studit.entity.position.PositionType;
-import kr.co.studit.entity.position.QPosition;
-import kr.co.studit.entity.position.QPositionType;
+import kr.co.studit.skill.Skill;
+import kr.co.studit.position.domain.PositionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static kr.co.studit.entity.QSkill.skill;
-import static kr.co.studit.entity.position.QPosition.position;
-import static kr.co.studit.entity.position.QPositionType.positionType;
+import static kr.co.studit.position.QPositionType.positionType;
 
 @Repository
 @RequiredArgsConstructor

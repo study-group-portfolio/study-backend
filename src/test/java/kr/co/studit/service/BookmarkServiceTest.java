@@ -1,27 +1,24 @@
 package kr.co.studit.service;
 
-import kr.co.studit.dto.bookmark.BookmarkRes;
-import kr.co.studit.dto.member.SearchMemberDto;
+import kr.co.studit.bookmark.dto.BookmarkRes;
+import kr.co.studit.bookmark.service.BookmarkService;
+import kr.co.studit.member.dto.SearchMemberDto;
 import kr.co.studit.dto.search.CustomPage;
-import kr.co.studit.entity.Bookmark;
-import kr.co.studit.entity.member.Member;
-import kr.co.studit.repository.bookmark.BookmarkDataRepository;
-import kr.co.studit.repository.member.MemberDataRepository;
-import org.assertj.core.api.Assertions;
+import kr.co.studit.bookmark.domain.Bookmark;
+import kr.co.studit.member.domain.Member;
+import kr.co.studit.bookmark.domain.BookmarkDataRepository;
+import kr.co.studit.member.domain.MemberDataRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

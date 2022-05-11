@@ -2,8 +2,6 @@ package kr.co.studit.controller;
 
 import io.swagger.annotations.ApiOperation;
 import kr.co.studit.dto.SkillDto;
-import kr.co.studit.dto.position.PositionSimpleDto;
-import kr.co.studit.dto.response.ResponseDto;
 import kr.co.studit.service.ResourceService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

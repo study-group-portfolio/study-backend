@@ -1,11 +1,10 @@
 package kr.co.studit.controller;
 
 import com.google.gson.Gson;
-import kr.co.studit.dto.member.SigninDto;
-import kr.co.studit.dto.member.SignupDto;
-import kr.co.studit.entity.member.Member;
-import kr.co.studit.repository.member.MemberDataRepository;
-import kr.co.studit.service.MemberService;
+import kr.co.studit.member.dto.SigninDto;
+import kr.co.studit.member.dto.SignupDto;
+import kr.co.studit.member.domain.MemberDataRepository;
+import kr.co.studit.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,0 +1,48 @@
+package kr.co.studit.member.domain;
+
+import kr.co.studit.member.dto.ProfileForm;
+import kr.co.studit.dto.search.MemberSearchCondition;
+import kr.co.studit.position.domain.Position;
+import kr.co.studit.skill.Skill;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+//커스텀 인터페이스 쿼리 작성
+public interface MemberCustomRepository {
+
+    Long editProfile(ProfileForm profileForm);
+
+    void delateRegions(Member member);
+
+    void saveMemberRegion(MemberRegion memberRegion);
+
+    Position findPositionByPositionName(String positionName);
+
+    void saveMemberPosition(MemberPosition memberPosition);
+
+    void deletePosition(Member member);
+
+    List<Skill> findSkillBySkillName(List<String> skills);
+
+    void saveMemberSkill(MemberSkill memberSkill);
+
+    void deleteSkill(Member member);
+
+    Page<Member> searchPageMember(Pageable pageable);
+
+    Page<Member> searchPageMember(MemberSearchCondition condition, Pageable pageable);
+
+    List<MemberInvitation> findMemberInvitationByEmail(String email);
+
+    boolean checkInviteMember(String inviteMember);
+
+    void deleteMemberInvitationById(Long id);
+
+    MemberInvitation findMemberInvitationById(Long id);
+
+    void deletePortpolio(Member member);
+}

@@ -1,8 +1,8 @@
 package kr.co.studit.dto.search;
 
 import io.swagger.annotations.ApiModelProperty;
-import kr.co.studit.entity.enums.OnOffStatus;
-import kr.co.studit.entity.enums.StudyType;
+import kr.co.studit.activitirigion.domain.OnOffStatus;
+import kr.co.studit.study.domain.StudyType;
 import lombok.Getter;
 import lombok.Setter;
 

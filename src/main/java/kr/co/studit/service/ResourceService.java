@@ -1,21 +1,18 @@
 package kr.co.studit.service;
 
-import kr.co.studit.dto.position.PositionSimpleDto;
 import kr.co.studit.dto.SkillDto;
-import kr.co.studit.dto.enums.Status;
-import kr.co.studit.dto.position.PositionTypeDto;
-import kr.co.studit.dto.response.ResponseListDto;
-import kr.co.studit.entity.position.Position;
-import kr.co.studit.entity.Skill;
-import kr.co.studit.entity.position.PositionType;
-import kr.co.studit.error.ErrorResponse;
+import kr.co.studit.response.Status;
+import kr.co.studit.study.dto.PositionTypeDto;
+import kr.co.studit.response.ResponseListDto;
+import kr.co.studit.skill.Skill;
+import kr.co.studit.position.domain.PositionType;
+import kr.co.studit.response.ErrorResponse;
 import kr.co.studit.repository.ResourceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
